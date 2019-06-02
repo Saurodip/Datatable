@@ -20,13 +20,13 @@
             [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex', 'width': globalFilter ? '100%' : 'auto' }">
             <div class="action-container" [ngStyle]="{ 'width': globalFilter ? '0px' : '30px' }"></div>
             <div *ngIf="globalFilter; else columnFilter" class="global-filter">
-                <input type="text" id="datatable-global-filter" maxlength="filterLimit" placeholder="Search">
+                <input type="text" id="datatable-global-filter" [attr.maxlength]="filterTextLimit" placeholder="Search">
             </div>
             <ng-template #columnFilter>
                 <div class="column-filter"
                     [ngStyle]="{ 'width': columnResponsive ? 'calc(100% /' + header.length + ')' : dtHeader?.columnWidth }"
                     *ngFor="let dtHeader of header; let i = index">
-                    <input type="text" id="datatable-column-filter-{{ i + 1 }}" maxlength="filterLimit" placeholder="Search">
+                    <input type="text" id="datatable-column-filter-{{ i + 1 }}" [attr.maxlength]="filterTextLimit" placeholder="Search">
                 </div>
             </ng-template>
         </div>

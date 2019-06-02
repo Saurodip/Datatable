@@ -2,24 +2,26 @@ export class DataTable {
     public checkboxSelection?: boolean;
     public columnFilter: boolean;
     public columnResponsive: boolean;
+    public data: Array<object>;
     public filterTextLimit: number;
     public globalFilter: boolean;
     public header: DataTableHeader;
     public headerStyle?: DataTableHeaderStyle;
-    public data: Array<object>;
     public height: string;
+    public isFrozen?: boolean;
     public rowStyle?: DataTableRowStyle;
 
     constructor() {
         this.checkboxSelection = false;
         this.columnFilter = false;
         this.columnResponsive = false;
+        this.data = [];
         this.filterTextLimit = 50;
         this.globalFilter = false;
         this.header = new DataTableHeader();
         this.headerStyle = new DataTableHeaderStyle();
-        this.data = [];
         this.height = '';
+        this.isFrozen = false;
         this.rowStyle = new DataTableRowStyle();
     }
 }

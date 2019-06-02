@@ -245,3 +245,14 @@
 [0408/012514.309:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
 [0408/012514.309:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
 [0601/165904.249:ERROR:file_io.cc(134)] WriteFile: The pipe is being closed. (0xE8)
+[0601/220415.266:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
+[0601/220415.537:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
+[0601/220415.537:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
+[0601/220415.537:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
+[0601/220415.537:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
+[0601/220415.537:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
+[0601/220415.537:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
+[0601/220415.537:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
+[0601/220415.538:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
+[0601/220415.538:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
+[0601/220415.538:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.

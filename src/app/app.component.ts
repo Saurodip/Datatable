@@ -38,12 +38,12 @@ export class AppComponent implements OnInit {
 
   private prepareDataTableHeader = (): void => {
     this.header = [
-      { propertyName: 'SerialNo', title: 'Serial No.', type: 'integer', columnWidth: '100px' },
+      { propertyName: 'SerialNo', title: 'Serial No.', type: 'integer', columnWidth: '200px' },
       { propertyName: 'ProductName', title: 'Product Name', type: 'string', columnWidth: '200px' },
       { propertyName: 'Manufacturer', title: 'Manufacturer', type: 'string', columnWidth: '200px' },
       { propertyName: 'Version', title: 'Version', type: 'version', columnWidth: '200px' },
-      { propertyName: 'Date', title: 'Date', type: 'date', columnWidth: '200px' },
-      { propertyName: 'Price', title: 'Price', type: 'float', columnWidth: '150px' }
+      { propertyName: 'Date', title: 'Date', type: 'date', columnWidth: '400px' },
+      { propertyName: 'Price', title: 'Price', type: 'float', columnWidth: '250px' }
     ];
   }
 

@@ -11,6 +11,7 @@ $text-color: #e3e3e3;
 }
 
 .datatable {
+    background-color: #f1f1f1;
     border: $cell-border;
     font-family: "Open Sans", "Helvetica Neue", sans-serif;
     font-size: 13px;
@@ -46,6 +47,8 @@ $text-color: #e3e3e3;
                 border-bottom: $cell-border;
                 border-right: $cell-border;
                 box-sizing: border-box;
+                padding-left: 5px;
+                padding-right: 30px;
                 position: relative;
                 text-align: center;
                 @include single-line-ellipsis();
@@ -156,9 +159,32 @@ $text-color: #e3e3e3;
         }
 
         &.hide-filter-horizontal-scrollbar {
-            bottom: 35px;
+            bottom: 36px;
             position: relative;
             z-index: 1;
         }
     }
 }
+
+textarea:focus,
+input:focus {
+    outline: none;
+}
+
+/*
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+*/

@@ -40,7 +40,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     ngAfterViewChecked() {
         if (this.dataTable && this.dataTable.nativeElement) {
             if (this.dataTable.nativeElement.children && this.dataTable.nativeElement.children.length > 0) {
-                let dataTableHeader: HTMLCollection = this.dataTable.nativeElement.children[0];
+                let dataTableHeader: HTMLCollection = this.dataTable.nativeElement.children[0] && this.dataTable.nativeElement.children[0].children[0];
                 let dataTableBody: HTMLCollection = this.dataTable.nativeElement.children[1];
                 this.setDataTableStyling(dataTableHeader, dataTableBody);
             }
