@@ -13,24 +13,32 @@ $text-color: #e3e3e3;
 .datatable {
     background-color: #f1f1f1;
     border: $cell-border;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
     font-family: "Open Sans", "Helvetica Neue", sans-serif;
     font-size: 13px;
     overflow: hidden;
 
-    .datatable-header-wrapper>.datatable-header-container,
-    .datatable-filter-wrapper>.datatable-filter-container,
-    .datatable-body>.datatable-row {
-        display: inline-flex;
-        flex-direction: row;
-
+    .datatable-frozen-area {
         .action-container {
             align-items: center;
             border-bottom: $cell-border;
             border-right: $cell-border;
+            box-sizing: border-box;
             display: flex;
             justify-content: center;
             position: relative;
             width: 30px;
+        }
+    }
+
+    .datatable-scrollable-area {
+        position: relative;
+        left: -17px;
+
+        .datatable-filter-container {
+            margin-bottom: 3px;
         }
     }
 
@@ -47,20 +55,24 @@ $text-color: #e3e3e3;
                 border-bottom: $cell-border;
                 border-right: $cell-border;
                 box-sizing: border-box;
+                display: flex;
                 padding-left: 5px;
-                padding-right: 30px;
                 position: relative;
                 text-align: center;
                 @include single-line-ellipsis();
 
+                .header-name {
+                    width: 85%;
+                }
+
                 .sort-icon-container {
-                    display: inline-block;
+                    width: 15%;
 
                     i {
                         cursor: pointer;
                         height: 0px;
                         position: absolute;
-                        right: 10px;
+                        right: 8px;
                         width: 0px;
                     }
 
@@ -90,6 +102,7 @@ $text-color: #e3e3e3;
             border-bottom: $cell-border;
             box-sizing: border-box;
             height: 30px;
+            margin-bottom: 3px;
 
             .action-container {
                 border-bottom: 0px;
@@ -126,8 +139,7 @@ $text-color: #e3e3e3;
     }
 
     .datatable-body {
-        overflow-x: auto;
-        overflow-y: scroll;
+        overflow: scroll;
 
         .datatable-row {
             height: 30px;
@@ -159,7 +171,7 @@ $text-color: #e3e3e3;
         }
 
         &.hide-filter-horizontal-scrollbar {
-            bottom: 36px;
+            bottom: 38px;
             position: relative;
             z-index: 1;
         }

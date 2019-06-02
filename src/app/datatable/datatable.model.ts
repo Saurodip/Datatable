@@ -8,7 +8,6 @@ export class DataTable {
     public header: DataTableHeader;
     public headerStyle?: DataTableHeaderStyle;
     public height: string;
-    public isFrozen?: boolean;
     public rowStyle?: DataTableRowStyle;
 
     constructor() {
@@ -21,14 +20,13 @@ export class DataTable {
         this.header = new DataTableHeader();
         this.headerStyle = new DataTableHeaderStyle();
         this.height = '';
-        this.isFrozen = false;
         this.rowStyle = new DataTableRowStyle();
     }
 }
 
 export class DataTableHeader {
     public columnWidth: string;
-    public isFixed?: boolean;
+    public isFrozen?: boolean;
     public pipe?: string;
     public propertyName: string;
     public title: string;
@@ -36,7 +34,7 @@ export class DataTableHeader {
 
     constructor() {
         this.columnWidth = '0';
-        this.isFixed = false;
+        this.isFrozen = false;
         this.pipe = '';
         this.propertyName = '';
         this.title = 'Not Available';
