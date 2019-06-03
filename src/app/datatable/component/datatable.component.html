@@ -23,20 +23,18 @@
             <div class="datatable-filter-container"
                 [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex', 'width': globalFilter ? '100%' : 'auto' }">
                 <div class="action-container" [ngStyle]="{ 'width': globalFilter ? '0px' : '30px' }"></div>
-                <div *ngIf="globalFilter; else columnFilter" class="global-filter">
-                    <input type="text" id="datatable-global-filter" [attr.maxlength]="filterTextLimit" placeholder="Search">
-                </div>
+                <ng-template *ngIf="globalFilter; else columnFilter"></ng-template>
                 <ng-template #columnFilter>
                     <div class="column-filter"
                         [ngStyle]="{ 'width': columnResponsive ? (responsiveColumnWidth + 'px') : dtHeader?.columnWidth }"
                         *ngFor="let dtHeader of frozenHeader; let i = index">
-                        <input type="text" id="datatable-column-filter-{{ i + 1 }}" [attr.maxlength]="filterTextLimit" placeholder="Search">
+                        <input type="text" *ngIf="columnFilter" id="datatable-column-filter-{{ i + 1 }}" [attr.maxlength]="filterTextLimit" placeholder="Search">
                     </div>
                 </ng-template>
             </div>
         </div>
         <div class="datatable-body hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': rowContainerHeight }">
-            <div id="datatable-row-{{ i + 1 }}" class="datatable-row" 
+            <div id="datatable-frozen-column-row-{{ i + 1 }}" class="datatable-row" 
                 appDataTableRowSelection [hoverColor]="rowStyle.hoverColor"
                 [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                 *ngFor="let dtRow of data; let i = index" (click)="onSelectDataTableRow($event)">
@@ -72,21 +70,19 @@
             <div class="datatable-filter-container"
                 [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex', 'width': globalFilter ? '100%' : 'auto' }">
                 <div *ngIf="globalFilter; else columnFilter" class="global-filter">
-                    <input type="text" id="datatable-global-filter" [attr.maxlength]="filterTextLimit"
-                        placeholder="Search">
+                    <input type="text" id="datatable-global-filter" [attr.maxlength]="filterTextLimit" placeholder="Search">
                 </div>
                 <ng-template #columnFilter>
                     <div class="column-filter"
                         [ngStyle]="{ 'width': columnResponsive ? (responsiveColumnWidth + 'px') : dtHeader?.columnWidth }"
                         *ngFor="let dtHeader of scrollableHeader; let i = index">
-                        <input type="text" id="datatable-column-filter-{{ i + 1 }}" [attr.maxlength]="filterTextLimit"
-                            placeholder="Search">
+                        <input type="text" id="datatable-column-filter-{{ i + 1 }}" [attr.maxlength]="filterTextLimit" placeholder="Search">
                     </div>
                 </ng-template>
             </div>
         </div>
         <div class="datatable-body hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': rowContainerHeight }">
-            <div id="datatable-row-{{ i + 1 }}" class="datatable-row"
+            <div id="datatable-scrollable-column-row-{{ i + 1 }}" class="datatable-row"
                 appDataTableRowSelection [hoverColor]="rowStyle.hoverColor"
                 [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                 *ngFor="let dtRow of data; let i = index" (click)="onSelectDataTableRow($event)">

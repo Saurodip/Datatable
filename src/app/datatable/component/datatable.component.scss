@@ -102,6 +102,7 @@ $text-color: #e3e3e3;
             border-bottom: $cell-border;
             box-sizing: border-box;
             height: 30px;
+            justify-content: flex-end;
             margin-bottom: 3px;
 
             .action-container {
@@ -118,6 +119,7 @@ $text-color: #e3e3e3;
 
             .global-filter {
                 input[type="text"] {
+                    border-left: $cell-border;
                     width: 300px;
                 }
             }
