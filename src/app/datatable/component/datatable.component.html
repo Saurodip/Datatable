@@ -1,6 +1,5 @@
 <div #dataTable class="datatable" [ngStyle]="{ 'height': height }">
-    <div class="datatable-frozen-area"
-        [ngStyle]="{ 'width': frozenHeaderWidth + 'px' }">
+    <div class="datatable-frozen-area">
         <div class="datatable-header-wrapper">
             <div class="datatable-header-container"
                 [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }">
@@ -9,7 +8,7 @@
                         (change)="onSelectDataTableSelectAll($event)">
                 </div>
                 <div title="{{ dtHeader?.title }}" class="datatable-header"
-                    [ngStyle]="{ 'width': columnResponsive ? (responsiveColumnWidth + 'px') : dtHeader?.columnWidth }"
+                    [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                     *ngFor="let dtHeader of frozenHeader; let i = index">
                     <div class="header-name">{{ dtHeader?.title }}</div>
                     <div class="sort-icon-container">
@@ -26,7 +25,7 @@
                 <ng-template *ngIf="globalFilter; else columnFilter"></ng-template>
                 <ng-template #columnFilter>
                     <div class="column-filter"
-                        [ngStyle]="{ 'width': columnResponsive ? (responsiveColumnWidth + 'px') : dtHeader?.columnWidth }"
+                        [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                         *ngFor="let dtHeader of frozenHeader; let i = index">
                         <input type="text" *ngIf="columnFilter" id="datatable-column-filter-{{ i + 1 }}" [attr.maxlength]="filterTextLimit" placeholder="Search">
                     </div>
@@ -43,7 +42,7 @@
                     [ngStyle]="{ 'visibility': checkboxSelection ? 'visible': 'hidden' }">
                 </div>
                 <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
-                    [ngStyle]="{ 'width': columnResponsive ? (responsiveColumnWidth + 'px') : dtHeader?.columnWidth }"
+                    [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                     *ngFor="let dtHeader of frozenHeader; let j = index">
                     {{ dtRow[dtHeader?.propertyName] }}
                 </div>
@@ -51,12 +50,12 @@
         </div>
     </div>
     <div *ngIf="scrollableHeader && scrollableHeader.length > 0" class="datatable-scrollable-area"
-        [ngStyle]="{ 'width': 'calc(100% - ' + (frozenHeaderWidth - scrollbarWidth) + 'px)' }">
+        [ngStyle]="{ 'width': columnResponsive ? '100%' : scrollableAreaWidth }">
         <div class="datatable-header-wrapper">
             <div class="datatable-header-container"
-                [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex', 'width': scrollableHeaderWidth }">
+                [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }">
                 <div title="{{ dtHeader?.title }}" class="datatable-header"
-                    [ngStyle]="{ 'width': columnResponsive ? (responsiveColumnWidth + 'px') : dtHeader?.columnWidth }"
+                    [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                     *ngFor="let dtHeader of scrollableHeader; let i = index">
                     <div class="header-name">{{ dtHeader?.title }}</div>
                     <div class="sort-icon-container">
@@ -74,7 +73,7 @@
                 </div>
                 <ng-template #columnFilter>
                     <div class="column-filter"
-                        [ngStyle]="{ 'width': columnResponsive ? (responsiveColumnWidth + 'px') : dtHeader?.columnWidth }"
+                        [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                         *ngFor="let dtHeader of scrollableHeader; let i = index">
                         <input type="text" id="datatable-column-filter-{{ i + 1 }}" [attr.maxlength]="filterTextLimit" placeholder="Search">
                     </div>
@@ -87,7 +86,7 @@
                 [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                 *ngFor="let dtRow of data; let i = index" (click)="onSelectDataTableRow($event)">
                 <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
-                    [ngStyle]="{ 'width': columnResponsive ? (responsiveColumnWidth + 'px') : dtHeader?.columnWidth }"
+                    [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                     *ngFor="let dtHeader of scrollableHeader; let j = index">
                     {{ dtRow[dtHeader?.propertyName] }}
                 </div>

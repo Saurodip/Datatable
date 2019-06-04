@@ -9,11 +9,9 @@ import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle } from '../dat
 export class DataTableComponent implements OnInit, AfterViewInit, AfterViewChecked {
     public frozenHeader: Array<DataTableHeader>;
     public scrollableHeader: Array<DataTableHeader>;
-    public frozenHeaderWidth: number;
-    public scrollableHeaderWidth: number;
-    private actionContainerWidth: number;
+    public scrollableAreaWidth: string;
     private scrollbarWidth: number;
-    public responsiveColumnWidth: number;
+    public responsiveColumnWidth: string;
     public rowContainerHeight: string;
     private rowSelectionClassName: string;
 
@@ -23,9 +21,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public data: Array<object>;
     @Input() public filterTextLimit: number;
     @Input() public globalFilter: boolean;
-    @Input() set header(dataTableHeaderInfo: Array<DataTableHeader>) {
-        this.calculateDataTableHeaderWidth(dataTableHeaderInfo);
-    }
+    @Input() public header: Array<DataTableHeader>;
     @Input() public headerStyle: DataTableHeaderStyle;
     @Input() public height: string;
     @Input() public rowStyle: DataTableRowStyle;
@@ -35,11 +31,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     constructor() {
         this.frozenHeader = [];
         this.scrollableHeader = [];
-        this.frozenHeaderWidth = 0;
-        this.scrollableHeaderWidth = 0;
-        this.actionContainerWidth = 30;
+        this.scrollableAreaWidth = '';
         this.scrollbarWidth = 17;
-        this.responsiveColumnWidth = 0;
+        this.responsiveColumnWidth = '';
         this.rowContainerHeight = '';
         this.rowSelectionClassName = 'selected-row';
     }
@@ -48,43 +42,70 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     ngAfterViewInit() {
+        this.setHeightOfDataTableRowContainer();
+        this.calculateDataTableHeaderWidth();
         this.activateHorizontalScrollEvent();
     }
 
     ngAfterViewChecked() {
         if (this.dataTable && this.dataTable.nativeElement) {
             if (this.dataTable.nativeElement.children && this.dataTable.nativeElement.children.length > 0) {
-                let dataTableHeaderContainer: object = document.getElementsByClassName('datatable-header-container')[0];
-                let dataTableFilterContainer: object = document.getElementsByClassName('datatable-filter-container')[0];
                 let dataTableBody: object = document.getElementsByClassName('datatable-body')[0];
-                this.setDataTableRowContainerHeight(dataTableHeaderContainer, dataTableFilterContainer);
-                this.setDataTableStyling(dataTableHeaderContainer, dataTableBody);
+                // this.setDataTableStyling(dataTableHeaderContainer, dataTableBody);
             }
         }
     }
 
-    private calculateDataTableHeaderWidth = (dataTableHeaderInfo: Array<DataTableHeader>): void => {
-        if (dataTableHeaderInfo && dataTableHeaderInfo.length > 0) {
-            if (this.dataTable && this.dataTable.nativeElement) {
-                let dataTableWidth: number = this.dataTable && this.dataTable.nativeElement.clientWidth;
-                this.responsiveColumnWidth = (dataTableWidth - this.actionContainerWidth) / dataTableHeaderInfo.length;
-            }
-            this.frozenHeader = dataTableHeaderInfo.filter((dataTableHeader: DataTableHeader) => dataTableHeader.isFrozen === true);
-            this.scrollableHeader = dataTableHeaderInfo.filter((dataTableHeader: DataTableHeader) => !dataTableHeader.isFrozen);
-            this.frozenHeader.forEach((header: DataTableHeader, index: number) => {
-                this.frozenHeaderWidth += parseFloat(header.columnWidth);
-            });
-            this.frozenHeaderWidth += (this.actionContainerWidth + this.scrollbarWidth);
-            this.scrollableHeader.forEach((header: DataTableHeader) => {
-                this.scrollableHeaderWidth += parseFloat(header.columnWidth);
-            });
+    private getHTMLElementInstance = (element: string): object => {
+        switch (element) {
+            case 'datatable-frozen-area': return document.querySelector('.datatable-frozen-area');
+            case 'datatable-scrollable-area': return document.querySelector('.datatable-scrollable-area');
+            case 'datatable-header-wrapper': return document.querySelector('.datatable-header-wrapper');
+            case 'datatable-header-container': return document.querySelector('.datatable-header-container');
+            case 'datatable-filter-wrapper': return document.querySelector('.datatable-filter-wrapper');
+            case 'datatable-filter-container': return document.querySelector('.datatable-filter-container');
+            case 'action-container': return document.querySelector('.action-container');
+            case 'datatable-body': return document.querySelector('.datatable-body');
+            case 'datatable-row': return document.querySelector('.datatable-row');
+            default: break;
         }
     }
 
-    private setDataTableRowContainerHeight = (dataTableHeaderContainer: object, dataTableFilterContainer: object): void => {
-        let headerContainerHeight: number = dataTableHeaderContainer && dataTableHeaderContainer['clientHeight'];
-        let filterContainerHeight: number = dataTableFilterContainer && dataTableFilterContainer['clientHeight'];
-        this.rowContainerHeight = parseFloat(this.height) - (headerContainerHeight + filterContainerHeight) + 'px';
+    private setHeightOfDataTableRowContainer = (): void => {
+        let dataTableHeaderContainer: object = this.getHTMLElementInstance('datatable-header-container');
+        let dataTableFilterContainer: object = this.getHTMLElementInstance('datatable-filter-container');
+        if (dataTableHeaderContainer && dataTableFilterContainer) {
+            this.rowContainerHeight = parseFloat(this.height) - (dataTableHeaderContainer['offsetHeight'] + dataTableFilterContainer['offsetHeight']) + 'px';
+        }
+    }
+
+    private calculateDataTableHeaderWidth = (): void => {
+        if (this.header && this.header.length > 0) {
+            let dataTable: object = this.dataTable && this.dataTable.nativeElement;
+            let actionContainer: object = this.getHTMLElementInstance('action-container');
+            if (dataTable && actionContainer) {
+                let totalDataTableHeaderWidth: number = 0;
+                this.header.forEach((header: DataTableHeader, index: number) => {
+                    totalDataTableHeaderWidth += parseFloat(header.columnWidth);
+                    if (index === this.header.length - 1) {
+                        if (totalDataTableHeaderWidth <= dataTable['offsetWidth']) {
+                            this.columnResponsive = true;
+                        }
+                    }
+                });
+                this.frozenHeader = this.header.filter((dataTableHeader: DataTableHeader) => dataTableHeader.isFrozen === true);
+                this.scrollableHeader = this.header.filter((dataTableHeader: DataTableHeader) => !dataTableHeader.isFrozen);
+                if (this.columnResponsive) {
+                    this.responsiveColumnWidth = Math.floor((dataTable['offsetWidth'] - (actionContainer['offsetWidth'] + this.scrollbarWidth)) / this.header.length) + 'px';
+                } else {
+                    let frozenHeaderArea: number = actionContainer['offsetWidth'];
+                    this.frozenHeader.forEach((header: DataTableHeader, index: number) => {
+                        frozenHeaderArea += parseFloat(header.columnWidth);
+                    });
+                    this.scrollableAreaWidth = (dataTable['offsetWidth'] - frozenHeaderArea) + 'px';
+                }
+            }
+        }
     }
 
     private setDataTableStyling = (dataTableHeader: object, dataTableBody: object): void => {
