@@ -16,7 +16,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public rowContainerHeight: string;
     private rowSelectionClassName: string;
 
-    @Input() public checkboxSelection: string;
+    @Input() public checkboxSelection: boolean;
     @Input() public columnFilter: boolean;
     @Input() public columnResponsive: boolean;
     @Input() public data: object[];
@@ -135,16 +135,16 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         dataTableBody.addEventListener('scroll', (event: MouseEvent) => {
             let scrollLeftPosition: number = 0;
             let scrollTopPosition: number = 0;
-            let horizontalScrollbars: HTMLElement[] = [];
-            let verticalScrollbars: HTMLElement[] = [];
+            let listOfHorizontalScrollbars: HTMLElement[] = [];
+            let listOfVerticalScrollbars: HTMLElement[] = [];
             if (event && event.currentTarget) {
                 scrollLeftPosition = event.currentTarget['scrollLeft'];
                 scrollTopPosition = event.currentTarget['scrollTop'];
             }
-            horizontalScrollbars = [dataTableScrollableHeaderWrapper, dataTableScrollableFilterWrapper];
-            verticalScrollbars = [frozenAreaDataTableBody];
-            horizontalScrollbars.forEach((element: HTMLElement) => element.scrollLeft = scrollLeftPosition);
-            verticalScrollbars.forEach((element: HTMLElement) => element.scrollTop = scrollTopPosition);
+            listOfHorizontalScrollbars = [dataTableScrollableHeaderWrapper, dataTableScrollableFilterWrapper];
+            listOfHorizontalScrollbars.forEach((element: HTMLElement) => element.scrollLeft = scrollLeftPosition);
+            listOfVerticalScrollbars = [frozenAreaDataTableBody];
+            listOfVerticalScrollbars.forEach((element: HTMLElement) => element.scrollTop = scrollTopPosition);
         });
     }
 
@@ -152,25 +152,27 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         if (event && event.currentTarget) {
             if (this.data && this.data.length > 0) {
                 for (let i = 1; i <= this.data.length; i++) {
-                    let dataTableRow: any = document.getElementById('datatable-row-' + i);
-                    if (dataTableRow) {
-                        if (event.currentTarget['checked']) {
-                            let isSelectedRowClassPresent: boolean = dataTableRow.className.indexOf(this.rowSelectionClassName) !== -1 ? true : false;
-                            if (!isSelectedRowClassPresent) {
-                                dataTableRow.className = this.rowSelectionClassName + ' ' + dataTableRow.className;
+                    let dataTableRow: NodeList = document.querySelectorAll('.datatable-row-' + i);
+                    if (dataTableRow && dataTableRow.length > 0) {
+                        dataTableRow.forEach((row: HTMLElement) => {
+                            if (event.currentTarget['checked']) {
+                                let isSelectedRowClassPresent: boolean = row.className && row.className.indexOf(this.rowSelectionClassName) !== -1 ? true : false;
+                                if (!isSelectedRowClassPresent) {
+                                    row.className = this.rowSelectionClassName + ' ' + row.className;
+                                }
+                                if (this.rowStyle && this.rowStyle.selectionColor) {
+                                    row.style.backgroundColor = this.rowStyle.selectionColor;
+                                }
+                            } else {
+                                row.className = row.className && row.className.replace(this.rowSelectionClassName, '').trim();
+                                row.style.backgroundColor = '';
                             }
-                            if (this.rowStyle && this.rowStyle.selectionColor) {
-                                dataTableRow.style.backgroundColor = this.rowStyle.selectionColor;
-                            }
-                        } else {
-                            dataTableRow.className = dataTableRow.className && dataTableRow.className.replace(this.rowSelectionClassName, '').trim();
-                            dataTableRow.style.backgroundColor = '';
-                        }
+                        });
                     }
                     if (this.checkboxSelection) {
-                        let checkboxElement: any = document.getElementById('datatable-checkbox-' + i);
+                        let checkboxElement: HTMLElement = document.querySelector('#datatable-checkbox-' + i);
                         if (checkboxElement) {
-                            checkboxElement.checked = event.currentTarget['checked'];
+                            checkboxElement['checked'] = event.currentTarget['checked'];
                         }
                     }
                 }

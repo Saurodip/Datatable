@@ -33,7 +33,7 @@
             </div>
         </div>
         <div class="datatable-body hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': rowContainerHeight }">
-            <div id="datatable-frozen-column-row-{{ i + 1 }}" class="datatable-row" 
+            <div class="datatable-row datatable-row-{{ i + 1 }}" 
                 appDataTableRowSelection [hoverColor]="rowStyle.hoverColor"
                 [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                 *ngFor="let dtRow of data; let i = index" (click)="onSelectDataTableRow($event)">
@@ -81,7 +81,7 @@
             </div>
         </div>
         <div class="datatable-body hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': rowContainerHeight }">
-            <div id="datatable-scrollable-column-row-{{ i + 1 }}" class="datatable-row"
+            <div class="datatable-row datatable-row-{{ i + 1 }}"
                 appDataTableRowSelection [hoverColor]="rowStyle.hoverColor"
                 [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                 *ngFor="let dtRow of data; let i = index" (click)="onSelectDataTableRow($event)">
