@@ -65,6 +65,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             case 'datatable-header-container': return document.querySelector('.datatable-header-container');
             case 'datatable-scrollable-filter-wrapper': return document.querySelector('.datatable-scrollable-area .datatable-filter-wrapper');
             case 'datatable-filter-container': return document.querySelector('.datatable-filter-container');
+            case 'datatable-select-all-checkbox': return document.querySelector('#datatable-select-all-checkbox');
             case 'action-container': return document.querySelector('.action-container');
             case 'frozen-area-datatable-body': return document.querySelector('.datatable-frozen-area .datatable-body');
             case 'scrollable-area-datatable-body': return document.querySelector('.datatable-scrollable-area .datatable-body');
@@ -151,67 +152,70 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public onSelectDataTableSelectAll = (event: MouseEvent): void => {
         if (event && event.currentTarget) {
             if (this.data && this.data.length > 0) {
-                for (let i = 1; i <= this.data.length; i++) {
-                    let dataTableRow: NodeList = document.querySelectorAll('.datatable-row-' + i);
+                this.data.forEach ((row: object, index: number) => {
+                    let dataTableRow: NodeList = document.querySelectorAll('.datatable-row-' + (index + 1));
                     if (dataTableRow && dataTableRow.length > 0) {
-                        dataTableRow.forEach((row: HTMLElement) => {
+                        for (let i: number = 0; i < dataTableRow.length; i++) {
                             if (event.currentTarget['checked']) {
-                                let isSelectedRowClassPresent: boolean = row.className && row.className.indexOf(this.rowSelectionClassName) !== -1 ? true : false;
+                                let isSelectedRowClassPresent: boolean = dataTableRow[i]['className'] && dataTableRow[i]['className'].indexOf(this.rowSelectionClassName) !== -1 ? true : false;
                                 if (!isSelectedRowClassPresent) {
-                                    row.className = this.rowSelectionClassName + ' ' + row.className;
+                                    dataTableRow[i]['className'] = this.rowSelectionClassName + ' ' + dataTableRow[i]['className'];
                                 }
                                 if (this.rowStyle && this.rowStyle.selectionColor) {
-                                    row.style.backgroundColor = this.rowStyle.selectionColor;
+                                    dataTableRow[i]['style'].backgroundColor = this.rowStyle.selectionColor;
                                 }
                             } else {
-                                row.className = row.className && row.className.replace(this.rowSelectionClassName, '').trim();
-                                row.style.backgroundColor = '';
+                                dataTableRow[i]['className'] = dataTableRow[i]['className'] && dataTableRow[i]['className'].replace(this.rowSelectionClassName, '').trim();
+                                dataTableRow[i]['style'].backgroundColor = '';
                             }
-                        });
+                        }
                     }
                     if (this.checkboxSelection) {
-                        let checkboxElement: HTMLElement = document.querySelector('#datatable-checkbox-' + i);
+                        let checkboxElement: HTMLElement = document.querySelector('#datatable-checkbox-' + (index + 1));
                         if (checkboxElement) {
                             checkboxElement['checked'] = event.currentTarget['checked'];
                         }
                     }
-                }
+                });
             }
         }
     }
 
     public onSelectDataTableRow = (event: MouseEvent): void => {
         let isSelectedRowClassPresent: boolean = false;
+        let selectedRowIndex: number = event.currentTarget['id'].replace(/^\D+/g, '');
         if (event && event.currentTarget && event.currentTarget['className']) {
             isSelectedRowClassPresent = event.currentTarget['className'].indexOf(this.rowSelectionClassName) !== -1 ? true : false;
-            if (!isSelectedRowClassPresent) {
-                event.currentTarget['className'] = this.rowSelectionClassName + ' ' + event.currentTarget['className'];
-                if (this.rowStyle && this.rowStyle.selectionColor) {
-                    event.currentTarget['style'].backgroundColor = this.rowStyle.selectionColor;
+            let dataTableRow: NodeList = document.querySelectorAll('.datatable-row-' + selectedRowIndex);
+            if (dataTableRow && dataTableRow.length > 0) {
+                for (let i = 0; i < dataTableRow.length; i++) {
+                    if (!isSelectedRowClassPresent) {
+                        dataTableRow[i]['className'] = this.rowSelectionClassName + ' ' + dataTableRow[i]['className'];
+                        if (this.rowStyle && this.rowStyle.selectionColor) {
+                            dataTableRow[i]['style'].backgroundColor = this.rowStyle.selectionColor;
+                        }
+                    } else {
+                        dataTableRow[i]['className'] = dataTableRow[i]['className'].replace(this.rowSelectionClassName, '').trim();
+                        dataTableRow[i]['style'].backgroundColor = '';
+                    }
                 }
-            } else {
-                event.currentTarget['className'] = event.currentTarget['className'].replace(this.rowSelectionClassName, '').trim();
-                event.currentTarget['style'].backgroundColor = '';
             }
         }
         if (this.checkboxSelection) {
-            let rowIndex: number = event.currentTarget['id'] && event.currentTarget['id'].replace(/^\D+/g, '');
-            if (rowIndex) {
-                let checkboxElement: any = document.getElementById('datatable-checkbox-' + rowIndex);
-                if (checkboxElement) {
-                    checkboxElement.checked = !isSelectedRowClassPresent;
-                }
+            let checkboxElement: HTMLElement = document.querySelector('#datatable-checkbox-' + selectedRowIndex);
+            if (checkboxElement) {
+                checkboxElement['checked'] = !isSelectedRowClassPresent;
             }
         }
         this.determineSelectAllCheckboxState();
     }
 
     private determineSelectAllCheckboxState = (): void => {
-        let selectAllCheckbox: any = document.getElementById('datatable-select-all-checkbox');
+        let selectAllCheckbox: HTMLElement = this.getHTMLElementInstance('datatable-select-all-checkbox');
         let noOfSelectedDataTableCheckbox: number = 0;
         let totalNoOfDataTableRows: number = this.data && this.data.length || 0;
         for (let i = 1; i <= totalNoOfDataTableRows; i++) {
-            let dataTableRow: any = document.getElementById('datatable-row-' + i);
+            let dataTableRow: HTMLElement = document.querySelector('.datatable-row-' + i);
             if (dataTableRow) {
                 let isSelectedRowClassPresent: boolean = dataTableRow['className'].indexOf(this.rowSelectionClassName) !== -1 ? true : false;
                 if (isSelectedRowClassPresent) {
@@ -220,13 +224,13 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             }
         }
         if (selectAllCheckbox) {
-            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox['indeterminate'] = false;
             if (noOfSelectedDataTableCheckbox === totalNoOfDataTableRows) {
-                selectAllCheckbox.checked = true;
+                selectAllCheckbox['checked'] = true;
             } else if (noOfSelectedDataTableCheckbox > 0 && noOfSelectedDataTableCheckbox < totalNoOfDataTableRows) {
-                selectAllCheckbox.indeterminate = true;
+                selectAllCheckbox['indeterminate'] = true;
             } else if (noOfSelectedDataTableCheckbox === 0) {
-                selectAllCheckbox.checked = false;
+                selectAllCheckbox['checked'] = false;
             }
         }
     }
