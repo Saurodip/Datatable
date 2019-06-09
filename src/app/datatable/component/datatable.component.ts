@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit, AfterViewChecked, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { DataTableService } from './datatable.service';
 import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle } from '../datatable.model';
 
 @Component({
@@ -7,6 +8,9 @@ import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle } from '../dat
     styleUrls: ['./datatable.component.scss']
 })
 export class DataTableComponent implements OnInit, AfterViewInit, AfterViewChecked {
+    private dataCollection: object[];
+    public dataToDisplay: object[];
+    private searchTextFields: object;
     private isCompletelyRendered: boolean;
     private scrollbarWidth: number;
     public frozenHeader: DataTableHeader[];
@@ -19,7 +23,13 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public checkboxSelection: boolean;
     @Input() public columnFilter: boolean;
     @Input() public columnResponsive: boolean;
-    @Input() public data: object[];
+    @Input() set data(list: object[]) {
+        this.dataCollection = [...list];
+        if (list && list.length > 0) {
+            this.dataCollection = [...this.dataTableService.onApplyPipe(this.dataCollection, this.header)];
+            this.dataToDisplay = [...this.dataCollection];
+        }
+    }
     @Input() public filterTextLimit: number;
     @Input() public globalFilter: boolean;
     @Input() public header: DataTableHeader[];
@@ -29,7 +39,10 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     @ViewChild('dataTable') private dataTable: ElementRef;
 
-    constructor() {
+    constructor(private dataTableService: DataTableService) {
+        this.dataCollection = [];
+        this.dataToDisplay = [];
+        this.searchTextFields = {};
         this.isCompletelyRendered = false;
         this.scrollbarWidth = 17;
         this.frozenHeader = [];
@@ -44,12 +57,19 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     ngAfterViewInit() {
-        this.setHeightOfDataTableRowContainer();
-        this.calculateDataTableHeaderWidth();
+        setTimeout(() => {
+            this.setHeightOfDataTableRowContainer();
+            this.calculateDataTableHeaderWidth();
+            if (this.columnFilter && (this.header && this.header.length > 0)) {
+                this.header.forEach((header: DataTableHeader) => {
+                    this.searchTextFields[header.propertyName] = '';
+                });
+            }
+        }, 0);
     }
 
     ngAfterViewChecked() {
-        let dataTableBody: HTMLElement = this.getHTMLElementInstance('scrollable-area-datatable-body');
+        let dataTableBody: HTMLElement = this.getHTMLElementRefernce('scrollable-area-datatable-body');
         if ((dataTableBody && dataTableBody['children'].length > 0) && !this.isCompletelyRendered) {
             this.isCompletelyRendered = true;
             this.setDataTableStyling(dataTableBody);
@@ -57,7 +77,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
     }
 
-    private getHTMLElementInstance = (element: string): HTMLElement => {
+    private getHTMLElementRefernce = (element: string, index?: number): HTMLElement => {
         switch (element) {
             case 'datatable-frozen-area': return document.querySelector('.datatable-frozen-area');
             case 'datatable-scrollable-area': return document.querySelector('.datatable-scrollable-area');
@@ -75,8 +95,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     private setHeightOfDataTableRowContainer = (): void => {
-        let dataTableHeaderContainer: HTMLElement = this.getHTMLElementInstance('datatable-header-container');
-        let dataTableFilterContainer: HTMLElement = this.getHTMLElementInstance('datatable-filter-container');
+        let dataTableHeaderContainer: HTMLElement = this.getHTMLElementRefernce('datatable-header-container');
+        let dataTableFilterContainer: HTMLElement = this.getHTMLElementRefernce('datatable-filter-container');
         if (dataTableHeaderContainer && dataTableFilterContainer) {
             this.rowContainerHeight = parseFloat(this.height) - (dataTableHeaderContainer['offsetHeight'] + dataTableFilterContainer['offsetHeight']) + 'px';
         }
@@ -84,7 +104,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     private calculateDataTableHeaderWidth = (): void => {
         let dataTable: HTMLElement = this.dataTable && this.dataTable.nativeElement;
-        let actionContainer: HTMLElement = this.getHTMLElementInstance('action-container');
+        let actionContainer: HTMLElement = this.getHTMLElementRefernce('action-container');
         if (dataTable && actionContainer && (this.header && this.header.length > 0)) {
             let totalDataTableHeaderWidth: number = 0;
             this.header.forEach((header: DataTableHeader, index: number) => {
@@ -110,7 +130,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     private setDataTableStyling = (dataTableBody: HTMLElement): void => {
-        let dataTableHeaderContainer: HTMLElement = this.getHTMLElementInstance('datatable-header-container');
+        let dataTableHeaderContainer: HTMLElement = this.getHTMLElementRefernce('datatable-header-container');
         if (dataTableHeaderContainer && this.headerStyle) {
             for (let property in this.headerStyle) {
                 if (this.headerStyle.hasOwnProperty(property)) {
@@ -130,9 +150,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     private activateScrollingEvent = (dataTableBody: HTMLElement): void => {
-        let dataTableScrollableHeaderWrapper: HTMLElement = this.getHTMLElementInstance('datatable-scrollable-header-wrapper');
-        let dataTableScrollableFilterWrapper: HTMLElement = this.getHTMLElementInstance('datatable-scrollable-filter-wrapper');
-        let frozenAreaDataTableBody: HTMLElement = this.getHTMLElementInstance('frozen-area-datatable-body');
+        let dataTableScrollableHeaderWrapper: HTMLElement = this.getHTMLElementRefernce('datatable-scrollable-header-wrapper');
+        let dataTableScrollableFilterWrapper: HTMLElement = this.getHTMLElementRefernce('datatable-scrollable-filter-wrapper');
+        let frozenAreaDataTableBody: HTMLElement = this.getHTMLElementRefernce('frozen-area-datatable-body');
         dataTableBody.addEventListener('scroll', (event: MouseEvent) => {
             let scrollLeftPosition: number = 0;
             let scrollTopPosition: number = 0;
@@ -151,8 +171,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     public onSelectDataTableSelectAll = (event: MouseEvent): void => {
         if (event && event.currentTarget) {
-            if (this.data && this.data.length > 0) {
-                this.data.forEach ((row: object, index: number) => {
+            if (this.dataCollection && this.dataCollection.length > 0) {
+                this.dataCollection.forEach((row: object, index: number) => {
                     let dataTableRow: NodeList = document.querySelectorAll('.datatable-row-' + (index + 1));
                     if (dataTableRow && dataTableRow.length > 0) {
                         for (let i: number = 0; i < dataTableRow.length; i++) {
@@ -211,9 +231,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     private determineSelectAllCheckboxState = (): void => {
-        let selectAllCheckbox: HTMLElement = this.getHTMLElementInstance('datatable-select-all-checkbox');
+        let selectAllCheckbox: HTMLElement = this.getHTMLElementRefernce('datatable-select-all-checkbox');
         let noOfSelectedDataTableCheckbox: number = 0;
-        let totalNoOfDataTableRows: number = this.data && this.data.length || 0;
+        let totalNoOfDataTableRows: number = this.dataCollection && this.dataCollection.length || 0;
         for (let i = 1; i <= totalNoOfDataTableRows; i++) {
             let dataTableRow: HTMLElement = document.querySelector('.datatable-row-' + i);
             if (dataTableRow) {
@@ -233,5 +253,54 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 selectAllCheckbox['checked'] = false;
             }
         }
+    }
+
+    public onApplySearch = (event: KeyboardEvent | MouseEvent, filterType: string, propertyName?: string) => {
+        let timeOut = setTimeout(() => {
+            if (event && event.target) {
+                let serachedText: string = event.target['value'] && event.target['value'].toLowerCase().trim();
+                let filteredData: object[] = [];
+                if ((this.dataCollection && this.dataCollection.length > 0) && (this.header && this.header.length > 0)) {
+                    if (filterType === 'global-filter') {
+                        let isSearchTextMatched: boolean = false;
+                        filteredData = this.dataCollection.filter((rowData: object) => {
+                            this.header.some((column: DataTableHeader) => {
+                                let value = rowData[column.propertyName] && rowData[column.propertyName].toString().toLowerCase().trim();
+                                if (value && value.indexOf(serachedText) !== -1) {
+                                    isSearchTextMatched = true;
+                                    return true;
+                                }
+                            });
+                            if (isSearchTextMatched) {
+                                isSearchTextMatched = false;
+                                return rowData;
+                            }
+                        });
+                    } else if (filterType === 'column-filter') {
+                        this.searchTextFields[propertyName] = serachedText;
+                        filteredData = this.dataCollection.filter((rowData: object) => {
+                            let noOfAppliedSearchColumns: number = 0;
+                            let noOfMatchedColumns: number = 0;
+                            for (let key in this.searchTextFields) {
+                                if (this.searchTextFields.hasOwnProperty(key)) {
+                                    let value = rowData[key] && rowData[key].toString().toLowerCase().trim();
+                                    if (this.searchTextFields[key]) {
+                                        noOfAppliedSearchColumns++;
+                                        if (value && value.indexOf(this.searchTextFields[key]) !== -1) {
+                                            noOfMatchedColumns++;
+                                        }
+                                    }
+                                }
+                            }
+                            if (noOfAppliedSearchColumns === noOfMatchedColumns) {
+                                return rowData;
+                            }
+                        });
+                    }
+                    this.dataToDisplay = filteredData;
+                }
+            }
+            clearTimeout(timeOut);
+        }, 1000);
     }
 }

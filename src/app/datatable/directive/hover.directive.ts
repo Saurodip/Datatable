@@ -22,7 +22,7 @@ export class HoverDirective {
     private setHoverColor(event: MouseEvent, eventType: string, hoverColor: string) {
         if (event && event.currentTarget) {
             let rowSelectionClassName: string = 'selected-row';
-            let selectedRowIndex: number = event.currentTarget['id'].replace(/^\D+/g, '');
+            let selectedRowIndex: number = event.currentTarget['id'] && event.currentTarget['id'].replace(/^\D+/g, '');
             let dataTableRow: NodeList = document.querySelectorAll('.datatable-row-' + selectedRowIndex);
             if (dataTableRow && dataTableRow.length > 0) {
                 for (let i: number = 0; i < dataTableRow.length; i++) {

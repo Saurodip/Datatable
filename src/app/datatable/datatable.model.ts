@@ -27,7 +27,7 @@ export class DataTable {
 export class DataTableHeader {
     public columnWidth: string;
     public isFrozen?: boolean;
-    public pipe?: string;
+    public pipe?: DataTablePipe;
     public propertyName: string;
     public title: string;
     public type: string;
@@ -35,7 +35,7 @@ export class DataTableHeader {
     constructor() {
         this.columnWidth = '0';
         this.isFrozen = false;
-        this.pipe = '';
+        this.pipe = new DataTablePipe(DataTablePipeType.None);
         this.propertyName = '';
         this.title = 'Not Available';
         this.type = 'string';
@@ -100,4 +100,27 @@ export class DataTableRowStyle {
         this.selectionColor = '';
         this.textAlign = '';
     }
+}
+
+export class DataTablePipe {
+    public type: DataTablePipeType;
+    public format?: string;
+    public code?: string;
+    public display?: boolean | string;
+
+    constructor(type: DataTablePipeType, format?: string, code?: string, display?: boolean | string) {
+        this.type = type;
+        this.format = format;
+        this.code = code;
+        this.display = display;
+    }
+}
+
+export enum DataTablePipeType {
+    None,
+    CurrencyPipe,
+    DatePipe,
+    DecimalPipe,
+    LowerCasePipe,
+    UpperCasePipe
 }

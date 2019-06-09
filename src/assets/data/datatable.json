@@ -4,7 +4,7 @@
         "ProductName": "Product Name 1",
         "Manufacturer": "Manufacturer 1",
         "Version": "1.0.0.0",
-        "Date": "01/01/2019",
+        "Date": "Tue Jan 01 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -12,7 +12,7 @@
         "ProductName": "Product Name 2",
         "Manufacturer": "Manufacturer 2",
         "Version": "2.0.0.0",
-        "Date": "02/01/2019",
+        "Date": "Wed Jan 02 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -20,7 +20,7 @@
         "ProductName": "Product Name 3",
         "Manufacturer": "Manufacturer 3",
         "Version": "3.0.0.0",
-        "Date": "03/01/2019",
+        "Date": "Thu Jan 03 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -28,7 +28,7 @@
         "ProductName": "Product Name 4",
         "Manufacturer": "Manufacturer 4",
         "Version": "4.0.0.0",
-        "Date": "04/01/2019",
+        "Date": "Fri Jan 04 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -36,7 +36,7 @@
         "ProductName": "Product Name 5",
         "Manufacturer": "Manufacturer 5",
         "Version": "5.0.0.0",
-        "Date": "05/01/2019",
+        "Date": "Sat Jan 05 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -44,7 +44,7 @@
         "ProductName": "Product Name 6",
         "Manufacturer": "Manufacturer 6",
         "Version": "6.0.0.0",
-        "Date": "06/01/2019",
+        "Date": "Sun Jan 06 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -52,7 +52,7 @@
         "ProductName": "Product Name 7",
         "Manufacturer": "Manufacturer 7",
         "Version": "7.0.0.0",
-        "Date": "07/01/2019",
+        "Date": "Mon Jan 07 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -60,7 +60,7 @@
         "ProductName": "Product Name 8",
         "Manufacturer": "Manufacturer 8",
         "Version": "8.0.0.0",
-        "Date": "08/01/2019",
+        "Date": "Tue Jan 08 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -68,7 +68,7 @@
         "ProductName": "Product Name 9",
         "Manufacturer": "Manufacturer 9",
         "Version": "9.0.0.0",
-        "Date": "09/01/2019",
+        "Date": "Wed Jan 09 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -76,7 +76,7 @@
         "ProductName": "Product Name 10",
         "Manufacturer": "Manufacturer 10",
         "Version": "10.0.0.0",
-        "Date": "10/01/2019",
+        "Date": "Thu Jan 10 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -84,7 +84,7 @@
         "ProductName": "Product Name 11",
         "Manufacturer": "Manufacturer 11",
         "Version": "11.0.0.0",
-        "Date": "11/01/2019",
+        "Date": "Fri Jan 11 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -92,7 +92,7 @@
         "ProductName": "Product Name 12",
         "Manufacturer": "Manufacturer 12",
         "Version": "12.0.0.0",
-        "Date": "12/01/2019",
+        "Date": "Sat Jan 12 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -100,7 +100,7 @@
         "ProductName": "Product Name 13",
         "Manufacturer": "Manufacturer 13",
         "Version": "13.0.0.0",
-        "Date": "13/01/2019",
+        "Date": "Sun Jan 13 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -108,7 +108,7 @@
         "ProductName": "Product Name 14",
         "Manufacturer": "Manufacturer 14",
         "Version": "14.0.0.0",
-        "Date": "14/01/2019",
+        "Date": "Mon Jan 14 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -116,7 +116,7 @@
         "ProductName": "Product Name 15",
         "Manufacturer": "Manufacturer 15",
         "Version": "15.0.0.0",
-        "Date": "15/01/2019",
+        "Date": "Tue Jan 15 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -124,7 +124,7 @@
         "ProductName": "Product Name 16",
         "Manufacturer": "Manufacturer 16",
         "Version": "16.0.0.0",
-        "Date": "16/01/2019",
+        "Date": "Wed Jan 16 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -132,7 +132,7 @@
         "ProductName": "Product Name 17",
         "Manufacturer": "Manufacturer 17",
         "Version": "17.0.0.0",
-        "Date": "17/01/2019",
+        "Date": "Thu Jan 17 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -140,7 +140,7 @@
         "ProductName": "Product Name 18",
         "Manufacturer": "Manufacturer 18",
         "Version": "18.0.0.0",
-        "Date": "18/01/2019",
+        "Date": "Fri Jan 18 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -148,7 +148,7 @@
         "ProductName": "Product Name 19",
         "Manufacturer": "Manufacturer 19",
         "Version": "19.0.0.0",
-        "Date": "19/01/2019",
+        "Date": "Sat Jan 19 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -156,7 +156,7 @@
         "ProductName": "Product Name 20",
         "Manufacturer": "Manufacturer 20",
         "Version": "20.0.0.0",
-        "Date": "20/01/2019",
+        "Date": "Sun Jan 20 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -164,7 +164,7 @@
         "ProductName": "Product Name 21",
         "Manufacturer": "Manufacturer 21",
         "Version": "21.0.0.0",
-        "Date": "21/01/2019",
+        "Date": "Mon Jan 21 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -172,7 +172,7 @@
         "ProductName": "Product Name 22",
         "Manufacturer": "Manufacturer 22",
         "Version": "22.0.0.0",
-        "Date": "22/01/2019",
+        "Date": "Tue Jan 22 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -180,7 +180,7 @@
         "ProductName": "Product Name 23",
         "Manufacturer": "Manufacturer 23",
         "Version": "23.0.0.0",
-        "Date": "23/01/2019",
+        "Date": "Wed Jan 23 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -188,7 +188,7 @@
         "ProductName": "Product Name 24",
         "Manufacturer": "Manufacturer 24",
         "Version": "24.0.0.0",
-        "Date": "24/01/2019",
+        "Date": "Thu Jan 24 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -196,7 +196,7 @@
         "ProductName": "Product Name 25",
         "Manufacturer": "Manufacturer 25",
         "Version": "25.0.0.0",
-        "Date": "25/01/2019",
+        "Date": "Fri Jan 25 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -204,7 +204,7 @@
         "ProductName": "Product Name 26",
         "Manufacturer": "Manufacturer 26",
         "Version": "26.0.0.0",
-        "Date": "26/01/2019",
+        "Date": "Sat Jan 26 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -212,7 +212,7 @@
         "ProductName": "Product Name 27",
         "Manufacturer": "Manufacturer 27",
         "Version": "27.0.0.0",
-        "Date": "27/01/2019",
+        "Date": "Sun Jan 27 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -220,7 +220,7 @@
         "ProductName": "Product Name 28",
         "Manufacturer": "Manufacturer 28",
         "Version": "28.0.0.0",
-        "Date": "28/01/2019",
+        "Date": "Mon Jan 28 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -228,7 +228,7 @@
         "ProductName": "Product Name 29",
         "Manufacturer": "Manufacturer 29",
         "Version": "29.0.0.0",
-        "Date": "29/01/2019",
+        "Date": "Tue Jan 29 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -236,7 +236,7 @@
         "ProductName": "Product Name 30",
         "Manufacturer": "Manufacturer 30",
         "Version": "30.0.0.0",
-        "Date": "30/01/2019",
+        "Date": "Wed Jan 30 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -244,7 +244,7 @@
         "ProductName": "Product Name 31",
         "Manufacturer": "Manufacturer 31",
         "Version": "31.0.0.0",
-        "Date": "31/01/2019",
+        "Date": "Thu Jan 31 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -252,7 +252,7 @@
         "ProductName": "Product Name 32",
         "Manufacturer": "Manufacturer 32",
         "Version": "32.0.0.0",
-        "Date": "01/02/2019",
+        "Date": "Fri Feb 01 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -260,7 +260,7 @@
         "ProductName": "Product Name 33",
         "Manufacturer": "Manufacturer 33",
         "Version": "33.0.0.0",
-        "Date": "02/02/2019",
+        "Date": "Sat Feb 02 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -268,7 +268,7 @@
         "ProductName": "Product Name 34",
         "Manufacturer": "Manufacturer 34",
         "Version": "34.0.0.0",
-        "Date": "05/02/2019",
+        "Date": "Sun Feb 03 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     },
     {
@@ -276,7 +276,7 @@
         "ProductName": "Product Name 35",
         "Manufacturer": "Manufacturer 35",
         "Version": "35.0.0.0",
-        "Date": "06/02/2019",
+        "Date": "Mon Feb 04 2019 00:00:00 GMT+0530 (India Standard Time)",
         "Price": 150.00
     }
 ]

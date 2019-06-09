@@ -117,14 +117,14 @@ $text-color: #e3e3e3;
                 padding: 0px 10px;
             }
 
-            .global-filter {
+            .global-filter-container {
                 input[type="text"] {
                     border-left: $cell-border;
                     width: 300px;
                 }
             }
 
-            .column-filter {
+            .column-filter-container {
                 box-sizing: border-box;
 
                 input[type="text"] {
