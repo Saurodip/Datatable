@@ -85,14 +85,11 @@ export class AppComponent implements OnInit {
 
   private setDataTableStyle = (): void => {
     this.headerStyle = {
-      backgroundColor: 'pink',
-      color: 'brown',
-      borderColor: 'red'
+
     };
 
     this.rowStyle = {
-      backgroundColor: 'pink',
-      color: 'brown'
+
     };
   }
 }
