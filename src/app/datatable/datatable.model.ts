@@ -1,105 +1,56 @@
-export class DataTable {
-    public checkboxSelection?: boolean;
-    public columnFilter: boolean;
-    public columnResponsive: boolean;
-    public data: Array<object>;
-    public filterTextLimit: number;
-    public globalFilter: boolean;
-    public header: DataTableHeader;
-    public headerStyle?: DataTableHeaderStyle;
-    public height: string;
-    public rowStyle?: DataTableRowStyle;
+import { DataTableColumnType, DataTablePipeType } from './datatable.enum';
 
-    constructor() {
-        this.checkboxSelection = false;
-        this.columnFilter = false;
-        this.columnResponsive = false;
-        this.data = [];
-        this.filterTextLimit = 50;
-        this.globalFilter = false;
-        this.header = new DataTableHeader();
-        this.headerStyle = new DataTableHeaderStyle();
-        this.height = '';
-        this.rowStyle = new DataTableRowStyle();
-    }
+export interface DataTable {
+    checkboxSelection?: boolean;
+    columnFilter: boolean;
+    columnResponsive: boolean;
+    data: Array<object>;
+    filterTextLimit: number;
+    globalFilter: boolean;
+    header: DataTableHeader;
+    headerStyle?: DataTableHeaderStyle;
+    height: string;
+    numberOfRowsPerPage: number;
+    pagination: boolean;
+    rowStyle?: DataTableRowStyle;
 }
 
-export class DataTableHeader {
-    public columnWidth: string;
-    public isFrozen?: boolean;
-    public pipe?: DataTablePipe;
-    public propertyName: string;
-    public title: string;
-    public type: string;
-
-    constructor() {
-        this.columnWidth = '0';
-        this.isFrozen = false;
-        this.pipe = new DataTablePipe(DataTablePipeType.None);
-        this.propertyName = '';
-        this.title = 'Not Available';
-        this.type = 'string';
-    }
+export interface DataTableHeader {
+    propertyName: string;
+    title: string;
+    type: DataTableColumnType;
+    columnWidth: string;
+    pipe?: DataTablePipe;
+    isFrozen?: boolean;
 }
 
-export class DataTableHeaderStyle {
-    public backgroundColor?: string;
-    public borderColor?: string;
-    public color?: string;
-    public cursor?: string;
-    public font?: string;
-    public lineHeight?: string;
-    public maxWidth?: string;
-    public minWidth?: string;
-    public padding?: string;
-    public selectionColor?: string;
-    public textAlign?: string;
-
-    constructor() {
-        this.backgroundColor = '';
-        this.borderColor = '';
-        this.color = '';
-        this.cursor = '';
-        this.font = '';
-        this.lineHeight = '';
-        this.maxWidth = '';
-        this.minWidth = '';
-        this.padding = '';
-        this.selectionColor = '';
-        this.textAlign = '';
-    }
+export interface DataTableHeaderStyle {
+    backgroundColor?: string;
+    borderColor?: string;
+    color?: string;
+    font?: string;
+    lineHeight?: string;
+    maxWidth?: string;
+    minWidth?: string;
+    padding?: string;
+    selectionColor?: string;
+    textAlign?: string;
 }
 
-export class DataTableRowStyle {
-    public backgroundColor?: string;
-    public border?: string;
-    public color?: string;
-    public cursor?: string;
-    public font?: string;
-    public height?: string;
-    public hoverColor?: string;
-    public lineHeight?: string;
-    public maxWidth?: string;
-    public minWidth?: string;
-    public padding?: string;
-    public selectionColor?: string;
-    public textAlign?: string;
-
-    constructor() {
-        this.backgroundColor = '';
-        this.border = '';
-        this.color = '';
-        this.cursor = '';
-        this.font = '';
-        this.height = '';
-        this.hoverColor = '';
-        this.lineHeight = '';
-        this.maxWidth = '';
-        this.minWidth = '';
-        this.padding = '';
-        this.selectionColor = '';
-        this.textAlign = '';
-    }
+export interface DataTableRowStyle {
+    backgroundColor?: string;
+    border?: string;
+    color?: string;
+    cursor?: string;
+    font?: string;
+    height?: string;
+    hoverColor?: string;
+    lineHeight?: string;
+    maxWidth?: string;
+    minWidth?: string;
+    padding?: string;
+    selectionColor?: string;
+    textAlign?: string;
 }
 
 export class DataTablePipe {
@@ -116,11 +67,3 @@ export class DataTablePipe {
     }
 }
 
-export enum DataTablePipeType {
-    None,
-    CurrencyPipe,
-    DatePipe,
-    DecimalPipe,
-    LowerCasePipe,
-    UpperCasePipe
-}

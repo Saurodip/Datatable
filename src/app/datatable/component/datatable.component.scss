@@ -14,164 +14,197 @@ $text-color: #e3e3e3;
     background-color: #f1f1f1;
     border: $cell-border;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
     font-family: "Open Sans", "Helvetica Neue", sans-serif;
     font-size: 13px;
     overflow: hidden;
+    position: relative;
 
-    .datatable-frozen-area {
-        .action-container {
-            align-items: center;
-            border-bottom: $cell-border;
-            border-right: $cell-border;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-            position: relative;
-            width: 30px;
-        }
-    }
+    .datatable-main-section {
+        display: flex;
+        flex-direction: row;
 
-    .datatable-scrollable-area {
-        position: relative;
-        left: -17px;
-
-        .datatable-filter-container {
-            margin-bottom: 3px;
-        }
-    }
-
-    .datatable-header-wrapper {
-        overflow: scroll;
-
-        .datatable-header-container {
-            background-color: #d8d8d8;
-            font-weight: bold;
-            height: 35px;
-            line-height: 33px;
-
-            .datatable-header {
+        .datatable-frozen-area {
+            .action-container {
+                align-items: center;
                 border-bottom: $cell-border;
                 border-right: $cell-border;
                 box-sizing: border-box;
                 display: flex;
-                padding-left: 5px;
+                justify-content: center;
                 position: relative;
-                text-align: center;
-                @include single-line-ellipsis();
-
-                .header-name {
-                    width: 85%;
-                }
-
-                .sort-icon-container {
-                    width: 15%;
-
-                    i {
-                        cursor: pointer;
-                        height: 0px;
-                        position: absolute;
-                        right: 8px;
-                        width: 0px;
-                    }
-
-                    .ascending-arrow {
-                        border-bottom: $arrow-border-width solid $arrow-border-color;
-                        border-left: $arrow-border-width solid transparent;
-                        border-right: $arrow-border-width solid transparent;
-                        top: 8px;
-                    }
-
-                    .descending-arrow {
-                        border-left: $arrow-border-width solid transparent;
-                        border-right: $arrow-border-width solid transparent;
-                        border-top: $arrow-border-width solid $arrow-border-color;
-                        top: 18px;
-                    }
-                }
-            }
-        }
-    }
-
-    .datatable-filter-wrapper {
-        overflow: scroll;
-
-        .datatable-filter-container {
-            background-color: white;
-            border-bottom: $cell-border;
-            box-sizing: border-box;
-            height: 30px;
-            justify-content: flex-end;
-            margin-bottom: 3px;
-
-            .action-container {
-                border-bottom: 0px;
-            }
-
-            input[type="text"] {
-                border: 0px;
-                border-right: $cell-border;
-                box-sizing: border-box;
-                height: 100%;
-                padding: 0px 10px;
-            }
-
-            .global-filter-container {
-                input[type="text"] {
-                    border-left: $cell-border;
-                    width: 300px;
-                }
-            }
-
-            .column-filter-container {
-                box-sizing: border-box;
-
-                input[type="text"] {
-                    width: 100%;
-                }
+                width: 30px;
             }
         }
 
-        &.hide-header-horizontal-scrollbar {
-            bottom: 18px;
+        .datatable-scrollable-area {
             position: relative;
-            z-index: 1;
-        }
-    }
+            left: -17px;
 
-    .datatable-body {
-        overflow: scroll;
-
-        .datatable-row {
-            height: 30px;
-            line-height: 30px;
-
-            .datatable-row-data {
-                border-bottom: $cell-border;
-                border-right: $cell-border;
-                box-sizing: border-box;
-                padding-left: 10px;
-                @include single-line-ellipsis();
+            .datatable-filter-container {
+                margin-bottom: 3px;
             }
+        }
 
-            &:nth-child(even) {
+        .datatable-header-wrapper {
+            overflow: scroll;
+
+            .datatable-header-container {
+                background-color: #d8d8d8;
+                font-weight: bold;
+                height: 35px;
+                line-height: 33px;
+
+                .datatable-header {
+                    border-bottom: $cell-border;
+                    border-right: $cell-border;
+                    box-sizing: border-box;
+                    display: flex;
+                    padding-left: 5px;
+                    position: relative;
+                    text-align: center;
+                    @include single-line-ellipsis();
+
+                    .header-name {
+                        width: 85%;
+                    }
+
+                    .sort-icon-container {
+                        width: 15%;
+
+                        i {
+                            cursor: pointer;
+                            height: 0px;
+                            position: absolute;
+                            right: 8px;
+                            width: 0px;
+                        }
+
+                        .ascending-arrow {
+                            border-bottom: $arrow-border-width solid $arrow-border-color;
+                            border-left: $arrow-border-width solid transparent;
+                            border-right: $arrow-border-width solid transparent;
+                            top: 8px;
+                        }
+
+                        .descending-arrow {
+                            border-left: $arrow-border-width solid transparent;
+                            border-right: $arrow-border-width solid transparent;
+                            border-top: $arrow-border-width solid $arrow-border-color;
+                            top: 18px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .datatable-filter-wrapper {
+            overflow: scroll;
+
+            .datatable-filter-container {
                 background-color: white;
+                border-bottom: $cell-border;
+                box-sizing: border-box;
+                height: 30px;
+                justify-content: flex-end;
+                margin-bottom: 3px;
+
+                .action-container {
+                    border-bottom: 0px;
+                }
+
+                input[type="text"] {
+                    border: 0px;
+                    border-right: $cell-border;
+                    box-sizing: border-box;
+                    height: 100%;
+                    padding: 0px 10px;
+                }
+
+                .global-filter-container {
+                    input[type="text"] {
+                        border-left: $cell-border;
+                        width: 300px;
+                    }
+                }
+
+                .column-filter-container {
+                    box-sizing: border-box;
+
+                    input[type="text"] {
+                        width: 100%;
+                    }
+                }
             }
 
-            &:nth-child(odd) {
-                background-color: #f5f5f5;
-            }
-
-            &.selected-row {
-                background-color: $selectionColor;
+            &.hide-header-horizontal-scrollbar {
+                bottom: 18px;
+                position: relative;
+                z-index: 1;
             }
         }
 
-        &.hide-filter-horizontal-scrollbar {
-            bottom: 38px;
-            position: relative;
-            z-index: 1;
+        .datatable-body {
+            overflow: scroll;
+
+            .datatable-row {
+                height: 30px;
+                line-height: 30px;
+
+                .datatable-row-data {
+                    border-bottom: $cell-border;
+                    border-right: $cell-border;
+                    box-sizing: border-box;
+                    padding-left: 10px;
+                    @include single-line-ellipsis();
+                }
+
+                &:nth-child(even) {
+                    background-color: white;
+                }
+
+                &:nth-child(odd) {
+                    background-color: #f5f5f5;
+                }
+
+                &.selected-row {
+                    background-color: $selectionColor;
+                }
+            }
+
+            &.hide-filter-horizontal-scrollbar {
+                bottom: 38px;
+                position: relative;
+                z-index: 1;
+            }
+        }
+    }
+
+    .datatable-footer {
+        bottom: 38px;
+        box-sizing: border-box;
+        display: flex;
+        height: 30px;
+        justify-content: center;
+        position: relative;
+        width: 100%;
+
+        .pagination-tab {
+            text-align: center; 
+            width: 50%;
+
+            span {
+                bottom: 3px;
+                cursor: pointer;
+                font-size: 13px;
+                height: 100%;
+                margin: 5px;
+                position: relative;
+                
+                &:first-child, &:last-child {
+                    font-size: 20px;
+                    position: static;
+                }
+            }
         }
     }
 }

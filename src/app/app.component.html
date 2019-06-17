@@ -1,14 +1,16 @@
 <app-datatable 
-    class="datatable"
+    class="app-datatable"
     [checkboxSelection]="true"
-    [columnFilter]="false"
-    [columnResponsive]="true"
+    [columnFilter]="true"
+    [columnResponsive]="false"
     [data]="data"
     [filterTextLimit]="50"
-    [globalFilter]="true"
+    [globalFilter]="false"
     [header]="header"
     [height]="'400px'"
     [headerStyle]="headerStyle"
+    [numberOfRowsPerPage]="10"
+    [pagination]="true"
     [rowStyle]="rowStyle"
     id="module-datatable-index">
 </app-datatable>
