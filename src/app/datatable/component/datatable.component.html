@@ -10,11 +10,12 @@
                     </div>
                     <div title="{{ dtHeader?.title }}" class="datatable-header custom-header-style"
                         [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
-                        *ngFor="let dtHeader of frozenHeader; let i = index">
+                        *ngFor="let dtHeader of frozenHeader; let i = index"
+                        (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
                         <div class="header-name">{{ dtHeader?.title }}</div>
-                        <div class="sort-icon-container" (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
-                            <i class="ascending-arrow"></i>
-                            <i class="descending-arrow"></i>
+                        <div class="sort-icon-container">
+                            <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === -1" class="ascending-arrow"></i>
+                            <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === 1" class="descending-arrow"></i>
                         </div>
                     </div>
                 </div>
@@ -36,12 +37,12 @@
                 </div>
             </div>
             <div class="datatable-body hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': verticalScrollableRegion }">
-                <div id="frozen-area-datatable-row-{{ i + 1 }}" class="datatable-row datatable-row-{{ i + 1 }} custom-row-style" 
+                <div id="frozen-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style" 
                     appDataTableRowHover [hoverColor]="rowStyle.hoverColor"
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                     *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
                     <div class="action-container">
-                        <input type="checkbox" id="datatable-checkbox-{{ i + 1 }}"
+                        <input type="checkbox" id="datatable-checkbox-{{ dtRow?.Index }}"
                         [ngStyle]="{ 'visibility': checkboxSelection ? 'visible': 'hidden' }">
                     </div>
                     <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
@@ -59,11 +60,12 @@
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }">
                     <div title="{{ dtHeader?.title }}" class="datatable-header custom-header-style"
                         [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
-                        *ngFor="let dtHeader of scrollableHeader; let i = index">
+                        *ngFor="let dtHeader of scrollableHeader; let i = index"
+                        (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
                         <div class="header-name">{{ dtHeader?.title }}</div>
-                        <div class="sort-icon-container" (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
-                            <i class="ascending-arrow"></i>
-                            <i class="descending-arrow"></i>
+                        <div class="sort-icon-container">
+                            <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === -1" class="ascending-arrow"></i>
+                            <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === 1" class="descending-arrow"></i>
                         </div>
                     </div>
                 </div>
@@ -86,7 +88,7 @@
                 </div>
             </div>
             <div class="datatable-body hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': verticalScrollableRegion }">
-                <div id="scrollable-area-datatable-row-{{ i + 1 }}" class="datatable-row datatable-row-{{ i + 1 }} custom-row-style"
+                <div id="scrollable-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style"
                     appDataTableRowHover [hoverColor]="rowStyle.hoverColor"
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                     *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
@@ -100,11 +102,15 @@
         </div>
     </div>
     <div class="datatable-footer">
-        <div class="pagination-tab">
-            <ng-container *ngFor="let paginationTab of currentPaginationTabs?.data; let i = index">
-                <span *ngIf="i === 0" (click)="onChangePaginationTabSeries(currentPaginationTabs?.series - 2)">&#9664;</span>
-                <span (click)="onSelectPaginationTab(i)">{{ paginationTab.index }}</span>
-                <span *ngIf="i === currentPaginationTabs?.data.length - 1" (click)="onChangePaginationTabSeries(currentPaginationTabs?.series)">&#9654;</span>
+        <div class="pagination-tab-container">
+            <ng-container *ngFor="let paginationTab of currentPaginationSlot?.data; let i = index">
+                <span *ngIf="i === 0" class="pagination-navigation"
+                    (click)="onChangePaginationSlot(currentPaginationSlot?.slot - 2)">&#9664;</span>
+                <span id="pagination-tab-{{ paginationTab?.index }}" class="pagination-tab"
+                    [ngClass]="{ 'highlight-pagination-tab': paginationTab?.index === 1 }"
+                    (click)="onSelectPaginationTab($event, i)">{{ paginationTab?.index }}</span>
+                <span *ngIf="i === currentPaginationSlot?.data.length - 1" class="pagination-navigation"
+                    (click)="onChangePaginationSlot(currentPaginationSlot?.slot)">&#9654;</span>
             </ng-container>
         </div>
     </div>

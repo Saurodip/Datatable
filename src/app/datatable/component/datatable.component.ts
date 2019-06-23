@@ -2,11 +2,11 @@ import { Component, OnInit, AfterViewInit, AfterViewChecked, Input, Output, Even
 import { DataTableElementReferenceService } from '../services/datatable.element-reference.service';
 import { DataTablePaginationService } from '../services/datatable.pagination.service';
 import { DataTablePipeService } from '../services/datatable.pipe';
-import { DataTableSearchService } from '../services/datatable.search.service';
+import { DataTableFilterService } from '../services/datatable.filter.service';
 import { DataTableSelectionService } from '../services/datatable.selection.service';
 import { DataTableSortService } from '../services/datatable.sort.service';
 import { DataTableUIService } from '../services/datatable.ui.service';
-import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle } from '../datatable.model';
+import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, Pagination } from '../datatable.model';
 import { DataTableColumnType, DataTableSortOrder } from '../datatable.enum';
 
 @Component({
@@ -32,36 +32,37 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public header: DataTableHeader[];
     @Input() public headerStyle: DataTableHeaderStyle;
     @Input() public height: string;
-    @Input() public numberOfRowsPerPage: number;
-    @Input() public pagination: boolean;
+    @Input() public pagination: Pagination;
     @Input() public rowStyle: DataTableRowStyle;
 
     public randomIndex: number;
     private dataCollection: object[];
     public dataToDisplay: object[];
+    private isSelectAllChecked: boolean;
     private searchTextFields: object;
-    private sortFields: object;
+    public sortFields: object;
     private isCompletelyRendered: boolean;
     public frozenHeader: DataTableHeader[];
     public scrollableHeader: DataTableHeader[];
     public scrollableAreaWidth: string;
     public responsiveColumnWidth: string;
     public verticalScrollableRegion: string;
-    private rowSelectionClassName: string;
     private paginationData: object[];
-    public currentPaginationTabs: object;
+    public currentPaginationSlot: object;
+    private currentPaginationIndex: number;
 
     constructor(
         private dataTableElementReferenceService: DataTableElementReferenceService,
         private dataTablePaginationService: DataTablePaginationService,
         private dataTablePipeService: DataTablePipeService,
-        private dataTableSearchService: DataTableSearchService,
+        private dataTableFilterService: DataTableFilterService,
         private dataTableSelectionService: DataTableSelectionService,
         private dataTableSortService: DataTableSortService,
         private dataTableUIService: DataTableUIService) {
         this.randomIndex = Math.floor(1000 + Math.random() * 9000);
         this.dataCollection = [];
         this.dataToDisplay = [];
+        this.isSelectAllChecked = false;
         this.searchTextFields = {};
         this.sortFields = {};
         this.isCompletelyRendered = false;
@@ -70,9 +71,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.scrollableAreaWidth = '';
         this.responsiveColumnWidth = '';
         this.verticalScrollableRegion = '';
-        this.rowSelectionClassName = 'selected-row';
         this.paginationData = [];
-        this.currentPaginationTabs = {};
+        this.currentPaginationSlot = {};
+        this.currentPaginationIndex = 0;
     }
 
     ngOnInit() {
@@ -104,226 +105,82 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             this.isCompletelyRendered = true;
             this.dataTableUIService.onSetDataTableStyle(this.headerStyle, this.rowStyle, this.randomIndex);
             this.dataTableUIService.onActivateScrollingForHiddenScrollbars();
-            if (this.pagination) {
-                this.preparePaginationTabs();
+            if (Object.getOwnPropertyNames(this.pagination).length !== 0) {
+                const paginationData = this.dataTablePaginationService.preparePaginationTabs(this.dataCollection, this.pagination);
+                Object.assign(this.currentPaginationSlot, paginationData[0]);
+                /* Allowing browser to render the selected pagination dataset */
+                setTimeout(() => this.dataToDisplay = this.currentPaginationSlot['data'][0]['data'], 0);
             }
         }
     }
 
     public onSelectDataTableSelectAll = (event: MouseEvent): void => {
-        this.dataTableSelectionService.onSelectDataTableSelectAll(event, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
+        if (event && event.currentTarget) {
+            this.isSelectAllChecked = event.currentTarget['checked'];
+            this.dataTableSelectionService.onSelectDataTableSelectAll(this.isSelectAllChecked, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor);
+        }
     }
 
     public onSelectDataTableRow = (event: MouseEvent): void => {
-        this.dataTableSelectionService.onSelectDataTableRow(event, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
+        this.dataTableSelectionService.onSelectDataTableRow(event, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor);
     }
 
     public onApplySearch = (event: KeyboardEvent | MouseEvent, filterType: string, propertyName?: string): void => {
         let timeOut = setTimeout(() => {
             if (event && event.target) {
-                let searchedText: string = event.target['value'] && event.target['value'].toLowerCase().trim();
-                let filteredData: object[] = [];
-                if ((this.dataCollection && this.dataCollection.length > 0) && (this.header && this.header.length > 0)) {
-                    if (filterType === 'global-filter') {
-                        if (searchedText) {
-                            let isSearchTextMatched: boolean = false;
-                            filteredData = this.dataCollection.filter((rowData: object) => {
-                                this.header.some((column: DataTableHeader) => {
-                                    let value = rowData[column.propertyName] && rowData[column.propertyName].toString().toLowerCase().trim();
-                                    if (value && value.indexOf(searchedText) >= 0) {
-                                        isSearchTextMatched = true;
-                                        return true;
-                                    }
-                                });
-                                if (isSearchTextMatched) {
-                                    isSearchTextMatched = false;
-                                    return rowData;
-                                }
-                            });
-                            this.dataToDisplay = filteredData;
-                        } else {
-                            this.dataToDisplay = [...this.dataCollection];
-                        }
-                    } else if (filterType === 'column-filter') {
-                        let isSearchTextPresent: boolean = false;
-                        this.searchTextFields[propertyName] = searchedText;
-                        if (this.searchTextFields) {
-                            for (let key in this.searchTextFields) {
-                                if (this.searchTextFields.hasOwnProperty(key)) {
-                                    if (this.searchTextFields[key]) {
-                                        isSearchTextPresent = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (isSearchTextPresent) {
-                                filteredData = this.dataCollection.filter((rowData: object) => {
-                                    let noOfAppliedSearchColumns: number = 0;
-                                    let noOfMatchedColumns: number = 0;
-                                    for (let key in this.searchTextFields) {
-                                        if (this.searchTextFields.hasOwnProperty(key)) {
-                                            let value = rowData[key] && rowData[key].toString().toLowerCase().trim();
-                                            if (this.searchTextFields[key]) {
-                                                noOfAppliedSearchColumns++;
-                                                if (value && value.indexOf(this.searchTextFields[key]) >= 0) {
-                                                    noOfMatchedColumns++;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (noOfAppliedSearchColumns === noOfMatchedColumns) {
-                                        return rowData;
-                                    }
-                                });
-                                this.dataToDisplay = filteredData;
-                            } else {
-                                this.dataToDisplay = [...this.dataCollection];
+                const searchedText: string = event.target['value'] && event.target['value'].toLowerCase().trim();
+                if (filterType === 'global-filter') {
+                    this.dataToDisplay = searchedText ? this.dataTableFilterService.onApplyGlobalSearch(searchedText, this.dataCollection, this.header) : [...this.dataCollection];
+                } else if (filterType === 'column-filter') {
+                    let isSearchedTextPresent: boolean = false;
+                    this.searchTextFields[propertyName] = searchedText;
+                    for (let key in this.searchTextFields) {
+                        if (this.searchTextFields.hasOwnProperty(key)) {
+                            if (this.searchTextFields[key]) {
+                                isSearchedTextPresent = true;
+                                break;
                             }
                         }
                     }
+                    this.dataToDisplay = isSearchedTextPresent ? this.dataTableFilterService.onApplyColumnSearch(this.dataCollection, this.searchTextFields) : [...this.dataCollection];
                 }
             }
             clearTimeout(timeOut);
         }, 1000);
     }
 
-    public onApplySort = (event: MouseEvent, propertyName: string, type: DataTableColumnType): void => {
-        if (event && event.currentTarget) {
-            for (let key in this.sortFields) {
-                if (this.sortFields.hasOwnProperty(key)) {
-                    if (key !== propertyName) {
-                        this.sortFields[key] = 0;
+    public onApplySort = (event: MouseEvent, propertyName: string, type: DataTableColumnType, columnIndex: number): void => {
+        this.dataTableUIService.onHighlightSelectedElement(event, 'datatable-header', 'highlight-column-header');
+        for (let key in this.sortFields) {
+            if (this.sortFields.hasOwnProperty(key)) {
+                if (key !== propertyName) {
+                    this.sortFields[key] = DataTableSortOrder.None;
+                } else {
+                    if (this.sortFields[propertyName] === DataTableSortOrder.None || this.sortFields[propertyName] === DataTableSortOrder.Descending) {
+                        this.sortFields[propertyName] = DataTableSortOrder.Ascending;
                     } else {
-                        if (this.sortFields[propertyName] === DataTableSortOrder.None || this.sortFields[propertyName] === DataTableSortOrder.Descending) {
-                            this.sortFields[propertyName] = DataTableSortOrder.Ascending;
-                        } else {
-                            this.sortFields[propertyName] = DataTableSortOrder.Descending;
-                        }
+                        this.sortFields[propertyName] = DataTableSortOrder.Descending;
                     }
                 }
             }
-            if (this.sortFields[propertyName] !== DataTableSortOrder.None) {
-                let sortedData: object[] = [];
-                switch (type) {
-                    case DataTableColumnType.Date:
-                        sortedData = this.sortByDate(propertyName);
-                        break;
-                    case DataTableColumnType.Float:
-                        sortedData = this.sortByFloat(propertyName);
-                        break;
-                    case DataTableColumnType.Integer:
-                        sortedData = this.sortByInteger(propertyName);
-                        break;
-                    case DataTableColumnType.String:
-                        sortedData = this.sortByString(propertyName);
-                        break;
-                    case DataTableColumnType.Version:
-                        // sortedData = this.sortByVersion(propertyName);
-                        break;
-                    default:
-                        break;
-                }
-                this.dataToDisplay = [...sortedData];
-            }
         }
+        this.dataCollection = this.dataTableSortService.onApplySort(this.dataCollection, this.sortFields, propertyName, type);
+        this.dataToDisplay = [...this.dataCollection];
+        // this.preparePaginationTabs();
     }
 
-    private sortByDate = (propertyName: string): object[] => {
-        let sortedData: object[] = [];
-        let sortOrder: number = this.sortFields[propertyName] || DataTableSortOrder.None;
-        if (this.dataToDisplay && this.dataToDisplay.length > 0) {
-            sortedData = this.dataToDisplay.sort((prev: object, next: object) => {
-                let prevDate: number = Date.parse(prev[propertyName]) ? new Date(prev[propertyName]).getTime() : 0;
-                let nextDate: number = Date.parse(next[propertyName]) ? new Date(next[propertyName]).getTime() : 0;
-                return (sortOrder === DataTableSortOrder.Ascending) ? (prevDate - nextDate) : (nextDate - prevDate);
-            });
-        }
-        return sortedData;
+    public onSelectPaginationTab = (event: MouseEvent, index: number): void => {
+        // this.currentPaginationIndex = index;
+        this.dataToDisplay = this.dataTablePaginationService.onSelectPaginationTab(this.currentPaginationSlot, index);
+        /* Allowing browser to render the new dataset before performing 'Select All' related action */
+        setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.isSelectAllChecked, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
+        this.dataTableUIService.onHighlightSelectedElement(event, 'pagination-tab', 'highlight-pagination-tab');
     }
 
-    private sortByFloat = (propertyName: string): object[] => {
-        let sortedData: object[] = [];
-        let sortOrder: number = this.sortFields[propertyName] || DataTableSortOrder.None;
-        if (this.dataToDisplay && this.dataToDisplay.length > 0) {
-            sortedData = this.dataToDisplay.sort((prev: object, next: object) => {
-                let prevValue: number = parseFloat(prev[propertyName]) || 0;
-                let nextValue: number = parseFloat(next[propertyName]) || 0;
-                return (sortOrder === DataTableSortOrder.Ascending) ? (prevValue - nextValue) : (nextValue - prevValue);
-            });
-        }
-        return sortedData;
-    }
-
-    private sortByInteger = (propertyName: string): object[] => {
-        let sortedData: object[] = [];
-        let sortOrder: number = this.sortFields[propertyName] || DataTableSortOrder.None;
-        if (this.dataToDisplay && this.dataToDisplay.length > 0) {
-            sortedData = this.dataToDisplay.sort((prev: object, next: object) => {
-                let prevValue: number = Number.isInteger(prev[propertyName]) ? prev[propertyName] : 0;
-                let nextValue: number = Number.isInteger(next[propertyName]) ? next[propertyName] : 0;
-                return (sortOrder === DataTableSortOrder.Ascending) ? (prevValue - nextValue) : (nextValue - prevValue);
-            });
-        }
-        return sortedData;
-    }
-
-    private sortByString = (propertyName: string): object[] => {
-        let sortedData: object[] = [];
-        let sortOrder: number = this.sortFields[propertyName] || DataTableSortOrder.None;
-        if (this.dataToDisplay && this.dataToDisplay.length > 0) {
-            sortedData = this.dataToDisplay.sort((prev: object, next: object) => {
-                let prevValue: string = prev[propertyName] && typeof (prev[propertyName]) === 'string' ? prev[propertyName].toLowerCase() : '';
-                let nextValue: string = next[propertyName] && typeof (next[propertyName]) === 'string' ? next[propertyName].toLowerCase() : '';
-                if (sortOrder === DataTableSortOrder.Ascending) {
-                    if (prevValue < nextValue) {
-                        return -1;
-                    } else if (nextValue > prevValue) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                } else if (sortOrder === DataTableSortOrder.Descending) {
-                    if (prevValue < nextValue) {
-                        return 1;
-                    } else if (nextValue > prevValue) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                }
-            });
-        }
-        return sortedData;
-    }
-
-    private preparePaginationTabs = (): void => {
-        if (this.dataCollection && this.dataCollection.length > 0) {
-            let paginationTabCollection: object[] = [];
-            let counter: number = 0;
-            for (let i: number = 0; i < this.dataCollection.length; i += this.numberOfRowsPerPage) {
-                let paginationTab: object[] = this.dataCollection.slice(i, i + this.numberOfRowsPerPage);
-                paginationTabCollection.push({ 'index': ++counter, 'data': paginationTab });
-            }
-            counter = 0;
-            for (let i: number = 0; i < paginationTabCollection.length; i += 2) {
-                let paginationTab = paginationTabCollection.slice(i, i + 2);
-                this.paginationData.push({ 'series': ++counter, 'data': paginationTab });
-            }
-            this.currentPaginationTabs = this.paginationData[0];
-        }
-    }
-
-    public onSelectPaginationTab = (index: number): void => {
-        this.dataToDisplay = [...this.currentPaginationTabs['data'][index]['data']];
-    }
-
-    public onChangePaginationTabSeries = (index: number): void => {
-        if (index <= 0) {
-            index = 0;
-        } else if (index >= this.paginationData.length) {
-            index = this.paginationData.length - 1;
-        }
-        this.currentPaginationTabs = this.paginationData[index];
-        this.onSelectPaginationTab(0);
+    public onChangePaginationSlot = (slotIndex: number): void => {
+        // this.currentPaginationIndex = index;
+        this.currentPaginationSlot = this.dataTablePaginationService.onChangePaginationSlot(slotIndex);
+        const tabIndex: number = this.currentPaginationSlot['data'][0]['index'];
+        setTimeout (() => document.getElementById('pagination-tab-' + tabIndex).click(), 0);
     }
 }

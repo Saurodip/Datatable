@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from './app.service';
-import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, DataTablePipe } from './datatable/datatable.model';
+import { DataTableHeader, DataTableHeaderStyle, DataTablePipe, DataTableRowStyle, Pagination } from './datatable/datatable.model';
 import { DataTablePipeType, DataTableColumnType } from './datatable/datatable.enum';
 
 @Component({
@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
   private error: string;
   public header: DataTableHeader[];
   public headerStyle: DataTableHeaderStyle;
+  public paginationData: Pagination;
   public rowStyle: DataTableRowStyle;
 
   constructor(private appService: AppService) {
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
     this.error = '';
     this.header = [];
     this.headerStyle = {};
+    this.paginationData = { numberOfRowsPerTab: 10, numberOfTabsPerSlot: 2 };
     this.rowStyle = {};
   }
 

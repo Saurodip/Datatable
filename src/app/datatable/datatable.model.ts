@@ -10,8 +10,7 @@ export interface DataTable {
     header: DataTableHeader;
     headerStyle?: DataTableHeaderStyle;
     height: string;
-    numberOfRowsPerPage: number;
-    pagination: boolean;
+    pagination: Pagination;
     rowStyle?: DataTableRowStyle;
 }
 
@@ -33,7 +32,6 @@ export interface DataTableHeaderStyle {
     maxWidth?: string;
     minWidth?: string;
     padding?: string;
-    selectionColor?: string;
     textAlign?: string;
 }
 
@@ -64,6 +62,16 @@ export class DataTablePipe {
         this.format = format;
         this.code = code;
         this.display = display;
+    }
+}
+
+export class Pagination {
+    public numberOfRowsPerTab: number;
+    public numberOfTabsPerSlot: number;
+
+    constructor() {
+        this.numberOfRowsPerTab = 10;
+        this.numberOfTabsPerSlot = 5;
     }
 }
 

@@ -384,3 +384,4 @@
 [0616/194847.480:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
 [0616/194847.480:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
 [0616/194847.480:WARNING:thread_snapshot_minidump.cc(89)] Snapshot X86 context support has no unit tests.
+[0622/230935.139:ERROR:http_transport_win.cc(349)] WinHttpWriteData: The operation completed successfully. (0x0)

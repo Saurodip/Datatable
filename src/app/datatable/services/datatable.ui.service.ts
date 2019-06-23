@@ -96,7 +96,7 @@ export class DataTableUIService {
         if (Object.getOwnPropertyNames(rowStyle).length !== 0) {
             let cssProperties: string = '';
             for (let property in rowStyle) {
-                if (rowStyle.hasOwnProperty(property)) {
+                if (rowStyle.hasOwnProperty(property) && property !== 'selectionColor') {
                     let cssProperty = property.replace(/[A-Z]/g, (propertyName: string) => '-' + propertyName.toLowerCase());
                     cssProperties += `${ cssProperty }: ${ headerStyle[property] } !important; `;
                 }
@@ -132,6 +132,24 @@ export class DataTableUIService {
             listOfVerticalScrollbars = [frozenAreaDataTableBody];
             listOfVerticalScrollbars.forEach((element: HTMLElement) => element.scrollTop = scrollTopPosition);
         });
+    }
+
+    /**
+     * This method is responsible for highlighting selected DOM element and unhighlight other elements
+     * @param event { MouseEvent } Event data
+     * @param element { string } Name of the element that needs to be highlighted
+     * @param highlightedClass { string } Highlighted class name
+     */
+    public onHighlightSelectedElement = (event: MouseEvent, element: string, highlightedClass: string): void => {
+        const NodeElement: NodeList = this.dataTableElementReferenceService.getNodeListReference(element);
+        if (NodeElement && NodeElement.length > 0) {
+            for (let i = 0; i < NodeElement.length; i++) {
+                NodeElement[i]['className'] = NodeElement[i]['className'] && NodeElement[i]['className'].replace(highlightedClass, '').trim();
+            }
+        }
+        if (event && event.currentTarget) {
+            event.currentTarget['className'] = highlightedClass + ' ' + event.currentTarget['className'];
+        }
     }
 }
 

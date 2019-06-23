@@ -15,19 +15,19 @@ export class DataTableSelectionService {
     /**
      * This method gets triggered on selection of 'Select All' checkbox placed most top left corner of the datatable
      * It will select or deselect all the available rows based on the state of 'Select All' checkbox
-     * @param event { MouseEvent } MouseEvent to get the state of the 'Select All' checkbox on selection
+     * @param isSelectAllChecked { boolean } State of the 'Select All' checkbox on selection
      * @param dataCollection { object[] } Number of datatable rows available to display
      * @param isCheckboxSelectionEnabled { boolean } Value provided from the invoked component to display checkbox selection or not
      * @param selectionColor { string } Optional - Selection color provided from the invoked component
      */
-    public onSelectDataTableSelectAll = (event: MouseEvent, dataCollection: object[], isCheckboxSelectionEnabled: boolean, selectionColor?: string): void => {
-        if ((event && event.currentTarget) && (dataCollection && dataCollection.length > 0)) {
-            this.noOfRowsSelected = event.currentTarget['checked'] ? dataCollection.length : 0;
-            dataCollection.forEach((row: object, index: number) => {
-                const dataTableRow: NodeList = this.dataTableElementReferenceService.getNodeListReference('current-datatable-row', (index + 1));
+    public onSelectDataTableSelectAll = (isSelectAllChecked: boolean, dataCollection: object[], isCheckboxSelectionEnabled: boolean, selectionColor?: string): void => {
+        if (dataCollection && dataCollection.length > 0) {
+            this.noOfRowsSelected = isSelectAllChecked ? dataCollection.length : 0;
+            dataCollection.forEach((row: object) => {
+                const dataTableRow: NodeList = this.dataTableElementReferenceService.getNodeListReference('current-datatable-row', row['Index']);
                 if (dataTableRow && dataTableRow.length > 0) {
                     for (let i: number = 0; i < dataTableRow.length; i++) {
-                        if (event.currentTarget['checked']) {
+                        if (isSelectAllChecked) {
                             const isRowAlreadySelected: boolean = dataTableRow[i]['className'] && dataTableRow[i]['className'].indexOf(this.rowSelectionClassName) >= 0 ? true : false;
                             if (!isRowAlreadySelected) {
                                 dataTableRow[i]['className'] = this.rowSelectionClassName + ' ' + dataTableRow[i]['className'];
@@ -42,9 +42,9 @@ export class DataTableSelectionService {
                     }
                 }
                 if (isCheckboxSelectionEnabled) {
-                    const checkboxElement: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('current-datatable-checkbox', (index + 1));
+                    const checkboxElement: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('current-datatable-checkbox', row['Index']);
                     if (checkboxElement) {
-                        checkboxElement['checked'] = event.currentTarget['checked'];
+                        checkboxElement['checked'] = isSelectAllChecked;
                     }
                 }
             });

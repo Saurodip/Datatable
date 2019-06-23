@@ -24,8 +24,9 @@ export class DataTableElementReferenceService {
             case 'frozen-area-datatable-body': return document.querySelector('.datatable-frozen-area .datatable-body');
             case 'scrollable-area-datatable-body': return document.querySelector('.datatable-scrollable-area .datatable-body');
             case 'datatable-row': return document.querySelector('.datatable-row');
-            case 'datatable-footer': return document.querySelector('.datatable-footer');
             case 'current-datatable-checkbox': return document.querySelector('#datatable-checkbox-' + index);
+            case 'datatable-footer': return document.querySelector('.datatable-footer');
+            case 'pagination-tab': return document.querySelector('.pagination-tab-' + index);
             default: break;
         }
     }
@@ -38,6 +39,8 @@ export class DataTableElementReferenceService {
     public getNodeListReference = (domElement: string, index?: number): NodeList => {
         switch (domElement) {
             case 'current-datatable-row': return document.querySelectorAll('.datatable-row-' + index);
+            case 'datatable-header': return document.querySelectorAll('.datatable-header');
+            case 'pagination-tab': return document.querySelectorAll('.pagination-tab');
             default: break;
         }
     }

@@ -17,8 +17,9 @@ export class DataTablePipeService {
         if ((data && data.length > 0) && (header && header.length > 0)) {
             header.forEach((columnHeader: DataTableHeader) => {
                 if (columnHeader.pipe && columnHeader.pipe.type) {
-                    data.forEach((rowData: object) => {
+                    data.forEach((rowData: object, index: number) => {
                         let propertyName: string = columnHeader.propertyName;
+                        rowData['Index'] = index + 1;
                         switch (columnHeader.pipe.type) {
                             case DataTablePipeType.CurrencyPipe: rowData[propertyName] = this.currencyPipe.transform(rowData[propertyName], columnHeader.pipe.code, columnHeader.pipe.display, columnHeader.pipe.format);
                                 break;

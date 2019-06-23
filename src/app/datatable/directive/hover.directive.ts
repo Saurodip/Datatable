@@ -11,7 +11,7 @@ export class HoverDirective {
     }
 
     @HostListener('mouseenter', ['$event']) onMouseEnter(event: MouseEvent) {
-        let defaultBackgroundColor: string = '#c3d6e4';
+        const defaultBackgroundColor: string = '#c3d6e4';
         this.setHoverColor(event, 'mouseenter', this.hoverColor || defaultBackgroundColor);
     }
 

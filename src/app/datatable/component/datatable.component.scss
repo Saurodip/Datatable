@@ -58,6 +58,7 @@ $text-color: #e3e3e3;
                     border-bottom: $cell-border;
                     border-right: $cell-border;
                     box-sizing: border-box;
+                    cursor: pointer;
                     display: flex;
                     padding-left: 5px;
                     position: relative;
@@ -93,6 +94,10 @@ $text-color: #e3e3e3;
                             top: 18px;
                         }
                     }
+                }
+
+                .highlight-column-header {
+                    background-color: #a9b5b5;
                 }
             }
         }
@@ -188,8 +193,8 @@ $text-color: #e3e3e3;
         position: relative;
         width: 100%;
 
-        .pagination-tab {
-            text-align: center; 
+        .pagination-tab-container {
+            text-align: center;
             width: 50%;
 
             span {
@@ -199,10 +204,18 @@ $text-color: #e3e3e3;
                 height: 100%;
                 margin: 5px;
                 position: relative;
-                
-                &:first-child, &:last-child {
+
+                &:first-child,
+                &:last-child {
                     font-size: 20px;
                     position: static;
+                }
+
+                &.highlight-pagination-tab {
+                    border-bottom: 1px solid blue;
+                    color: blue;
+                    font-size: 15px;
+                    font-weight: bold;
                 }
             }
         }
@@ -212,6 +225,11 @@ $text-color: #e3e3e3;
 textarea:focus,
 input:focus {
     outline: none;
+}
+
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 /*
