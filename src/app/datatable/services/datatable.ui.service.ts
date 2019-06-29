@@ -151,5 +151,24 @@ export class DataTableUIService {
             event.currentTarget['className'] = highlightedClass + ' ' + event.currentTarget['className'];
         }
     }
+
+    /**
+     * This method is responsible for defining the state (disable or enable) of pagination arrow
+     * @param slotIndex { number } Current pagination slot index
+     * @param totalNoOfPaginationSlot { number } Total number of available pagination slot
+     */
+    public onStateChangeOfPaginationArrow = (slotIndex: number, totalNoOfPaginationSlot: number): void => {
+        const disabledClassName: string = 'disabled';
+        const previousPaginationArrow: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('previous-pagination-arrow');
+        const nextPaginationArrow: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('next-pagination-arrow');
+        if (previousPaginationArrow && slotIndex === 0) {
+            previousPaginationArrow['className'] = disabledClassName + ' ' + previousPaginationArrow['className'];
+        } else if (nextPaginationArrow && (slotIndex === totalNoOfPaginationSlot - 1)) {
+            nextPaginationArrow['className'] = disabledClassName + ' ' + nextPaginationArrow['className'];
+        } else {
+            previousPaginationArrow['className'] = previousPaginationArrow['className'] && previousPaginationArrow['className'].replace(disabledClassName, '').trim();
+            nextPaginationArrow['className'] = nextPaginationArrow['className'] && nextPaginationArrow['className'].replace(disabledClassName, '').trim();
+        }
+    }
 }
 

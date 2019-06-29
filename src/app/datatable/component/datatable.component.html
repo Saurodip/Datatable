@@ -31,7 +31,7 @@
                             *ngFor="let dtHeader of frozenHeader; let i = index">
                             <input type="text" *ngIf="columnFilter" id="datatable-column-filter-{{ i + 1 }}" 
                                 [attr.maxlength]="filterTextLimit" placeholder="Search" 
-                                (keyup)="onApplySearch($event, 'column-filter', dtHeader?.propertyName)">
+                                (keyup)="onApplySearch($event, dtHeader?.propertyName)">
                         </div>
                     </ng-template>
                 </div>
@@ -75,14 +75,14 @@
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex', 'width': globalFilter ? '100%' : 'auto' }">
                     <div *ngIf="globalFilter; else columnFilter" class="global-filter-container">
                         <input type="text" id="datatable-global-filter" [attr.maxlength]="filterTextLimit" placeholder="Search"
-                        (keyup)="onApplySearch($event, 'global-filter')">
+                        (keyup)="onApplySearch($event)">
                     </div>
                     <ng-template #columnFilter>
                         <div class="column-filter-container"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of scrollableHeader; let i = index">
                             <input type="text" id="datatable-column-filter-{{ i + 1 }}" [attr.maxlength]="filterTextLimit"
-                                placeholder="Search" (keyup)="onApplySearch($event, 'column-filter', dtHeader?.propertyName)">
+                                placeholder="Search" (keyup)="onApplySearch($event, dtHeader?.propertyName)">
                         </div>
                     </ng-template>
                 </div>
@@ -103,15 +103,18 @@
     </div>
     <div class="datatable-footer">
         <div class="pagination-tab-container">
+            <span id="previous-pagination-arrow" class="pagination-navigation"
+                (click)="onChangePaginationSlot(currentPaginationSlot?.slot - 2)">&#9664;
+            </span>
             <ng-container *ngFor="let paginationTab of currentPaginationSlot?.data; let i = index">
-                <span *ngIf="i === 0" class="pagination-navigation"
-                    (click)="onChangePaginationSlot(currentPaginationSlot?.slot - 2)">&#9664;</span>
                 <span id="pagination-tab-{{ paginationTab?.index }}" class="pagination-tab"
                     [ngClass]="{ 'highlight-pagination-tab': paginationTab?.index === 1 }"
-                    (click)="onSelectPaginationTab($event, i)">{{ paginationTab?.index }}</span>
-                <span *ngIf="i === currentPaginationSlot?.data.length - 1" class="pagination-navigation"
-                    (click)="onChangePaginationSlot(currentPaginationSlot?.slot)">&#9654;</span>
+                    (click)="onSelectPaginationTab($event, i)">{{ paginationTab?.index }}
+                </span>
             </ng-container>
+            <span id="next-pagination-arrow" class="pagination-navigation"
+                (click)="onChangePaginationSlot(currentPaginationSlot?.slot)">&#9654;
+            </span>
         </div>
     </div>
 </div>

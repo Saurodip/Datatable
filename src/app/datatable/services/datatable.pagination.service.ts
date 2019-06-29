@@ -15,20 +15,21 @@ export class DataTablePaginationService {
      * This method is responsible for preparing data structure of pagination tabs
      * @param dataCollection { object[] } Total number of datatable rows
      * @param paginationInfo { Pagination } Pagination information provided through invoked component
-     * return paginationData { object } Segregated data into pagination tabs
+     * return paginationData { object[] } Segregated data into pagination tabs
      */
-    public preparePaginationTabs = (dataCollection: object[], paginationInfo: Pagination): object => {
+    public preparePaginationTabs = (dataCollection: object[], paginationInfo: Pagination): object[] => {
         if ((dataCollection && dataCollection.length > 0) && Object.getOwnPropertyNames(paginationInfo).length !== 0) {
             let paginationTabCollection: object[] = [];
             let counter: number = 0;
+            this.paginationData = [];
             for (let i: number = 0; i < dataCollection.length; i += paginationInfo.numberOfRowsPerTab) {
                 let paginationTab: object[] = dataCollection.slice(i, i + paginationInfo.numberOfRowsPerTab);
-                paginationTabCollection.push({ 'index': ++counter, 'data': paginationTab });
+                paginationTabCollection.push({ index: ++counter, data: paginationTab });
             }
             counter = 0;
             for (let i: number = 0; i < paginationTabCollection.length; i += paginationInfo.numberOfTabsPerSlot) {
                 let paginationTab: object[] = paginationTabCollection.slice(i, i + paginationInfo.numberOfTabsPerSlot);
-                this.paginationData.push({ 'slot': ++counter, 'data': paginationTab });
+                this.paginationData.push({ slot: ++counter, data: paginationTab });
             }
             return this.paginationData;
         }
@@ -48,14 +49,9 @@ export class DataTablePaginationService {
     /**
      * This method gets triggered on change of pagination slot
      * @param slotIndex { number } Pagination slot index
-     * return currentPaginationSlot { object } Selected pagination slot data
+     * return currentPaginationSlot { object } Selected pagination slot data, if present
      */
     public onChangePaginationSlot = (slotIndex: number): object => {
-        if (slotIndex <= 0) {
-            slotIndex = 0;
-        } else if (slotIndex >= this.paginationData.length) {
-            slotIndex = this.paginationData.length - 1;
-        }
         const currentPaginationSlot: object = this.paginationData[slotIndex];
         return currentPaginationSlot;
     }

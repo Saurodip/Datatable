@@ -106,10 +106,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             this.dataTableUIService.onSetDataTableStyle(this.headerStyle, this.rowStyle, this.randomIndex);
             this.dataTableUIService.onActivateScrollingForHiddenScrollbars();
             if (Object.getOwnPropertyNames(this.pagination).length !== 0) {
-                const paginationData = this.dataTablePaginationService.preparePaginationTabs(this.dataCollection, this.pagination);
-                Object.assign(this.currentPaginationSlot, paginationData[0]);
-                /* Allowing browser to render the selected pagination dataset */
-                setTimeout(() => this.dataToDisplay = this.currentPaginationSlot['data'][0]['data'], 0);
+                this.onPreparationOfDataForPagination(this.dataCollection);
             }
         }
     }
@@ -125,13 +122,13 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.dataTableSelectionService.onSelectDataTableRow(event, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor);
     }
 
-    public onApplySearch = (event: KeyboardEvent | MouseEvent, filterType: string, propertyName?: string): void => {
+    public onApplySearch = (event: KeyboardEvent | MouseEvent, propertyName?: string): void => {
         let timeOut = setTimeout(() => {
             if (event && event.target) {
                 const searchedText: string = event.target['value'] && event.target['value'].toLowerCase().trim();
-                if (filterType === 'global-filter') {
+                if (this.globalFilter) {
                     this.dataToDisplay = searchedText ? this.dataTableFilterService.onApplyGlobalSearch(searchedText, this.dataCollection, this.header) : [...this.dataCollection];
-                } else if (filterType === 'column-filter') {
+                } else if (this.columnFilter) {
                     let isSearchedTextPresent: boolean = false;
                     this.searchTextFields[propertyName] = searchedText;
                     for (let key in this.searchTextFields) {
@@ -143,6 +140,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                         }
                     }
                     this.dataToDisplay = isSearchedTextPresent ? this.dataTableFilterService.onApplyColumnSearch(this.dataCollection, this.searchTextFields) : [...this.dataCollection];
+                    if (Object.getOwnPropertyNames(this.pagination).length !== 0) {
+                        this.onPreparationOfDataForPagination(this.dataToDisplay);
+                    }
                 }
             }
             clearTimeout(timeOut);
@@ -169,8 +169,17 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         // this.preparePaginationTabs();
     }
 
+    private onPreparationOfDataForPagination = (dataCollection: object[]): void => {
+        this.paginationData = this.dataTablePaginationService.preparePaginationTabs(dataCollection, this.pagination);
+        Object.assign(this.currentPaginationSlot, this.paginationData[0]);
+        const totalNoOfPaginationSlot: number = this.paginationData && this.paginationData.length;
+        this.dataTableUIService.onStateChangeOfPaginationArrow(0, totalNoOfPaginationSlot);
+        /* Allowing browser to render the selected pagination dataset */
+        setTimeout(() => this.dataToDisplay = this.currentPaginationSlot['data'][0]['data'], 0);
+    }
+
     public onSelectPaginationTab = (event: MouseEvent, index: number): void => {
-        // this.currentPaginationIndex = index;
+        this.currentPaginationIndex = index;
         this.dataToDisplay = this.dataTablePaginationService.onSelectPaginationTab(this.currentPaginationSlot, index);
         /* Allowing browser to render the new dataset before performing 'Select All' related action */
         setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.isSelectAllChecked, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
@@ -178,9 +187,15 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     public onChangePaginationSlot = (slotIndex: number): void => {
-        // this.currentPaginationIndex = index;
-        this.currentPaginationSlot = this.dataTablePaginationService.onChangePaginationSlot(slotIndex);
-        const tabIndex: number = this.currentPaginationSlot['data'][0]['index'];
-        setTimeout (() => document.getElementById('pagination-tab-' + tabIndex).click(), 0);
+        if (slotIndex < 0 || slotIndex > this.paginationData.length - 1) {
+            return;
+        } else {
+            const totalNoOfPaginationSlot: number = this.paginationData && this.paginationData.length;
+            this.dataTableUIService.onStateChangeOfPaginationArrow(slotIndex, totalNoOfPaginationSlot);
+            this.currentPaginationSlot = this.dataTablePaginationService.onChangePaginationSlot(slotIndex);
+            const currentTabIndex: number = this.currentPaginationSlot['data'][0]['index'];
+            setTimeout(() => document.getElementById('pagination-tab-' + currentTabIndex).click(), 0);
+        }
     }
 }
+

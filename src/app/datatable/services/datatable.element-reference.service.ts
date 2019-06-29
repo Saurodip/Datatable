@@ -26,7 +26,9 @@ export class DataTableElementReferenceService {
             case 'datatable-row': return document.querySelector('.datatable-row');
             case 'current-datatable-checkbox': return document.querySelector('#datatable-checkbox-' + index);
             case 'datatable-footer': return document.querySelector('.datatable-footer');
+            case 'previous-pagination-arrow': return document.querySelector('#previous-pagination-arrow');
             case 'pagination-tab': return document.querySelector('.pagination-tab-' + index);
+            case 'next-pagination-arrow': return document.querySelector('#next-pagination-arrow');
             default: break;
         }
     }
