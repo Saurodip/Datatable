@@ -153,7 +153,7 @@ export class DataTableUIService {
     }
 
     /**
-     * This method is responsible for defining the state (disable or enable) of pagination arrow
+     * This method is responsible for defining the state (disable or enable) of pagination arrows
      * @param slotIndex { number } Current pagination slot index
      * @param totalNoOfPaginationSlot { number } Total number of available pagination slot
      */
@@ -161,13 +161,15 @@ export class DataTableUIService {
         const disabledClassName: string = 'disabled';
         const previousPaginationArrow: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('previous-pagination-arrow');
         const nextPaginationArrow: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('next-pagination-arrow');
-        if (previousPaginationArrow && slotIndex === 0) {
-            previousPaginationArrow['className'] = disabledClassName + ' ' + previousPaginationArrow['className'];
-        } else if (nextPaginationArrow && (slotIndex === totalNoOfPaginationSlot - 1)) {
-            nextPaginationArrow['className'] = disabledClassName + ' ' + nextPaginationArrow['className'];
-        } else {
+        if (previousPaginationArrow && nextPaginationArrow) {
             previousPaginationArrow['className'] = previousPaginationArrow['className'] && previousPaginationArrow['className'].replace(disabledClassName, '').trim();
             nextPaginationArrow['className'] = nextPaginationArrow['className'] && nextPaginationArrow['className'].replace(disabledClassName, '').trim();
+            if (slotIndex === 0) {
+                previousPaginationArrow['className'] = disabledClassName + ' ' + previousPaginationArrow['className'];
+            }
+            if (slotIndex === totalNoOfPaginationSlot - 1) {
+                nextPaginationArrow['className'] = disabledClassName + ' ' + nextPaginationArrow['className'];
+            }
         }
     }
 }
