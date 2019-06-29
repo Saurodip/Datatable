@@ -175,12 +175,18 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     private onPreparationOfDataForPagination = (dataCollection: object[]): void => {
+        let totalNoOfPaginationSlot: number = 1;
         this.paginationData = this.dataTablePaginationService.preparePaginationTabs(dataCollection, this.pagination);
-        Object.assign(this.currentPaginationSlot, this.paginationData[0]);
-        const totalNoOfPaginationSlot: number = this.paginationData && this.paginationData.length;
-        this.dataTableUIService.onStateChangeOfPaginationArrow(0, totalNoOfPaginationSlot);
-        /* Allowing browser to render the selected pagination dataset */
-        setTimeout(() => this.dataToDisplay = this.currentPaginationSlot['data'][0]['data'], 0);
+        if (this.paginationData && this.paginationData.length > 0) {
+            Object.assign(this.currentPaginationSlot, this.paginationData[0]);
+            totalNoOfPaginationSlot = this.paginationData.length;
+            this.dataTableUIService.onStateChangeOfPaginationArrow(0, totalNoOfPaginationSlot);
+            /* Allowing browser to render the selected pagination dataset */
+            setTimeout(() => this.dataToDisplay = this.currentPaginationSlot['data'][0]['data'], 0);
+        } else {
+            this.currentPaginationSlot = {};
+            this.dataTableUIService.onStateChangeOfPaginationArrow(0, totalNoOfPaginationSlot);
+        }
     }
 
     public onSelectPaginationTab = (event: MouseEvent, index: number): void => {
