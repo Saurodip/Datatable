@@ -51,6 +51,7 @@
                         {{ dtRow[dtHeader?.propertyName] }}
                     </div>
                 </div>
+                <div *ngIf="dataToDisplay && dataToDisplay.length === 0" class="background-screen"></div>
             </div>
         </div>
         <div *ngIf="scrollableHeader && scrollableHeader.length > 0" class="datatable-scrollable-area"
@@ -98,6 +99,7 @@
                         {{ dtRow[dtHeader?.propertyName] }}
                     </div>
                 </div>
+                <div *ngIf="dataToDisplay && dataToDisplay.length === 0" class="background-screen"></div>
             </div>
         </div>
     </div>

@@ -176,6 +176,12 @@ $text-color: #e3e3e3;
                 }
             }
 
+            .background-screen {
+                background-color: #f1f1f1;
+                height: 100%;
+                width: 100%;
+            }
+
             &.hide-filter-horizontal-scrollbar {
                 bottom: 38px;
                 position: relative;
