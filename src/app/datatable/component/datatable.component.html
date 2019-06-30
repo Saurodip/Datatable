@@ -1,4 +1,7 @@
 <div #dataTable id="datatable{{ randomIndex }}" class="datatable" [ngStyle]="{ 'height': height }">
+    <div *ngIf="isLoading" class="spinner">
+        <img src="assets/images/spinner.gif" alt="loading-spinner">
+    </div>
     <div class="datatable-main-section">
         <div class="datatable-frozen-area">
             <div class="datatable-header-wrapper">
@@ -40,6 +43,7 @@
                 <div id="frozen-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style" 
                     appDataTableRowHover [hoverColor]="rowStyle.hoverColor"
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
+                    [ngClass]="{ 'selected-row': dtRow?.RowSelected }"
                     *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
                     <div class="action-container">
                         <input type="checkbox" id="datatable-checkbox-{{ dtRow?.Index }}"
@@ -92,6 +96,7 @@
                 <div id="scrollable-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style"
                     appDataTableRowHover [hoverColor]="rowStyle.hoverColor"
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
+                    [ngClass]="{ 'selected-row': dtRow?.RowSelected }"
                     *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
                     <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
                         [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"

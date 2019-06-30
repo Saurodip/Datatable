@@ -74,21 +74,15 @@ export class DataTableSortService {
                 let prevValue: string = prev[propertyName] && typeof (prev[propertyName]) === 'string' ? prev[propertyName].toLowerCase() : '';
                 let nextValue: string = next[propertyName] && typeof (next[propertyName]) === 'string' ? next[propertyName].toLowerCase() : '';
                 if (sortOrder === DataTableSortOrder.Ascending) {
-                    if (prevValue < nextValue) {
-                        return -1;
-                    } else if (nextValue > prevValue) {
-                        return 1;
-                    } else {
+                    if (prevValue === nextValue) {
                         return 0;
                     }
+                    return (prevValue > nextValue) ? 1 : -1;
                 } else if (sortOrder === DataTableSortOrder.Descending) {
-                    if (prevValue < nextValue) {
-                        return 1;
-                    } else if (nextValue > prevValue) {
-                        return -1;
-                    } else {
+                    if (prevValue === nextValue) {
                         return 0;
                     }
+                    return (prevValue < nextValue) ? 1 : -1;
                 }
             });
         }

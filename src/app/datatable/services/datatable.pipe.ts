@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CurrencyPipe, DatePipe, DecimalPipe, LowerCasePipe, UpperCasePipe } from '@angular/common';
-import { DataTableHeader } from '../datatable.model';
+import { DataTablePipe } from '../datatable.model';
 import { DataTablePipeType } from '../datatable.enum';
 
 @Injectable()
@@ -13,31 +13,28 @@ export class DataTablePipeService {
         private upperCasePipe: UpperCasePipe) {
     }
 
-    public onApplyPipe = (data: object[], header: DataTableHeader[]): object[] => {
-        if ((data && data.length > 0) && (header && header.length > 0)) {
-            header.forEach((columnHeader: DataTableHeader) => {
-                if (columnHeader.pipe && columnHeader.pipe.type) {
-                    data.forEach((rowData: object, index: number) => {
-                        let propertyName: string = columnHeader.propertyName;
-                        rowData['Index'] = index + 1;
-                        switch (columnHeader.pipe.type) {
-                            case DataTablePipeType.CurrencyPipe: rowData[propertyName] = this.currencyPipe.transform(rowData[propertyName], columnHeader.pipe.code, columnHeader.pipe.display, columnHeader.pipe.format);
-                                break;
-                            case DataTablePipeType.DatePipe: rowData[propertyName] = this.datePipe.transform(rowData[propertyName], columnHeader.pipe.format);
-                                break;
-                            case DataTablePipeType.DecimalPipe: rowData[propertyName] = this.decimalPipe.transform(rowData[propertyName], columnHeader.pipe.format);
-                                break;
-                            case DataTablePipeType.LowerCasePipe: rowData[propertyName] = this.lowerCasePipe.transform(rowData[propertyName]);
-                                break;
-                            case DataTablePipeType.UpperCasePipe: rowData[propertyName] = this.upperCasePipe.transform(rowData[propertyName]);
-                                break;
-                            default:
-                                break;
-                        }
-                    });
-                }
-            });
+    /**
+     * This method is responsible to apply provided pipe for the specified column
+     * @param rowData { object } Current datatable row
+     * @param propertyName { string } Name of the column property, on which pipe will be applied
+     * @param pipe { DataTablePipe } Detail of the pipe provided from the invoked component
+     * return rowData { object } Updated row data after pipe applied
+     */
+    public onApplyPipe = (rowData: object, propertyName: string, pipe: DataTablePipe): object => {
+        switch (pipe && pipe.type) {
+            case DataTablePipeType.CurrencyPipe: rowData[propertyName] = this.currencyPipe.transform(rowData[propertyName], pipe.code, pipe.display, pipe.format);
+                break;
+            case DataTablePipeType.DatePipe: rowData[propertyName] = this.datePipe.transform(rowData[propertyName], pipe.format);
+                break;
+            case DataTablePipeType.DecimalPipe: rowData[propertyName] = this.decimalPipe.transform(rowData[propertyName], pipe.format);
+                break;
+            case DataTablePipeType.LowerCasePipe: rowData[propertyName] = this.lowerCasePipe.transform(rowData[propertyName]);
+                break;
+            case DataTablePipeType.UpperCasePipe: rowData[propertyName] = this.upperCasePipe.transform(rowData[propertyName]);
+                break;
+            default:
+                break;
         }
-        return data;
+        return rowData;
     }
 }

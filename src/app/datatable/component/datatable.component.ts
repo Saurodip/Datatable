@@ -20,12 +20,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public checkboxSelection: boolean;
     @Input() public columnFilter: boolean;
     @Input() public columnResponsive: boolean;
-    @Input() set data(list: object[]) {
-        this.dataCollection = [...list];
-        if (list && list.length > 0) {
-            this.dataCollection = [...this.dataTablePipeService.onApplyPipe(this.dataCollection, this.header)];
-            this.dataToDisplay = [...this.dataCollection];
-        }
+    @Input() set data(collection: object[]) {
+        this.onReceiveOfDataTableData(collection);
     }
     @Input() public filterTextLimit: number;
     @Input() public globalFilter: boolean;
@@ -35,10 +31,11 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public pagination: Pagination;
     @Input() public rowStyle: DataTableRowStyle;
 
+    public isLoading: boolean;
     public randomIndex: number;
     private dataCollection: object[];
     public dataToDisplay: object[];
-    private isSelectAllChecked: boolean;
+    private selectAllCheckboxState: string;
     private searchTextFields: object;
     public sortFields: object;
     private isCompletelyRendered: boolean;
@@ -60,10 +57,11 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         private dataTableSelectionService: DataTableSelectionService,
         private dataTableSortService: DataTableSortService,
         private dataTableUIService: DataTableUIService) {
+        this.isLoading = false;
         this.randomIndex = Math.floor(1000 + Math.random() * 9000);
         this.dataCollection = [];
         this.dataToDisplay = [];
-        this.isSelectAllChecked = false;
+        this.selectAllCheckboxState = '';
         this.searchTextFields = {};
         this.sortFields = {};
         this.isCompletelyRendered = false;
@@ -113,15 +111,31 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
     }
 
+    private onReceiveOfDataTableData = (collection: object[]): void => {
+        if ((collection && collection.length > 0) && (this.header && this.header.length > 0)) {
+            collection.forEach((rowData: object, index: number) => {
+                this.header.forEach((columnHeader: DataTableHeader) => {
+                    if (columnHeader.pipe) {
+                        this.dataTablePipeService.onApplyPipe(rowData, columnHeader.propertyName, columnHeader.pipe);
+                    }
+                });
+                rowData['Index'] = index + 1;
+                rowData['RowSelected'] = false;
+            });
+        }
+        this.dataCollection = [...collection];
+        this.dataToDisplay = [...this.dataCollection];
+    }
+
     public onSelectDataTableSelectAll = (event: MouseEvent): void => {
         if (event && event.currentTarget) {
-            this.isSelectAllChecked = event.currentTarget['checked'];
-            this.dataTableSelectionService.onSelectDataTableSelectAll(this.isSelectAllChecked, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor);
+            this.selectAllCheckboxState = event.currentTarget['checked'] ? 'checked' : 'unchecked';
+            this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
         }
     }
 
     public onSelectDataTableRow = (event: MouseEvent): void => {
-        this.dataTableSelectionService.onSelectDataTableRow(event, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor);
+        this.selectAllCheckboxState = this.dataTableSelectionService.onSelectDataTableRow(event, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
     }
 
     public onApplySearch = (event: KeyboardEvent | MouseEvent, propertyName?: string): void => {
@@ -168,9 +182,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 }
             }
         }
-        const dataCollection: object[] = this.isFilterTextPresent ? this.dataToDisplay : this.dataCollection;
-        this.dataCollection = this.dataTableSortService.onApplySort(dataCollection, this.sortFields, propertyName, type);
-        this.dataToDisplay = [...this.dataCollection];
+        let dataCollection: object[] = this.isFilterTextPresent ? this.dataToDisplay : this.dataCollection;
+        dataCollection = this.dataTableSortService.onApplySort(dataCollection, this.sortFields, propertyName, type);
+        this.dataToDisplay = [...dataCollection];
         // this.preparePaginationTabs();
     }
 
@@ -193,7 +207,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         // this.currentPaginationIndex = index;
         this.dataToDisplay = this.dataTablePaginationService.onSelectPaginationTab(this.currentPaginationSlot, index);
         /* Allowing browser to render the new dataset before performing 'Select All' related action */
-        setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.isSelectAllChecked, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
+        setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
         this.dataTableUIService.onHighlightSelectedElement(event, 'pagination-tab', 'highlight-pagination-tab');
     }
 

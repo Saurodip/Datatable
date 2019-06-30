@@ -91,7 +91,7 @@ export class AppComponent implements OnInit {
     };
 
     this.rowStyle = {
-
+      selectionColor: 'red'
     };
   }
 }

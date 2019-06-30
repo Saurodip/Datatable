@@ -8,7 +8,7 @@ export class DataTableElementReferenceService {
     /**
      * This method is responsible for getting reference of the requested HTML element from DOM
      * @param domElement { string } Requested element
-     * @param index { number } Index of the requested element
+     * @param index? { number } Index of the requested element
      * return HTML element reference
      */
     public getHTMLElementRefernce = (domElement: string, index?: number): HTMLElement => {
@@ -36,6 +36,7 @@ export class DataTableElementReferenceService {
     /**
      * This method is responsible for getting all the matched references of requested HTML element from DOM
      * @param domElement { string } Requested element
+     * @param index? { number } Index of the requested element
      * return all matched HTML element references
      */
     public getNodeListReference = (domElement: string, index?: number): NodeList => {
