@@ -15,13 +15,17 @@ export class DataTableSelectionService {
      * This method gets triggered on selection of 'Select All' checkbox placed most top left corner of the datatable
      * It will select or deselect all the available rows based on the state of 'Select All' checkbox
      * @param selectAllCheckboxState { string } State of the 'Select All' checkbox on selection
-     * @param dataCollection { object[] } Number of datatable rows available to display
+     * @param dataCollection { object[] } Total number of datatable rows
      * @param isCheckboxSelectionEnabled { boolean } Value provided from the invoked component to display checkbox selection or not
      * @param selectionColor? { string } Optional - Selection color provided from the invoked component
      */
     public onSelectDataTableSelectAll = (selectAllCheckboxState: string, dataCollection: object[], isCheckboxSelectionEnabled: boolean, selectionColor?: string): void => {
         if (dataCollection && dataCollection.length > 0) {
-            this.noOfRowsSelected = (selectAllCheckboxState === 'checked') ? dataCollection.length : 0;
+            if (selectAllCheckboxState === 'checked') {
+                this.noOfRowsSelected = dataCollection.length;
+            } else if (selectAllCheckboxState === 'unchecked') {
+                this.noOfRowsSelected = 0;
+            }
             dataCollection.forEach((row: object) => {
                 if (selectAllCheckboxState === 'checked') {
                     row['RowSelected'] = true;
@@ -53,7 +57,7 @@ export class DataTableSelectionService {
     /**
      * This method is responsible to select or deselect datatable rows based on user interaction
      * @param event { MouseEvent } MouseEvent to get the state of the 'Select All' checkbox on selection
-     * @param dataCollection { object[] } Number of datatable rows available to display
+     * @param dataCollection { object[] } Total number of datatable rows
      * @param isCheckboxSelectionEnabled { boolean } Value provided from the invoked component to display checkbox selection or not
      * @param selectionColor? { string } Optional - Selection color provided from the invoked component
      * return selectAllCheckboxState { string } State of the 'Select All' checkbox

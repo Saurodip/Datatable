@@ -160,6 +160,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                     this.dataToDisplay = this.isFilterTextPresent ? this.dataTableFilterService.onApplyColumnSearch(this.dataCollection, this.searchTextFields) : [...this.dataCollection];
                     if (Object.getOwnPropertyNames(this.pagination).length !== 0) {
                         this.onPreparationOfDataForPagination(this.dataToDisplay);
+                        /* Allowing browser to render the new dataset before performing selection related action */
+                        setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
                     }
                 }
             }
@@ -195,8 +197,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             Object.assign(this.currentPaginationSlot, this.paginationData[0]);
             totalNoOfPaginationSlot = this.paginationData.length;
             this.dataTableUIService.onStateChangeOfPaginationArrow(0, totalNoOfPaginationSlot);
-            /* Allowing browser to render the selected pagination dataset */
-            setTimeout(() => this.dataToDisplay = this.currentPaginationSlot['data'][0]['data'], 0);
+            this.dataToDisplay = this.currentPaginationSlot['data'][0]['data'];
         } else {
             this.currentPaginationSlot = {};
             this.dataTableUIService.onStateChangeOfPaginationArrow(0, totalNoOfPaginationSlot);
@@ -204,9 +205,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     public onSelectPaginationTab = (event: MouseEvent, index: number): void => {
-        // this.currentPaginationIndex = index;
         this.dataToDisplay = this.dataTablePaginationService.onSelectPaginationTab(this.currentPaginationSlot, index);
-        /* Allowing browser to render the new dataset before performing 'Select All' related action */
+        /* Allowing browser to render the new dataset before performing selection related action */
         setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
         this.dataTableUIService.onHighlightSelectedElement(event, 'pagination-tab', 'highlight-pagination-tab');
     }
@@ -219,6 +219,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             this.dataTableUIService.onStateChangeOfPaginationArrow(slotIndex, totalNoOfPaginationSlot);
             this.currentPaginationSlot = this.dataTablePaginationService.onChangePaginationSlot(slotIndex);
             const currentTabIndex: number = this.currentPaginationSlot['data'][0]['index'];
+            /* Allowing browser to render the new pagination slot on slot change */
             setTimeout(() => document.getElementById('pagination-tab-' + currentTabIndex).click(), 0);
         }
     }
