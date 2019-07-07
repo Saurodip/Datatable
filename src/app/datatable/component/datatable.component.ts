@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, AfterViewChecked, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, AfterViewChecked, HostListener, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { DataTableElementReferenceService } from '../services/datatable.element-reference.service';
 import { DataTablePaginationService } from '../services/datatable.pagination.service';
 import { DataTablePipeService } from '../services/datatable.pipe';
@@ -6,7 +6,8 @@ import { DataTableFilterService } from '../services/datatable.filter.service';
 import { DataTableSelectionService } from '../services/datatable.selection.service';
 import { DataTableSortService } from '../services/datatable.sort.service';
 import { DataTableUIService } from '../services/datatable.ui.service';
-import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, Pagination } from '../datatable.model';
+import { DataTableVirtualScrollingService } from '../services/datatable.virtual-scrolling.service';
+import { DataTableHeader, DataTableHeaderStyle, DataTablePagination, DataTableRowStyle, DataTableVirtualScrolling } from '../datatable.model';
 import { DataTableColumnType, DataTableSortOrder } from '../datatable.enum';
 
 @Component({
@@ -28,8 +29,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public header: DataTableHeader[];
     @Input() public headerStyle: DataTableHeaderStyle;
     @Input() public height: string;
-    @Input() public pagination: Pagination;
+    @Input() public pagination: DataTablePagination;
     @Input() public rowStyle: DataTableRowStyle;
+    @Input() public virtualScrolling: DataTableVirtualScrolling;
 
     public isLoading: boolean;
     public randomIndex: number;
@@ -56,7 +58,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         private dataTableFilterService: DataTableFilterService,
         private dataTableSelectionService: DataTableSelectionService,
         private dataTableSortService: DataTableSortService,
-        private dataTableUIService: DataTableUIService) {
+        private dataTableUIService: DataTableUIService,
+        private dataTableVirtualScrollingService: DataTableVirtualScrollingService) {
         this.isLoading = false;
         this.randomIndex = Math.floor(1000 + Math.random() * 9000);
         this.dataCollection = [];
@@ -81,7 +84,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     ngAfterViewInit() {
         setTimeout(() => {
-            this.verticalScrollableRegion = this.dataTableUIService.onSetHeightOfDataTableRowContainer(this.height);
+            this.verticalScrollableRegion = this.dataTableUIService.onSetDataTableRowWrapperHeight(this.height);
             if (this.dataTable) {
                 const headerInfo = this.dataTableUIService.onCalculateDataTableHeaderWidth(this.dataTable.nativeElement, this.header, this.columnResponsive);
                 Object.assign(this, headerInfo);
@@ -101,12 +104,17 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     ngAfterViewChecked() {
         let dataTableBody: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('scrollable-area-datatable-body');
-        if ((dataTableBody && dataTableBody['children'].length > 0) && !this.isCompletelyRendered) {
+        if ((dataTableBody && dataTableBody['children'].length > 0) && (this.dataCollection && this.dataCollection.length > 0) && !this.isCompletelyRendered) {
             this.isCompletelyRendered = true;
             this.dataTableUIService.onSetDataTableStyle(this.headerStyle, this.rowStyle, this.randomIndex);
             this.dataTableUIService.onActivateScrollingForHiddenScrollbars();
-            if (Object.getOwnPropertyNames(this.pagination).length !== 0) {
+            if (this.pagination) {
                 this.onPreparationOfDataForPagination(this.dataCollection);
+            }
+            if (this.virtualScrolling) {
+                setTimeout(() => {
+                    this.dataToDisplay = this.dataCollection.slice(0, this.virtualScrolling.numberOfRowsPerScroll + 2);
+                }, 0);
             }
         }
     }
@@ -158,7 +166,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                         }
                     }
                     this.dataToDisplay = this.isFilterTextPresent ? this.dataTableFilterService.onApplyColumnSearch(this.dataCollection, this.searchTextFields) : [...this.dataCollection];
-                    if (Object.getOwnPropertyNames(this.pagination).length !== 0) {
+                    if (this.pagination) {
                         this.onPreparationOfDataForPagination(this.dataToDisplay);
                         /* Allowing browser to render the new dataset before performing selection related action */
                         setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
@@ -221,6 +229,24 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             const currentTabIndex: number = this.currentPaginationSlot['data'][0]['index'];
             /* Allowing browser to render the new pagination slot on slot change */
             setTimeout(() => document.getElementById('pagination-tab-' + currentTabIndex).click(), 0);
+        }
+    }
+
+    @HostListener('scroll', ['$event'])
+    onApplyVirtualScrolling(event: Event) {
+        if ((event && event.currentTarget) && this.virtualScrolling) {
+            this.isLoading = true;
+            const currentTarget: EventTarget = event.currentTarget;
+            const firstRowIndex: number = this.dataToDisplay && this.dataToDisplay[0]['Index'];
+            const lastRowIndex: number = this.dataToDisplay && this.dataToDisplay[this.dataToDisplay.length - 1]['Index'];
+            const dataTableRow: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-row');
+            setTimeout(() => {
+                this.dataToDisplay = this.dataTableVirtualScrollingService.onRetrievalOfNewDataTableRow(currentTarget, this.dataCollection, this.dataToDisplay, firstRowIndex, lastRowIndex);
+                if (dataTableRow && (currentTarget['scrollTop'] === 0 && firstRowIndex !== 1)) {
+                    currentTarget['scrollTop'] = dataTableRow['offsetHeight'];
+                }
+                this.isLoading = false;
+            }, 0);
         }
     }
 }

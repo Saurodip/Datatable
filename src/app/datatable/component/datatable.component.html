@@ -39,23 +39,26 @@
                     </ng-template>
                 </div>
             </div>
-            <div class="datatable-body hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': verticalScrollableRegion }">
-                <div id="frozen-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style" 
-                    appDataTableRowHover [hoverColor]="rowStyle.hoverColor"
-                    [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
-                    [ngClass]="{ 'selected-row': dtRow?.RowSelected }"
-                    *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
-                    <div class="action-container">
-                        <input type="checkbox" id="datatable-checkbox-{{ dtRow?.Index }}"
-                        [ngStyle]="{ 'visibility': checkboxSelection ? 'visible': 'hidden' }">
+            <div class="datatable-body hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': verticalScrollableRegion }"
+                (scroll)="onApplyVirtualScrolling($event)">
+                <div class="datatable-row-container">
+                    <div id="frozen-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style" 
+                        appDataTableRowHover [hoverColor]="rowStyle.hoverColor"
+                        [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
+                        [ngClass]="{ 'selected-row': dtRow?.RowSelected }"
+                        *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
+                        <div class="action-container">
+                            <input type="checkbox" id="datatable-checkbox-{{ dtRow?.Index }}"
+                            [ngStyle]="{ 'visibility': checkboxSelection ? 'visible': 'hidden' }">
+                        </div>
+                        <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
+                            [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
+                            *ngFor="let dtHeader of frozenHeader; let j = index">
+                            {{ dtRow[dtHeader?.propertyName] }}
+                        </div>
                     </div>
-                    <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
-                        [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
-                        *ngFor="let dtHeader of frozenHeader; let j = index">
-                        {{ dtRow[dtHeader?.propertyName] }}
-                    </div>
+                    <div *ngIf="dataToDisplay && dataToDisplay.length === 0" class="background-screen"></div>
                 </div>
-                <div *ngIf="dataToDisplay && dataToDisplay.length === 0" class="background-screen"></div>
             </div>
         </div>
         <div *ngIf="scrollableHeader && scrollableHeader.length > 0" class="datatable-scrollable-area"
@@ -92,24 +95,27 @@
                     </ng-template>
                 </div>
             </div>
-            <div class="datatable-body hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': verticalScrollableRegion }">
-                <div id="scrollable-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style"
-                    appDataTableRowHover [hoverColor]="rowStyle.hoverColor"
-                    [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
-                    [ngClass]="{ 'selected-row': dtRow?.RowSelected }"
-                    *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
-                    <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
-                        [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
-                        *ngFor="let dtHeader of scrollableHeader; let j = index">
-                        {{ dtRow[dtHeader?.propertyName] }}
+            <div class="datatable-body hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': verticalScrollableRegion }"
+                (scroll)="onApplyVirtualScrolling($event)">
+                <div class="datatable-row-container">
+                    <div id="scrollable-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style"
+                        appDataTableRowHover [hoverColor]="rowStyle.hoverColor"
+                        [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
+                        [ngClass]="{ 'selected-row': dtRow?.RowSelected }"
+                        *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
+                        <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
+                            [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
+                            *ngFor="let dtHeader of scrollableHeader; let j = index">
+                            {{ dtRow[dtHeader?.propertyName] }}
+                        </div>
                     </div>
+                    <div *ngIf="dataToDisplay && dataToDisplay.length === 0" class="background-screen"></div>
                 </div>
-                <div *ngIf="dataToDisplay && dataToDisplay.length === 0" class="background-screen"></div>
             </div>
         </div>
     </div>
     <div class="datatable-footer">
-        <div class="pagination-tab-container">
+        <div *ngIf="pagination" class="pagination-tab-container">
             <span id="previous-pagination-arrow" class="pagination-navigation"
                 (click)="onChangePaginationSlot(currentPaginationSlot?.slot - 2)">&#9664;
             </span>

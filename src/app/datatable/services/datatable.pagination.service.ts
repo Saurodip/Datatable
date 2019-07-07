@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DataTableUIService } from './datatable.ui.service';
-import { Pagination } from '../datatable.model';
+import { DataTablePagination } from '../datatable.model';
 
 @Injectable()
 export class DataTablePaginationService {
@@ -14,10 +14,10 @@ export class DataTablePaginationService {
     /**
      * This method is responsible for preparing data structure of pagination tabs
      * @param dataCollection { object[] } Total number of datatable rows
-     * @param paginationInfo { Pagination } Pagination information provided through invoked component
+     * @param paginationInfo { DataTablePagination } Pagination information provided through invoked component
      * return paginationData { object[] } Segregated data into pagination tabs
      */
-    public preparePaginationTabs = (dataCollection: object[], paginationInfo: Pagination): object[] => {
+    public preparePaginationTabs = (dataCollection: object[], paginationInfo: DataTablePagination): object[] => {
         if ((dataCollection && dataCollection.length > 0) && Object.getOwnPropertyNames(paginationInfo).length !== 0) {
             let paginationTabCollection: object[] = [];
             let counter: number = 0;

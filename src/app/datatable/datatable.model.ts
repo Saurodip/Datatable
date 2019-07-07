@@ -10,8 +10,9 @@ export interface DataTable {
     header: DataTableHeader;
     headerStyle?: DataTableHeaderStyle;
     height: string;
-    pagination: Pagination;
+    pagination?: DataTablePagination;
     rowStyle?: DataTableRowStyle;
+    virtualScrolling?: DataTableVirtualScrolling;
 }
 
 export interface DataTableHeader {
@@ -65,7 +66,7 @@ export class DataTablePipe {
     }
 }
 
-export class Pagination {
+export class DataTablePagination {
     public numberOfRowsPerTab: number;
     public numberOfTabsPerSlot: number;
 
@@ -73,5 +74,9 @@ export class Pagination {
         this.numberOfRowsPerTab = 10;
         this.numberOfTabsPerSlot = 5;
     }
+}
+
+export class DataTableVirtualScrolling {
+    public numberOfRowsPerScroll: number;
 }
 

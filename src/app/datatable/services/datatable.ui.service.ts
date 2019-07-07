@@ -13,7 +13,7 @@ export class DataTableUIService {
      * @param height { string } Total datatable height provided in pixel from the invoked component
      * return verticalScrollableRegion { string } Height of the vertical scrollable region
      */
-    public onSetHeightOfDataTableRowContainer = (height: string): string => {
+    public onSetDataTableRowWrapperHeight = (height: string): string => {
         const dataTableHeaderContainer: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-header-container');
         const dataTableFilterContainer: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-filter-container');
         const dataTableFooter: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-footer');
@@ -22,6 +22,14 @@ export class DataTableUIService {
             verticalScrollableRegion = parseFloat(height) - (dataTableHeaderContainer['offsetHeight'] + dataTableFilterContainer['offsetHeight'] + dataTableFooter['offsetHeight']) + 'px';
         }
         return verticalScrollableRegion || '';
+    }
+
+    public onSetDataTableRowContainerHeight = (dataCollection: object[]): string => {
+        const dataTableRow: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-row');
+        if (dataTableRow && (dataCollection && dataCollection.length > 0)) {
+            return dataTableRow['offsetHeight'] * dataCollection.length + 'px';
+        }
+        return '0px';
     }
 
     /**
@@ -98,7 +106,7 @@ export class DataTableUIService {
             for (let property in rowStyle) {
                 if (rowStyle.hasOwnProperty(property) && property !== 'selectionColor') {
                     let cssProperty = property.replace(/[A-Z]/g, (propertyName: string) => '-' + propertyName.toLowerCase());
-                    cssProperties += `${ cssProperty }: ${ headerStyle[property] } !important; `;
+                    cssProperties += `${ cssProperty }: ${ rowStyle[property] } !important; `;
                 }
             }
             style.innerHTML += ` .custom-row-style { ${cssProperties}}`;

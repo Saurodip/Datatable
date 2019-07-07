@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from './app.service';
-import { DataTableHeader, DataTableHeaderStyle, DataTablePipe, DataTableRowStyle, Pagination } from './datatable/datatable.model';
+import { DataTableHeader, DataTableHeaderStyle, DataTablePipe, DataTableRowStyle, DataTablePagination, DataTableVirtualScrolling } from './datatable/datatable.model';
 import { DataTablePipeType, DataTableColumnType } from './datatable/datatable.enum';
 
 @Component({
@@ -14,8 +14,9 @@ export class AppComponent implements OnInit {
   private error: string;
   public header: DataTableHeader[];
   public headerStyle: DataTableHeaderStyle;
-  public paginationData: Pagination;
+  public paginationData: DataTablePagination;
   public rowStyle: DataTableRowStyle;
+  public virtualScrollingData: DataTableVirtualScrolling;
 
   constructor(private appService: AppService) {
     this.data = [];
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit {
     this.headerStyle = {};
     this.paginationData = { numberOfRowsPerTab: 10, numberOfTabsPerSlot: 2 };
     this.rowStyle = {};
+    this.virtualScrollingData = { numberOfRowsPerScroll: 10 };
   }
 
   ngOnInit() {
@@ -91,6 +93,7 @@ export class AppComponent implements OnInit {
     };
 
     this.rowStyle = {
+      height: '30px',
       selectionColor: 'red'
     };
   }

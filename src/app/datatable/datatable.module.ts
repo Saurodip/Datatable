@@ -10,6 +10,7 @@ import { DataTableFilterService } from './services/datatable.filter.service';
 import { DataTableSelectionService } from './services/datatable.selection.service';
 import { DataTableSortService } from './services/datatable.sort.service';
 import { DataTableUIService } from './services/datatable.ui.service';
+import { DataTableVirtualScrollingService } from './services/datatable.virtual-scrolling.service';
 
 @NgModule({
     declarations: [
@@ -32,6 +33,7 @@ import { DataTableUIService } from './services/datatable.ui.service';
         DataTableSelectionService,
         DataTableSortService,
         DataTableUIService,
+        DataTableVirtualScrollingService,
         DatePipe,
         DecimalPipe,
         LowerCasePipe,
