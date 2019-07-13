@@ -39,7 +39,8 @@
                     </ng-template>
                 </div>
             </div>
-            <div class="datatable-body hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': verticalScrollableRegion }"
+            <div class="datatable-body forzen-area-datatable-body hide-filter-horizontal-scrollbar"
+                [ngStyle]="{ 'height': verticalScrollableRegion }"
                 (scroll)="onApplyVirtualScrolling($event)">
                 <div class="datatable-row-container">
                     <div id="frozen-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style" 
@@ -95,7 +96,7 @@
                     </ng-template>
                 </div>
             </div>
-            <div class="datatable-body hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': verticalScrollableRegion }"
+            <div class="datatable-body scrollable-area-datatable-body  hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': verticalScrollableRegion }"
                 (scroll)="onApplyVirtualScrolling($event)">
                 <div class="datatable-row-container">
                     <div id="scrollable-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style"

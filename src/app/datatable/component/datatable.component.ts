@@ -47,6 +47,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public responsiveColumnWidth: string;
     public verticalScrollableRegion: string;
     private isFilterTextPresent: boolean;
+    private filteredData: object[];
     private paginationData: object[];
     public currentPaginationSlot: object;
     private currentPaginationIndex: number;
@@ -74,6 +75,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.responsiveColumnWidth = '';
         this.verticalScrollableRegion = '';
         this.isFilterTextPresent = false;
+        this.filteredData = [];
         this.paginationData = [];
         this.currentPaginationSlot = {};
         this.currentPaginationIndex = 0;
@@ -153,7 +155,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 const filteredText: string = event.target['value'] && event.target['value'].toLowerCase().trim();
                 this.isFilterTextPresent = false;
                 if (this.globalFilter) {
-                    this.dataToDisplay = filteredText ? this.dataTableFilterService.onApplyGlobalSearch(filteredText, this.dataCollection, this.header) : [...this.dataCollection];
+                    this.filteredData = filteredText ? this.dataTableFilterService.onApplyGlobalSearch(filteredText, this.dataCollection, this.header) : [...this.dataCollection];
                     this.isFilterTextPresent = filteredText ? true : false;
                 } else if (this.columnFilter) {
                     this.searchTextFields[propertyName] = filteredText;
@@ -165,11 +167,15 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                             }
                         }
                     }
-                    this.dataToDisplay = this.isFilterTextPresent ? this.dataTableFilterService.onApplyColumnSearch(this.dataCollection, this.searchTextFields) : [...this.dataCollection];
+                    this.filteredData = this.isFilterTextPresent ? this.dataTableFilterService.onApplyColumnSearch(this.dataCollection, this.searchTextFields) : [...this.dataCollection];
                     if (this.pagination) {
-                        this.onPreparationOfDataForPagination(this.dataToDisplay);
+                        this.onPreparationOfDataForPagination(this.filteredData);
                         /* Allowing browser to render the new dataset before performing selection related action */
                         setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
+                    } else if (this.virtualScrolling) {
+                        this.dataToDisplay = this.filteredData.slice(0, this.virtualScrolling.numberOfRowsPerScroll + 2);
+                    } else {
+                        this.dataToDisplay = [...this.filteredData];
                     }
                 }
             }
@@ -234,18 +240,26 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     @HostListener('scroll', ['$event'])
     onApplyVirtualScrolling(event: Event) {
-        if ((event && event.currentTarget) && this.virtualScrolling) {
-            this.isLoading = true;
+        if ((event && event.currentTarget && event.currentTarget['className'].indexOf('scrollable-area-datatable-body') >= 0) && this.virtualScrolling) {
             const currentTarget: EventTarget = event.currentTarget;
-            const firstRowIndex: number = this.dataToDisplay && this.dataToDisplay[0]['Index'];
-            const lastRowIndex: number = this.dataToDisplay && this.dataToDisplay[this.dataToDisplay.length - 1]['Index'];
-            const dataTableRow: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-row');
+            let dataCollection: object[] = [];
+            let firstRowIndex: number = 0;
+            if (this.isFilterTextPresent) {
+                dataCollection = this.filteredData;
+                firstRowIndex = (this.filteredData && this.filteredData.length > 0) ? this.filteredData[0]['Index'] : firstRowIndex;
+            } else {
+                dataCollection = this.dataCollection;
+                firstRowIndex = (this.dataCollection && this.dataCollection.length > 0) ? this.dataCollection[0]['Index'] : firstRowIndex;
+            }
             setTimeout(() => {
-                this.dataToDisplay = this.dataTableVirtualScrollingService.onRetrievalOfNewDataTableRow(currentTarget, this.dataCollection, this.dataToDisplay, firstRowIndex, lastRowIndex);
-                if (dataTableRow && (currentTarget['scrollTop'] === 0 && firstRowIndex !== 1)) {
-                    currentTarget['scrollTop'] = dataTableRow['offsetHeight'];
+                this.dataToDisplay = this.dataTableVirtualScrollingService.onRetrievalOfNewDataTableRow(currentTarget, dataCollection, this.dataToDisplay);
+                if (this.dataToDisplay && this.dataToDisplay.length > 0) {
+                    const dataTableRow: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-row');
+                    if (currentTarget['scrollTop'] === 0 && firstRowIndex !== this.dataToDisplay[0]['Index']) {
+                        currentTarget['scrollTop'] = dataTableRow ? dataTableRow['offsetHeight'] / 2 : 0;
+                    }
+                    console.log(this.dataToDisplay[0]['Index']);
                 }
-                this.isLoading = false;
             }, 0);
         }
     }

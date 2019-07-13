@@ -12,26 +12,26 @@ export class DataTableVirtualScrollingService {
      * @param currentTarget { EventTarget } Event current target
      * @param dataCollection { object[] } Total number of datatable rows
      * @param dataToDisplay { object[] } Number of datatable rows available for display
-     * @param firstRowIndex { number } Index of the first datatable row in the current dataset
-     * @param lastRowIndex { number } Index of the last datatable row in the current dataset
      * return dataToDisplay { object[] } Updated dataset to display in the datatable
      */
-    public onRetrievalOfNewDataTableRow = (currentTarget: EventTarget, dataCollection: object[], dataToDisplay: object[], firstRowIndex: number, lastRowIndex: number): object[] => {
-        if (dataCollection && dataCollection.length > 0) {
+    public onRetrievalOfNewDataTableRow = (currentTarget: EventTarget, dataCollection: object[], dataToDisplay: object[]): object[] => {
+        if ((dataCollection && dataCollection.length > 0) && (dataToDisplay && dataToDisplay.length > 0)) {
             if (currentTarget['scrollTop'] === 0) {
-                const matchedRowData: object = dataCollection.find((rowData: object) => rowData['Index'] === firstRowIndex - 1);
-                if (matchedRowData) {
-                    if (!dataToDisplay.find((rowData: object) => rowData['Index'] === matchedRowData['Index'])) {
-                        dataToDisplay.unshift(matchedRowData);
+                const firstDataTableRowIndex: number = dataCollection.findIndex((rowData: object) => rowData['Index'] === dataToDisplay[0]['Index']);
+                const previousDataTableRow: object = firstDataTableRowIndex > 0 ? dataCollection[firstDataTableRowIndex - 1] : dataCollection[firstDataTableRowIndex];
+                if (previousDataTableRow) {
+                    if (!dataToDisplay.find((rowData: object) => rowData['Index'] === previousDataTableRow['Index'])) {
+                        dataToDisplay.unshift(previousDataTableRow);
                         dataToDisplay.pop();
                     }
                 }
             } else if (currentTarget['scrollTop'] >= (currentTarget['scrollHeight'] - currentTarget['offsetHeight'])) {
-                const matchedRowData: object = dataCollection.find((rowData: object) => rowData['Index'] === lastRowIndex + 1);
-                if (matchedRowData) {
-                    if (!dataToDisplay.find((rowData: object) => rowData['Index'] === matchedRowData['Index'])) {
+                const lastDataTableRowIndex: number = dataCollection.findIndex((rowData: object) => rowData['Index'] === dataToDisplay[dataToDisplay.length - 1]['Index']);
+                const nextDataTableRow: object = lastDataTableRowIndex < dataCollection.length - 1 ? dataCollection[lastDataTableRowIndex + 1] : dataCollection[lastDataTableRowIndex];
+                if (nextDataTableRow) {
+                    if (!dataToDisplay.find((rowData: object) => rowData['Index'] === nextDataTableRow['Index'])) {
                         dataToDisplay.shift();
-                        dataToDisplay.push(matchedRowData);
+                        dataToDisplay.push(nextDataTableRow);
                     }
                 }
             }
