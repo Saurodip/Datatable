@@ -174,6 +174,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                         setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
                     } else if (this.virtualScrolling) {
                         this.dataToDisplay = this.filteredData.slice(0, this.virtualScrolling.numberOfRowsPerScroll + 2);
+                        setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
                     } else {
                         this.dataToDisplay = [...this.filteredData];
                     }
@@ -258,9 +259,10 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                     if (currentTarget['scrollTop'] === 0 && firstRowIndex !== this.dataToDisplay[0]['Index']) {
                         currentTarget['scrollTop'] = dataTableRow ? dataTableRow['offsetHeight'] / 2 : 0;
                     }
-                    console.log(this.dataToDisplay[0]['Index']);
                 }
             }, 0);
+            /* Allowing browser to render the new dataset before performing selection related action */
+            setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
         }
     }
 }
