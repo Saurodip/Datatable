@@ -27,10 +27,12 @@ export class HoverDirective {
             if (dataTableRow && dataTableRow.length > 0) {
                 for (let i: number = 0; i < dataTableRow.length; i++) {
                     let isSelectedRowClassPresent: boolean = dataTableRow[i]['className'] && dataTableRow[i]['className'].indexOf(rowSelectionClassName) !== -1 ? true : false;
-                    if (eventType === 'mouseenter' && !isSelectedRowClassPresent) {
-                        dataTableRow[i]['style'].backgroundColor = hoverColor;
-                    } else if (eventType === 'mouseleave') {
-                        dataTableRow[i]['style'].backgroundColor = hoverColor;
+                    if (!isSelectedRowClassPresent) {
+                        if (eventType === 'mouseenter') {
+                            dataTableRow[i]['style'].backgroundColor = hoverColor;
+                        } else if (eventType === 'mouseleave') {
+                            dataTableRow[i]['style'].backgroundColor = hoverColor;
+                        }
                     }
                 }
             }
