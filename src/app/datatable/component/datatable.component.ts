@@ -7,7 +7,7 @@ import { DataTableSelectionService } from '../services/datatable.selection.servi
 import { DataTableSortService } from '../services/datatable.sort.service';
 import { DataTableUIService } from '../services/datatable.ui.service';
 import { DataTableVirtualScrollingService } from '../services/datatable.virtual-scrolling.service';
-import { DataTableHeader, DataTableHeaderStyle, DataTablePagination, DataTableRowStyle, DataTableVirtualScrolling } from '../datatable.model';
+import { DataTableHeader, DataTableHeaderStyle, DataTablePagination, DataTableRowStyle, DataTableTooltip, DataTableVirtualScrolling } from '../datatable.model';
 import { DataTableColumnType, DataTableSortOrder } from '../datatable.enum';
 
 @Component({
@@ -50,7 +50,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     private filteredData: object[];
     private paginationData: object[];
     public currentPaginationSlot: object;
-    private currentPaginationIndex: number;
+    public tooltipInfo: DataTableTooltip;
 
     constructor(
         private dataTableElementReferenceService: DataTableElementReferenceService,
@@ -78,7 +78,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.filteredData = [];
         this.paginationData = [];
         this.currentPaginationSlot = {};
-        this.currentPaginationIndex = 0;
+        this.tooltipInfo = new DataTableTooltip();
     }
 
     ngOnInit() {
@@ -92,8 +92,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 Object.assign(this, headerInfo);
             }
             if (this.header && this.header.length > 0) {
-                this.frozenHeader = this.header.filter((header: DataTableHeader) => header.isFrozen);
-                this.scrollableHeader = this.header.filter((header: DataTableHeader) => !header.isFrozen);
+                this.frozenHeader = this.header.filter((header: DataTableHeader) => header.frozen);
+                this.scrollableHeader = this.header.filter((header: DataTableHeader) => !header.frozen);
                 this.header.forEach((header: DataTableHeader) => {
                     if (this.columnFilter) {
                         this.searchTextFields[header.propertyName] = '';
@@ -263,6 +263,16 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             }, 0);
             /* Allowing browser to render the new dataset before performing selection related action */
             setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
+        }
+    }
+
+    public onHoverTooltipIcon = (event: MouseEvent, tooltipMessage: string): void => {
+        if (event) {
+            if (event.type === 'mouseenter') {
+                this.tooltipInfo = { event: event, 'content': tooltipMessage };
+            } else if (event.type === 'mouseleave') {
+                this.tooltipInfo = new DataTableTooltip();
+            }
         }
     }
 }

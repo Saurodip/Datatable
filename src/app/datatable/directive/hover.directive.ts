@@ -3,8 +3,7 @@ import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 @Directive({
     selector: '[appDataTableRowHover]'
 })
-
-export class HoverDirective {
+export class DataTableHoverDirective {
     @Input() private hoverColor: string;
 
     constructor(private elementRef: ElementRef) {

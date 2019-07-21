@@ -24,6 +24,7 @@ export class DataTableElementReferenceService {
             case 'frozen-area-datatable-body': return document.querySelector('.datatable-frozen-area .datatable-body');
             case 'scrollable-area-datatable-body': return document.querySelector('.datatable-scrollable-area .datatable-body');
             case 'datatable-row': return document.querySelector('.datatable-row');
+            case 'datatable-tooltip-container': return document.querySelector('#datatable-tooltip-container');
             case 'current-datatable-checkbox': return document.querySelector('#datatable-checkbox-' + index);
             case 'datatable-footer': return document.querySelector('.datatable-footer');
             case 'previous-pagination-arrow': return document.querySelector('#previous-pagination-arrow');

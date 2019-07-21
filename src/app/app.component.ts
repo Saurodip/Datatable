@@ -48,7 +48,8 @@ export class AppComponent implements OnInit {
         title: 'Serial No.',
         type: DataTableColumnType.Integer,
         columnWidth: '150px',
-        isFrozen: true
+        frozen: true,
+        tooltip: true
       },
       {
         propertyName: 'ProductName',
@@ -56,33 +57,38 @@ export class AppComponent implements OnInit {
         type: DataTableColumnType.String,
         columnWidth: '200px',
         pipe: new DataTablePipe(DataTablePipeType.UpperCasePipe),
-        isFrozen: true
+        frozen: true,
+        tooltip: true
       },
       {
         propertyName: 'Manufacturer',
         title: 'Manufacturer',
         type: DataTableColumnType.String,
-        columnWidth: '400px'
+        columnWidth: '400px',
+        tooltip: true
       },
       {
         propertyName: 'Version',
         title: 'Version',
         type: DataTableColumnType.Version,
-        columnWidth: '400px'
+        columnWidth: '400px',
+        tooltip: true
       },
       {
         propertyName: 'Date',
         title: 'Date',
         type: DataTableColumnType.Date,
         columnWidth: '400px',
-        pipe: new DataTablePipe(DataTablePipeType.DatePipe, 'dd-MM-yyyy hh:mm:ss')
+        pipe: new DataTablePipe(DataTablePipeType.DatePipe, 'dd-MM-yyyy hh:mm:ss'),
+        tooltip: true
       },
       {
         propertyName: 'Price',
         title: 'Price',
         type: DataTableColumnType.String,
         pipe: new DataTablePipe(DataTablePipeType.CurrencyPipe, '1.2-2', 'INR', '₹ '),
-        columnWidth: '250px'
+        columnWidth: '250px',
+        tooltip: true
       }
     ];
   }

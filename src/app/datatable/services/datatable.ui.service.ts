@@ -68,7 +68,7 @@ export class DataTableUIService {
             if (isColumnResponsive) {
                 DataTableHeaderInfo['responsiveColumnWidth'] = Math.floor((dataTable['offsetWidth'] - (actionContainer['offsetWidth'] + scrollbarWidth)) / dataTableHeader.length) + 'px';
             } else {
-                const frozenHeader: DataTableHeader[] = dataTableHeader.filter((header: DataTableHeader) => header.isFrozen === true);
+                const frozenHeader: DataTableHeader[] = dataTableHeader.filter((header: DataTableHeader) => header.frozen === true);
                 let frozenHeaderAreaWidth: number = actionContainer['offsetWidth'];
                 if (frozenHeader && frozenHeader.length > 0) {
                     frozenHeader.forEach((header: DataTableHeader) => {

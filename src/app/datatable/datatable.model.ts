@@ -16,12 +16,13 @@ export interface DataTable {
 }
 
 export interface DataTableHeader {
+    frozen?: boolean;
     propertyName: string;
     title: string;
     type: DataTableColumnType;
     columnWidth: string;
     pipe?: DataTablePipe;
-    isFrozen?: boolean;
+    tooltip?: boolean;
 }
 
 export interface DataTableHeaderStyle {
@@ -78,5 +79,10 @@ export class DataTablePagination {
 
 export class DataTableVirtualScrolling {
     public numberOfRowsPerScroll: number;
+}
+
+export class DataTableTooltip {
+    public event: MouseEvent;
+    public content: string;
 }
 

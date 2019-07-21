@@ -1,7 +1,4 @@
 <div #dataTable id="datatable{{ randomIndex }}" class="datatable" [ngStyle]="{ 'height': height }">
-    <div *ngIf="isLoading" class="spinner">
-        <img src="assets/images/spinner.gif" alt="loading-spinner">
-    </div>
     <div class="datatable-main-section">
         <div class="datatable-frozen-area">
             <div class="datatable-header-wrapper">
@@ -39,7 +36,7 @@
                     </ng-template>
                 </div>
             </div>
-            <div class="datatable-body forzen-area-datatable-body hide-filter-horizontal-scrollbar"
+            <div class="datatable-body frozen-area-datatable-body hide-filter-horizontal-scrollbar"
                 [ngStyle]="{ 'height': verticalScrollableRegion }"
                 (scroll)="onApplyVirtualScrolling($event)">
                 <div class="datatable-row-container">
@@ -55,7 +52,17 @@
                         <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of frozenHeader; let j = index">
-                            {{ dtRow[dtHeader?.propertyName] }}
+                            <div class="datatable-row-content">{{ dtRow[dtHeader?.propertyName] }}</div>
+                            <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
+                                <div [ngSwitch]="dtRow?.tooltip[dtHeader?.propertyName]?.icon"
+                                    (mouseenter)="onHoverTooltipIcon($event, dtRow?.tooltip[dtHeader?.propertyName]?.message)"
+                                    (mouseleave)="onHoverTooltipIcon($event)">
+                                    <i *ngSwitchCase="'info'">&#9432;</i>
+                                    <i *ngSwitchCase="'help'">?</i>
+                                    <i *ngSwitchCase="'error'">&#10006;</i>
+                                    <i *ngSwitchDefault></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div *ngIf="dataToDisplay && dataToDisplay.length === 0" class="background-screen"></div>
@@ -107,7 +114,17 @@
                         <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of scrollableHeader; let j = index">
-                            {{ dtRow[dtHeader?.propertyName] }}
+                            <div class="datatable-row-content">{{ dtRow[dtHeader?.propertyName] }}</div>
+                            <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
+                                <div [ngSwitch]="dtRow?.tooltip[dtHeader?.propertyName]?.icon"
+                                    (mouseenter)="onHoverTooltipIcon($event, dtRow?.tooltip[dtHeader?.propertyName]?.message)"
+                                    (mouseleave)="onHoverTooltipIcon($event)">
+                                    <i *ngSwitchCase="'info'">&#9432;</i>
+                                    <i *ngSwitchCase="'help'">?</i>
+                                    <i *ngSwitchCase="'error'">&#10006;</i>
+                                    <i *ngSwitchDefault></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div *ngIf="dataToDisplay && dataToDisplay.length === 0" class="background-screen"></div>
@@ -131,4 +148,8 @@
             </span>
         </div>
     </div>
+    <div *ngIf="isLoading" class="spinner">
+        <img src="assets/images/spinner.gif" alt="loading-spinner">
+    </div>
+    <app-datatable-tooltip *ngIf="tooltipInfo?.content" [tooltipInfo]="tooltipInfo" [direction]="'right'"></app-datatable-tooltip>
 </div>
