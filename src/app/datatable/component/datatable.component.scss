@@ -28,6 +28,7 @@ $text-color: #e3e3e3;
         position: absolute;
         width: 100%;
         z-index: 2;
+
         img {
             height: 100px;
             width: 100px;
@@ -186,9 +187,19 @@ $text-color: #e3e3e3;
                         display: inline-block;
                         text-align: center;
                         width: 30px;
-                        i {
-                            font-size: 13px;
-                            font-style: normal;
+
+                        div {
+                            height: 10px;
+                            line-height: 9px;
+                            margin: 0px auto;
+                            position: relative;
+                            top: 0px;
+                            width: 11px;
+
+                            i {
+                                font-size: 13px;
+                                font-style: normal;
+                            }
                         }
                     }
                 }

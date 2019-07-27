@@ -70,7 +70,7 @@ export class AppComponent implements OnInit {
       {
         propertyName: 'Version',
         title: 'Version',
-        type: DataTableColumnType.Version,
+        type: DataTableColumnType.Custom,
         columnWidth: '400px',
         tooltip: true
       },

@@ -13,6 +13,7 @@ export class DataTableElementReferenceService {
      */
     public getHTMLElementRefernce = (domElement: string, index?: number): HTMLElement => {
         switch (domElement) {
+            case 'datatable-main-section': return document.querySelector('.datatable-main-section');
             case 'datatable-frozen-area': return document.querySelector('.datatable-frozen-area');
             case 'datatable-scrollable-area': return document.querySelector('.datatable-scrollable-area');
             case 'datatable-scrollable-header-wrapper': return document.querySelector('.datatable-scrollable-area .datatable-header-wrapper');

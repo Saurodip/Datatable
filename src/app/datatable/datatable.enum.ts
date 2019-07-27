@@ -1,11 +1,10 @@
 export enum DataTableColumnType {
-    Boolean,
+    Custom,
     Date,
     Float,
     Integer,
     None,
-    String,
-    Version
+    String
 }
 
 export enum DataTablePipeType {

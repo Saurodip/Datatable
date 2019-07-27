@@ -17,11 +17,6 @@ export class DataTableTooltipComponent {
             this.onDetermineTooltipPosition(info.event);
         }
     }
-    @Input() set direction(value: string) {
-        if (value) {
-            this.arrowDirection = value;
-        }
-    }
 
     constructor(
         private dataTableElementReferenceService: DataTableElementReferenceService) {
@@ -33,10 +28,30 @@ export class DataTableTooltipComponent {
         setTimeout(() => {
             const dataTableMainSection: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-main-section');
             const dataTableTooltipContainer: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-tooltip-container');
-            dataTableTooltipContainer['style'].left = event.clientX - (dataTableTooltipContainer['offsetWidth'] / 2) + 'px';
-            dataTableTooltipContainer['style'].top = event.clientY - (dataTableTooltipContainer['offsetHeight'] + 20) + 'px';
-            const parent = dataTableMainSection && dataTableMainSection.getBoundingClientRect();
-            const child = dataTableTooltipContainer.getBoundingClientRect();
+            const tooltipArrowHeight: number = 20;
+            if (dataTableMainSection && dataTableTooltipContainer) {
+                const tooltipMainContainer = dataTableMainSection && dataTableMainSection.getBoundingClientRect();
+                if (tooltipMainContainer) {
+                    let left: number = event.clientX - tooltipMainContainer.left;
+                    let top: number = event.clientY - (tooltipMainContainer.top + dataTableTooltipContainer['offsetHeight'] + tooltipArrowHeight);
+                    dataTableTooltipContainer['style'].left = left + 'px';
+                    dataTableTooltipContainer['style'].top = top + 'px';
+                    const tooltipContainer = dataTableTooltipContainer.getBoundingClientRect();
+                    if (tooltipContainer.top >= tooltipMainContainer.top && tooltipContainer.right <= tooltipMainContainer.right) {
+                        this.arrowDirection = 'left-down';
+                    } else if (tooltipContainer.top >= tooltipMainContainer.top && tooltipContainer.right > tooltipMainContainer.right) {
+                        this.arrowDirection = 'right-down';
+                        dataTableTooltipContainer['style'].left = left - dataTableTooltipContainer['offsetWidth'] + 'px';
+                    } else if (tooltipContainer.top < tooltipMainContainer.top && tooltipContainer.right <= tooltipMainContainer.right) {
+                        this.arrowDirection = 'left-up';
+                        dataTableTooltipContainer['style'].top = top + dataTableTooltipContainer['offsetHeight'] + tooltipArrowHeight + 'px';
+                    } else if (tooltipContainer.top < tooltipMainContainer.top && tooltipContainer.right > tooltipMainContainer.right) {
+                        this.arrowDirection = 'right-up';
+                        dataTableTooltipContainer['style'].left = left - dataTableTooltipContainer['offsetWidth'] + 'px';
+                        dataTableTooltipContainer['style'].top = top + dataTableTooltipContainer['offsetHeight'] + tooltipArrowHeight + 'px';
+                    }
+                }
+            }
         }, 0);
     }
 }

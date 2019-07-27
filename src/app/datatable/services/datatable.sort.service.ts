@@ -22,9 +22,6 @@ export class DataTableSortService {
             case DataTableColumnType.String:
                 sortedData = this.sortByString(dataCollection, propertyName, sortOrder);
                 break;
-            case DataTableColumnType.Version:
-                // sortedData = this.sortByVersion(dataCollection, propertyName, sortOrder);
-                break;
             default:
                 break;
         }

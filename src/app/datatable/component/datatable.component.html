@@ -118,7 +118,7 @@
                             <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
                                 <div [ngSwitch]="dtRow?.tooltip[dtHeader?.propertyName]?.icon"
                                     (mouseenter)="onHoverTooltipIcon($event, dtRow?.tooltip[dtHeader?.propertyName]?.message)"
-                                    (mouseleave)="onHoverTooltipIcon($event)">
+                                    >
                                     <i *ngSwitchCase="'info'">&#9432;</i>
                                     <i *ngSwitchCase="'help'">?</i>
                                     <i *ngSwitchCase="'error'">&#10006;</i>
@@ -151,5 +151,5 @@
     <div *ngIf="isLoading" class="spinner">
         <img src="assets/images/spinner.gif" alt="loading-spinner">
     </div>
-    <app-datatable-tooltip *ngIf="tooltipInfo?.content" [tooltipInfo]="tooltipInfo" [direction]="'right'"></app-datatable-tooltip>
+    <app-datatable-tooltip *ngIf="tooltipInfo?.content" [tooltipInfo]="tooltipInfo"></app-datatable-tooltip>
 </div>

@@ -1,4 +1,6 @@
 $arrow-background-color: grey;
+$arrow-height: 20px;
+$arrow-width: 250px;
 
 @mixin arrowStyle($bottomColor, $leftColor, $rightColor, $topColor) {
     border-bottom-color: $bottomColor;
@@ -14,7 +16,6 @@ $arrow-background-color: grey;
 @mixin arrowPosition($bottom, $left, $right, $top) {
     bottom: #{ $bottom };
     left: #{ $left };
-    margin: auto;
     position: absolute;
     right: #{ $right };
     top: #{ $top };
@@ -23,38 +24,40 @@ $arrow-background-color: grey;
 #datatable-tooltip-container {
     margin: auto;
     position: absolute;
-    width: 250px;
+    width: $arrow-width;
     z-index: 99;
 
-    .arrow-up {
-        @include arrowPosition('', 0px, 0px, -20px);
+    .arrow-left-up {
+        @include arrowPosition('', 0px, 0px, -$arrow-height);
         @include arrowStyle($arrow-background-color, transparent, transparent, transparent);
     }
 
-    .arrow-down {
-        @include arrowPosition(-20px, 0px, 0px, '');
+    .arrow-right-up {
+        @include arrowPosition('', '', 0px, -$arrow-height);
+        @include arrowStyle($arrow-background-color, transparent, transparent, transparent);
+    }
+
+    .arrow-left-down {
+        @include arrowPosition(-$arrow-height, 0px, 0px, '');
         @include arrowStyle(transparent, transparent, transparent, $arrow-background-color);
     }
 
-    .arrow-right {
-        @include arrowPosition(0px, '', -20px, 0px);
-        @include arrowStyle(transparent, $arrow-background-color, transparent, transparent);
-    }
-
-    .arrow-left {
-        @include arrowPosition(0px, -20px, '', 0px);
-        @include arrowStyle(transparent, transparent, $arrow-background-color, transparent);
+    .arrow-right-down {
+        @include arrowPosition(-$arrow-height, '', 0px, '');
+        @include arrowStyle(transparent, transparent, transparent, $arrow-background-color);
     }
 
     .tooltip-message {
         background-color: #f7f7f7;
         border: 1px solid gray;
         box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.5);
+        box-sizing: border-box;
         font-size: 10px;
         letter-spacing: 2px;
         line-height: 2;
-        padding: 15px 20px;
+        padding: 15px;
         position: relative;
         text-align: center;
+        width: $arrow-width;
     }
 }

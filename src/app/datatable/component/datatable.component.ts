@@ -200,8 +200,12 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             }
         }
         let dataCollection: object[] = this.isFilterTextPresent ? this.dataToDisplay : this.dataCollection;
-        dataCollection = this.dataTableSortService.onApplySort(dataCollection, this.sortFields, propertyName, type);
-        this.dataToDisplay = [...dataCollection];
+        if (type !== DataTableColumnType.Custom) {
+            dataCollection = this.dataTableSortService.onApplySort(dataCollection, this.sortFields, propertyName, type);
+            this.dataToDisplay = [...dataCollection];
+        } else {
+            // emit
+        }
         // this.preparePaginationTabs();
     }
 
