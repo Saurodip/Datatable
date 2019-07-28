@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from './app.service';
-import { DataTableHeader, DataTableHeaderStyle, DataTablePipe, DataTableRowStyle, DataTablePagination, DataTableVirtualScrolling } from './datatable/datatable.model';
-import { DataTablePipeType, DataTableColumnType } from './datatable/datatable.enum';
+import { DataTablePipeType, DataTableColumnType, DataTableLoadingPattern } from './datatable/enumerations/datatable.enum';
+import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, DataTableVirtualScrolling } from './datatable/interfaces/datatable.interface';
+import { DataTablePagination, DataTablePipe } from './datatable/models/datatable.model';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,8 @@ import { DataTablePipeType, DataTableColumnType } from './datatable/datatable.en
 
 export class AppComponent implements OnInit {
   public data: any[];
-  private error: string;
+  public dataTableLoadingPattern = DataTableLoadingPattern;
+  public error: string;
   public header: DataTableHeader[];
   public headerStyle: DataTableHeaderStyle;
   public paginationData: DataTablePagination;

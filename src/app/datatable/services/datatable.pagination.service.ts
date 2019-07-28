@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DataTableUIService } from './datatable.ui.service';
-import { DataTablePagination } from '../datatable.model';
+import { DataTablePagination } from '../models/datatable.model';
 
 @Injectable()
 export class DataTablePaginationService {

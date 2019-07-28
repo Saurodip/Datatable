@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DataTableElementReferenceService } from './datatable.element-reference.service';
-import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle } from '../datatable.model';
+import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle } from '../interfaces/datatable.interface';
 
 @Injectable()
 export class DataTableUIService {

@@ -1,16 +1,18 @@
 <div class="app-datatable-container">
     <app-datatable 
         class="app-datatable"
-        [checkboxSelection]="false"
+        [checkboxSelection]="true"
         [columnFilter]="true"
-        [columnResponsive]="false"
+        [columnResponsive]="true"
         [data]="data"
+        [dataLoadingPattern]="dataTableLoadingPattern.VirtualScrolling"
         [filterTextLimit]="50"
         [globalFilter]="false"
         [header]="header"
         [height]="'400px'"
         [headerStyle]="headerStyle"
         id="module-datatable-index"
+        [pagination]="paginationData"
         [rowStyle]="rowStyle"
         [virtualScrolling]="virtualScrollingData">
     </app-datatable>

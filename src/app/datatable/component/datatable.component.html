@@ -133,7 +133,7 @@
         </div>
     </div>
     <div class="datatable-footer">
-        <div *ngIf="pagination" class="pagination-tab-container">
+        <div *ngIf="dataLoadingPattern === dataTableLoadingPattern.Pagination" class="pagination-tab-container">
             <span id="previous-pagination-arrow" class="pagination-navigation"
                 (click)="onChangePaginationSlot(currentPaginationSlot?.slot - 2)">&#9664;
             </span>

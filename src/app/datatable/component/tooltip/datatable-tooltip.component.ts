@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DataTableElementReferenceService } from '../../services/datatable.element-reference.service';
-import { DataTableTooltip } from '../../datatable.model';
+import { DataTableTooltip } from '../../models/datatable.model';
 
 @Component({
     selector: 'app-datatable-tooltip',

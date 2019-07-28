@@ -1,14 +1,15 @@
-import { Component, OnInit, AfterViewInit, AfterViewChecked, HostListener, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { DataTableElementReferenceService } from '../services/datatable.element-reference.service';
+import { DataTableFilterService } from '../services/datatable.filter.service';
 import { DataTablePaginationService } from '../services/datatable.pagination.service';
 import { DataTablePipeService } from '../services/datatable.pipe';
-import { DataTableFilterService } from '../services/datatable.filter.service';
 import { DataTableSelectionService } from '../services/datatable.selection.service';
 import { DataTableSortService } from '../services/datatable.sort.service';
 import { DataTableUIService } from '../services/datatable.ui.service';
 import { DataTableVirtualScrollingService } from '../services/datatable.virtual-scrolling.service';
-import { DataTableHeader, DataTableHeaderStyle, DataTablePagination, DataTableRowStyle, DataTableTooltip, DataTableVirtualScrolling } from '../datatable.model';
-import { DataTableColumnType, DataTableSortOrder } from '../datatable.enum';
+import { DataTableColumnType, DataTableLoadingPattern, DataTableSortOrder } from '../enumerations/datatable.enum';
+import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, DataTableUserActionResponse, DataTableVirtualScrolling } from '../interfaces/datatable.interface';
+import { DataTablePagination, DataTableTooltip } from '../models/datatable.model';
 
 @Component({
     selector: 'app-datatable',
@@ -22,8 +23,12 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public columnFilter: boolean;
     @Input() public columnResponsive: boolean;
     @Input() set data(collection: object[]) {
-        this.onReceiveOfDataTableData(collection);
+        if (collection && collection.length > 0) {
+            this.dataStore = JSON.parse(JSON.stringify(collection));
+            this.onReceiveOfDataTableData(collection);
+        }
     }
+    @Input() public dataLoadingPattern: DataTableLoadingPattern;
     @Input() public filterTextLimit: number;
     @Input() public globalFilter: boolean;
     @Input() public header: DataTableHeader[];
@@ -33,18 +38,24 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public rowStyle: DataTableRowStyle;
     @Input() public virtualScrolling: DataTableVirtualScrolling;
 
+    @Output() public changeSelectAllCheckboxState = new EventEmitter<DataTableUserActionResponse>();
+    @Output() public selectedDataTableRows = new EventEmitter<DataTableUserActionResponse>();
+
     public isLoading: boolean;
     public randomIndex: number;
     public dataToDisplay: object[];
-    public sortFields: object;
     public frozenHeader: DataTableHeader[];
     public scrollableHeader: DataTableHeader[];
     public scrollableAreaWidth: string;
     public responsiveColumnWidth: string;
     public verticalScrollableRegion: string;
+    public sortFields: object;
     public currentPaginationSlot: object;
     public tooltipInfo: DataTableTooltip;
+    public dataTableLoadingPattern = DataTableLoadingPattern;
+    private dataStore: object[];
     private dataCollection: object[];
+    private listOfSelectedDataTableRow: object[];
     private selectAllCheckboxState: string;
     private searchTextFields: object;
     private isCompletelyRendered: boolean;
@@ -63,22 +74,24 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         private dataTableVirtualScrollingService: DataTableVirtualScrollingService) {
         this.isLoading = false;
         this.randomIndex = Math.floor(1000 + Math.random() * 9000);
-        this.dataCollection = [];
         this.dataToDisplay = [];
-        this.selectAllCheckboxState = '';
-        this.searchTextFields = {};
-        this.sortFields = {};
-        this.isCompletelyRendered = false;
         this.frozenHeader = [];
         this.scrollableHeader = [];
         this.scrollableAreaWidth = '';
         this.responsiveColumnWidth = '';
         this.verticalScrollableRegion = '';
+        this.sortFields = {};
+        this.currentPaginationSlot = {};
+        this.tooltipInfo = new DataTableTooltip();
+        this.dataStore = [];
+        this.dataCollection = [];
+        this.listOfSelectedDataTableRow = [];
+        this.selectAllCheckboxState = '';
+        this.searchTextFields = {};
+        this.isCompletelyRendered = false;
         this.isFilterTextPresent = false;
         this.filteredData = [];
         this.paginationData = [];
-        this.currentPaginationSlot = {};
-        this.tooltipInfo = new DataTableTooltip();
     }
 
     ngOnInit() {
@@ -110,17 +123,21 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             this.isCompletelyRendered = true;
             this.dataTableUIService.onSetDataTableStyle(this.headerStyle, this.rowStyle, this.randomIndex);
             this.dataTableUIService.onActivateScrollingForHiddenScrollbars();
-            if (this.pagination) {
+            if (this.dataLoadingPattern === DataTableLoadingPattern.Pagination) {
                 this.onPreparationOfDataForPagination(this.dataCollection);
-            }
-            if (this.virtualScrolling) {
+            } else if (this.dataLoadingPattern === DataTableLoadingPattern.VirtualScrolling && this.virtualScrolling) {
                 setTimeout(() => {
-                    this.dataToDisplay = this.dataCollection.slice(0, this.virtualScrolling.numberOfRowsPerScroll + 2);
+                    const noOfBufferedRow: number = 2;
+                    this.dataToDisplay = this.dataCollection.slice(0, this.virtualScrolling.numberOfRowsPerScroll + noOfBufferedRow);
                 }, 0);
             }
         }
     }
 
+    /**
+     * This method is responsible for preparing data collection suitable for datatable
+     * @param collection { object[] } Data collection provided from the invoked component
+     */
     private onReceiveOfDataTableData = (collection: object[]): void => {
         if ((collection && collection.length > 0) && (this.header && this.header.length > 0)) {
             collection.forEach((rowData: object, index: number) => {
@@ -129,23 +146,59 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                         this.dataTablePipeService.onApplyPipe(rowData, columnHeader.propertyName, columnHeader.pipe);
                     }
                 });
+                /* Setting unique index value to each row to use for individual row identification */
                 rowData['Index'] = index + 1;
+                /* Setting 'RowSelected' attribute to each row, initialized with 'false' to keep track of individual row selection state */
                 rowData['RowSelected'] = false;
             });
         }
+        /* This variable is responsible for holding entire collection of data prepared for datatable */
         this.dataCollection = [...collection];
+        /* This variable is responsible for displaying list of data to UI, mainly when entire data collection is not available */
         this.dataToDisplay = [...this.dataCollection];
     }
 
+    /**
+     * This method gets triggered on change of 'Select All' checkbox state
+     * @param event { MouseEvent } Change event
+     */
     public onSelectDataTableSelectAll = (event: MouseEvent): void => {
         if (event && event.currentTarget) {
             this.selectAllCheckboxState = event.currentTarget['checked'] ? 'checked' : 'unchecked';
             this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
+            const response: DataTableUserActionResponse = {
+                data: this.selectAllCheckboxState === 'checked' ? this.dataStore : [],
+                state: this.selectAllCheckboxState
+            };
+            this.changeSelectAllCheckboxState.emit(response);
         }
     }
 
+    /**
+     * This method gets triggered on select of individiual datatable row
+     * @param event { MouseEvent } Mouse click event
+     */
     public onSelectDataTableRow = (event: MouseEvent): void => {
-        this.selectAllCheckboxState = this.dataTableSelectionService.onSelectDataTableRow(event, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
+        if ((event && event.currentTarget) && (this.dataCollection && this.dataCollection.length > 0)) {
+            const selectedRowIndex: number = event.currentTarget['id'] && parseInt(event.currentTarget['id'].replace(/^\D+/g, ''), 10);
+            const selectedDataTableRow: object = this.dataCollection.find((rowData: object) => rowData['Index'] === selectedRowIndex);
+            if (selectedDataTableRow) {
+                selectedDataTableRow['RowSelected'] = !selectedDataTableRow['RowSelected'];
+                this.selectAllCheckboxState = this.dataTableSelectionService.onSelectDataTableRow(selectedDataTableRow, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
+                const matchedRowIndex: number = this.listOfSelectedDataTableRow.findIndex((rowData: object) => rowData['Index'] === selectedDataTableRow['Index']);
+                if (selectedDataTableRow['RowSelected']) {
+                    if (matchedRowIndex < 0) {
+                        this.listOfSelectedDataTableRow.push(this.dataStore[selectedDataTableRow['Index'] - 1]);
+                    }
+                } else {
+                    this.listOfSelectedDataTableRow.splice(matchedRowIndex, 1);
+                }
+                const response: DataTableUserActionResponse = {
+                    data: this.listOfSelectedDataTableRow
+                };
+                this.selectedDataTableRows.emit(response);
+            }
+        }
     }
 
     public onApplySearch = (event: KeyboardEvent | MouseEvent, propertyName?: string): void => {
@@ -201,7 +254,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
         let dataCollection: object[] = this.isFilterTextPresent ? this.dataToDisplay : this.dataCollection;
         if (type !== DataTableColumnType.Custom) {
-            dataCollection = this.dataTableSortService.onApplySort(dataCollection, this.sortFields, propertyName, type);
+            dataCollection = this.dataTableSortService.onApplySort(dataCollection, propertyName, type, this.sortFields);
             this.dataToDisplay = [...dataCollection];
         } else {
             // emit

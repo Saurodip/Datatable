@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DataTableHeader } from '../datatable.model';
+import { DataTableHeader } from '../interfaces/datatable.interface';
 
 @Injectable()
 export class DataTableFilterService {

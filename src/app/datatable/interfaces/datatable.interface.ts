@@ -1,10 +1,12 @@
-import { DataTableColumnType, DataTablePipeType } from './datatable.enum';
+import { DataTableColumnType, DataTableLoadingPattern } from '../enumerations/datatable.enum';
+import { DataTablePagination, DataTablePipe } from '../models/datatable.model';
 
-export class DataTable {
+export interface DataTable {
     checkboxSelection?: boolean;
     columnFilter: boolean;
     columnResponsive: boolean;
     data: Array<object>;
+    dataLoadingPattern?: DataTableLoadingPattern;
     filterTextLimit: number;
     globalFilter: boolean;
     header: DataTableHeader;
@@ -15,7 +17,7 @@ export class DataTable {
     virtualScrolling?: DataTableVirtualScrolling;
 }
 
-export class DataTableHeader {
+export interface DataTableHeader {
     frozen?: boolean;
     propertyName: string;
     title: string;
@@ -25,7 +27,7 @@ export class DataTableHeader {
     tooltip?: boolean;
 }
 
-export class DataTableHeaderStyle {
+export interface DataTableHeaderStyle {
     backgroundColor?: string;
     borderColor?: string;
     color?: string;
@@ -37,7 +39,7 @@ export class DataTableHeaderStyle {
     textAlign?: string;
 }
 
-export class DataTableRowStyle {
+export interface DataTableRowStyle {
     backgroundColor?: string;
     border?: string;
     color?: string;
@@ -53,36 +55,12 @@ export class DataTableRowStyle {
     textAlign?: string;
 }
 
-export class DataTablePipe {
-    public type: DataTablePipeType;
-    public format?: string;
-    public code?: string;
-    public display?: boolean | string;
-
-    constructor(type: DataTablePipeType, format?: string, code?: string, display?: boolean | string) {
-        this.type = type;
-        this.format = format;
-        this.code = code;
-        this.display = display;
-    }
+export interface DataTableUserActionResponse {
+    data?: object[];
+    state?: string;
 }
 
-export class DataTablePagination {
-    public numberOfRowsPerTab: number;
-    public numberOfTabsPerSlot: number;
-
-    constructor() {
-        this.numberOfRowsPerTab = 10;
-        this.numberOfTabsPerSlot = 5;
-    }
-}
-
-export class DataTableVirtualScrolling {
-    public numberOfRowsPerScroll: number;
-}
-
-export class DataTableTooltip {
-    public event: MouseEvent;
-    public content: string;
+export interface DataTableVirtualScrolling {
+    numberOfRowsPerScroll: number;
 }
 

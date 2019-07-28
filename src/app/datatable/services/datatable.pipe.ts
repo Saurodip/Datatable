@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CurrencyPipe, DatePipe, DecimalPipe, LowerCasePipe, UpperCasePipe } from '@angular/common';
-import { DataTablePipe } from '../datatable.model';
-import { DataTablePipeType } from '../datatable.enum';
+import { DataTablePipeType } from '../enumerations/datatable.enum';
+import { DataTablePipe } from '../models/datatable.model';
 
 @Injectable()
 export class DataTablePipeService {

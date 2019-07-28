@@ -1,12 +1,20 @@
 import { Injectable } from '@angular/core';
-import { DataTableColumnType, DataTableSortOrder } from '../datatable.enum';
+import { DataTableColumnType, DataTableSortOrder } from '../enumerations/datatable.enum';
 
 @Injectable()
 export class DataTableSortService {
     constructor() {
     }
 
-    public onApplySort = (dataCollection: object[], sortFields: object, propertyName: string, type: DataTableColumnType): object[] => {
+    /**
+     * This method is responsible for applying sorting based on type
+     * @param dataCollection { object[] } Collection of data that needs to be sorted
+     * @param propertyName { string } Name of the property on which sorting will be applied
+     * @param type { enumaration } Datatable column type
+     * @param sortFields? { object } Records of sorting fields
+     * return sortedData { object[] } Data collection after sorting operation
+     */
+    public onApplySort = (dataCollection: object[], propertyName: string, type: DataTableColumnType, sortFields?: object): object[] => {
         const sortOrder: number = sortFields[propertyName] || DataTableSortOrder.None;
         let sortedData: object[] = [];
         switch (type) {
@@ -28,6 +36,13 @@ export class DataTableSortService {
         return [...sortedData];
     }
 
+    /**
+     * This method is responsible for sorting datatable collection based on date
+     * @param dataCollection { object[] } Collection of data that needs to be sorted
+     * @param propertyName { string } Name of the property on which sorting will be applied
+     * @param type { enumaration } Datatable column type
+     * return sortedData { object[] } Data collection after sorting operation
+     */
     private sortByDate = (dataCollection: object[], propertyName: string, sortOrder: number): object[] => {
         let sortedData: object[] = [];
         if (dataCollection && dataCollection.length > 0) {
@@ -40,6 +55,13 @@ export class DataTableSortService {
         return sortedData;
     }
 
+    /**
+     * This method is responsible for sorting datatable collection based on float
+     * @param dataCollection { object[] } Collection of data that needs to be sorted
+     * @param propertyName { string } Name of the property on which sorting will be applied
+     * @param type { enumaration } Datatable column type
+     * return sortedData { object[] } Data collection after sorting operation
+     */
     private sortByFloat = (dataCollection: object[], propertyName: string, sortOrder: number): object[] => {
         let sortedData: object[] = [];
         if (dataCollection && dataCollection.length > 0) {
@@ -52,6 +74,13 @@ export class DataTableSortService {
         return sortedData;
     }
 
+    /**
+     * This method is responsible for sorting datatable collection based on integer
+     * @param dataCollection { object[] } Collection of data that needs to be sorted
+     * @param propertyName { string } Name of the property on which sorting will be applied
+     * @param type { enumaration } Datatable column type
+     * return sortedData { object[] } Data collection after sorting operation
+     */
     private sortByInteger = (dataCollection: object[], propertyName: string, sortOrder: number): object[] => {
         let sortedData: object[] = [];
         if (dataCollection && dataCollection.length > 0) {
@@ -64,6 +93,13 @@ export class DataTableSortService {
         return sortedData;
     }
 
+    /**
+     * This method is responsible for sorting datatable collection based on string
+     * @param dataCollection { object[] } Collection of data that needs to be sorted
+     * @param propertyName { string } Name of the property on which sorting will be applied
+     * @param type { enumaration } Datatable column type
+     * return sortedData { object[] } Data collection after sorting operation
+     */
     private sortByString = (dataCollection: object[], propertyName: string, sortOrder: number): object[] => {
         let sortedData: object[] = [];
         if (dataCollection && dataCollection.length > 0) {

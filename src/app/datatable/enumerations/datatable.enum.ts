@@ -7,6 +7,11 @@ export enum DataTableColumnType {
     String
 }
 
+export enum DataTableLoadingPattern {
+    Pagination,
+    VirtualScrolling
+}
+
 export enum DataTablePipeType {
     CurrencyPipe = 1,
     DatePipe,
