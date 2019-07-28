@@ -18,7 +18,13 @@ export class DataTableHoverDirective {
         this.setHoverColor(event, 'mouseleave', null);
     }
 
-    private setHoverColor(event: MouseEvent, eventType: string, hoverColor: string) {
+    /**
+     * This method is resposible for highlighting row on mouse hover
+     * @param event { MouseEvent } Mouse hover event
+     * @param eventType { string } Type of event (mouse enter or leave)
+     * @param hoverColor { string } Highlighted row background color provided by the invoked component
+     */
+    private setHoverColor = (event: MouseEvent, eventType: string, hoverColor: string): void => {
         if (event && event.currentTarget) {
             let rowSelectionClassName: string = 'selected-row';
             let selectedRowIndex: number = event.currentTarget['id'] && event.currentTarget['id'].replace(/^\D+/g, '');

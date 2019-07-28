@@ -35,28 +35,28 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     public isLoading: boolean;
     public randomIndex: number;
-    private dataCollection: object[];
     public dataToDisplay: object[];
-    private selectAllCheckboxState: string;
-    private searchTextFields: object;
     public sortFields: object;
-    private isCompletelyRendered: boolean;
     public frozenHeader: DataTableHeader[];
     public scrollableHeader: DataTableHeader[];
     public scrollableAreaWidth: string;
     public responsiveColumnWidth: string;
     public verticalScrollableRegion: string;
+    public currentPaginationSlot: object;
+    public tooltipInfo: DataTableTooltip;
+    private dataCollection: object[];
+    private selectAllCheckboxState: string;
+    private searchTextFields: object;
+    private isCompletelyRendered: boolean;
     private isFilterTextPresent: boolean;
     private filteredData: object[];
     private paginationData: object[];
-    public currentPaginationSlot: object;
-    public tooltipInfo: DataTableTooltip;
 
     constructor(
         private dataTableElementReferenceService: DataTableElementReferenceService,
+        private dataTableFilterService: DataTableFilterService,
         private dataTablePaginationService: DataTablePaginationService,
         private dataTablePipeService: DataTablePipeService,
-        private dataTableFilterService: DataTableFilterService,
         private dataTableSelectionService: DataTableSelectionService,
         private dataTableSortService: DataTableSortService,
         private dataTableUIService: DataTableUIService,

@@ -24,7 +24,12 @@ export class DataTableTooltipComponent {
         this.arrowDirection = '';
     }
 
+    /**
+     * This method is responsible for determining the position of the tooltip and direction of the tooltip arrow
+     * @param event { MouseEvent } Mouse hover position
+     */
     private onDetermineTooltipPosition = (event: MouseEvent): void => {
+        /* Allowing browser to render the tooltip content and arrow direction */
         setTimeout(() => {
             const dataTableMainSection: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-main-section');
             const dataTableTooltipContainer: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-tooltip-container');
@@ -55,4 +60,3 @@ export class DataTableTooltipComponent {
         }, 0);
     }
 }
-

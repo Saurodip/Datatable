@@ -1,6 +1,6 @@
 import { DataTableColumnType, DataTablePipeType } from './datatable.enum';
 
-export interface DataTable {
+export class DataTable {
     checkboxSelection?: boolean;
     columnFilter: boolean;
     columnResponsive: boolean;
@@ -15,7 +15,7 @@ export interface DataTable {
     virtualScrolling?: DataTableVirtualScrolling;
 }
 
-export interface DataTableHeader {
+export class DataTableHeader {
     frozen?: boolean;
     propertyName: string;
     title: string;
@@ -25,7 +25,7 @@ export interface DataTableHeader {
     tooltip?: boolean;
 }
 
-export interface DataTableHeaderStyle {
+export class DataTableHeaderStyle {
     backgroundColor?: string;
     borderColor?: string;
     color?: string;
@@ -37,7 +37,7 @@ export interface DataTableHeaderStyle {
     textAlign?: string;
 }
 
-export interface DataTableRowStyle {
+export class DataTableRowStyle {
     backgroundColor?: string;
     border?: string;
     color?: string;

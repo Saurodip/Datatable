@@ -11,8 +11,8 @@ export enum DataTablePipeType {
     CurrencyPipe = 1,
     DatePipe,
     DecimalPipe,
-    None,
     LowerCasePipe,
+    None,
     UpperCasePipe
 }
 
