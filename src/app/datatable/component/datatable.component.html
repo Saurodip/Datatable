@@ -56,7 +56,7 @@
                             <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
                                 <div [ngSwitch]="dtRow?.tooltip[dtHeader?.propertyName]?.icon"
                                     (mouseenter)="onHoverTooltipIcon($event, dtRow?.tooltip[dtHeader?.propertyName]?.message)"
-                                    >
+                                    (mouseleave)="onHoverTooltipIcon($event)">
                                     <i *ngSwitchCase="'info'">&#9432;</i>
                                     <i *ngSwitchCase="'help'">?</i>
                                     <i *ngSwitchCase="'error'">&#10006;</i>
