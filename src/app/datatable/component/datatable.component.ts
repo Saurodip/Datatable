@@ -221,11 +221,11 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                         }
                     }
                     this.filteredData = this.isFilterTextPresent ? this.dataTableFilterService.onApplyColumnSearch(this.dataCollection, this.searchTextFields) : [...this.dataCollection];
-                    if (this.pagination) {
+                    if (this.dataLoadingPattern === DataTableLoadingPattern.Pagination) {
                         this.onPreparationOfDataForPagination(this.filteredData);
                         /* Allowing browser to render the new dataset before performing selection related action */
                         setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
-                    } else if (this.virtualScrolling) {
+                    } else if (this.dataLoadingPattern === DataTableLoadingPattern.VirtualScrolling) {
                         this.dataToDisplay = this.filteredData.slice(0, this.virtualScrolling.numberOfRowsPerScroll + 2);
                         setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
                     } else {
