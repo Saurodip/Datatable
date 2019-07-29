@@ -24,12 +24,18 @@ export class DataTableUIService {
         return verticalScrollableRegion || '';
     }
 
+    /**
+     * This method is responsible for calculating total height of the datatable row container based on the number of rows available
+     * @param dataCollection { object[] } Data collection to get number of rows
+     * return dataTableRowContainerHeight { string } Height of the datatable row container
+     */
     public onSetDataTableRowContainerHeight = (dataCollection: object[]): string => {
         const dataTableRow: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-row');
+        let dataTableRowContainerHeight: string = '0px';
         if (dataTableRow && (dataCollection && dataCollection.length > 0)) {
-            return dataTableRow['offsetHeight'] * dataCollection.length + 'px';
+            dataTableRowContainerHeight = dataTableRow['offsetHeight'] * dataCollection.length + 'px';
         }
-        return '0px';
+        return dataTableRowContainerHeight;
     }
 
     /**

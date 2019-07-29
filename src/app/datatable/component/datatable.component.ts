@@ -130,7 +130,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 this.frozenHeader = this.header.filter((header: DataTableHeader) => header.frozen);
                 this.scrollableHeader = this.header.filter((header: DataTableHeader) => !header.frozen);
                 this.header.forEach((header: DataTableHeader) => {
-                    if (this.filter === DataTableFilterType.Column) {
+                    if (this.filterType === DataTableFilterType.Column || this.filterType === DataTableFilterType.CustomColumn) {
                         this.filteredTextFields[header.propertyName] = '';
                     }
                     this.sortFields[header.propertyName] = DataTableSortOrder.None;
@@ -145,19 +145,14 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             this.isCompletelyRendered = true;
             this.dataTableUIService.onSetDataTableStyle(this.headerStyle, this.rowStyle, this.randomIndex);
             this.dataTableUIService.onActivateScrollingForHiddenScrollbars();
-            if (this.dataLoadingPattern === DataTableLoadingPattern.Pagination) {
-                this.onPreparationOfDataForPagination(this.dataCollection);
-            } else if (this.dataLoadingPattern === DataTableLoadingPattern.VirtualScrolling && this.virtualScrolling) {
-                setTimeout(() => {
-                    const noOfBufferedRow: number = 2;
-                    this.dataToDisplay = this.dataCollection.slice(0, this.virtualScrolling.numberOfRowsPerScroll + noOfBufferedRow);
-                }, 0);
-            }
+
+            /* In case, any of the data loading pattern is applied, then displaying data based on that */
+            this.onDisplayDataBasedOnLoadingPattern(this.dataCollection);
         }
     }
 
     /**
-     * This method is responsible for preparing data collection suitable for datatable
+     * This method is responsible for preparing data collection for datatable
      * @param collection { object[] } Data collection provided from the invoked component
      */
     private onReceiveOfDataTableData = (collection: object[]): void => {
@@ -244,20 +239,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                         }
                     }
                     this.filteredData = this.isFilterTextPresent ? this.dataTableFilterService.onApplyColumnFilter(this.dataCollection, this.filteredTextFields) : [...this.dataCollection];
-                    if (this.dataLoadingPattern === DataTableLoadingPattern.Pagination) {
-                        this.onPreparationOfDataForPagination(this.filteredData);
-                        /* Allowing browser to render the new dataset before performing selection related action */
-                        setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
-                    } else if (this.dataLoadingPattern === DataTableLoadingPattern.VirtualScrolling) {
-                        this.dataToDisplay = this.filteredData.slice(0, this.virtualScrolling.numberOfRowsPerScroll + 2);
-                        setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
-                    } else {
-                        this.dataToDisplay = [...this.filteredData];
-                    }
                 } else if (this.filterType === DataTableFilterType.Global) {
                     this.filteredData = filteredText ? this.dataTableFilterService.onApplyGlobalFilter(filteredText, this.dataCollection, this.header) : [...this.dataCollection];
                     this.isFilterTextPresent = filteredText ? true : false;
-                    this.dataToDisplay = [...this.filteredData];
                 } else {
                     let response: DataTableUserActionResponse;
                     if (this.filterType === DataTableFilterType.CustomColumn) {
@@ -272,6 +256,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                     }
                     this.getCustomFilterInfo.emit(response);
                 }
+                /* In case, any of the data loading pattern is applied, then displaying data based on that */
+                this.onDisplayDataBasedOnLoadingPattern(this.filteredData);
             }
             clearTimeout(timeOut);
         }, 1000);
@@ -301,7 +287,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         let dataCollection: object[] = this.isFilterTextPresent ? this.dataToDisplay : this.dataCollection;
         if (type !== DataTableColumnType.Custom) {
             dataCollection = this.dataTableSortService.onApplySort(dataCollection, propertyName, type, this.sortFields);
-            this.dataToDisplay = [...dataCollection];
         } else {
             const response: DataTableUserActionResponse = {
                 sortColumn: propertyName,
@@ -309,7 +294,30 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             };
             this.getSortingInfo.emit(response);
         }
-        // this.preparePaginationTabs();
+        /* In case, any of the data loading pattern is applied, then displaying data based on that */
+        this.onDisplayDataBasedOnLoadingPattern(dataCollection);
+    }
+
+    /**
+     * This method is responsible for displaying data based on the selected data loading pattern, if applicable
+     * @param dataCollection { object[] } Collection of data to display
+     */
+    private onDisplayDataBasedOnLoadingPattern = (dataCollection: object[]): void => {
+        if (dataCollection && dataCollection.length > 0) {
+            if (this.dataLoadingPattern === DataTableLoadingPattern.Pagination) {
+                this.onPreparationOfDataForPagination(dataCollection);
+                /* Allowing browser to render the new dataset before performing selection related action */
+                setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, dataCollection, this.checkboxSelection, this.rowStyle.selectionColor), 0);
+            } else if (this.dataLoadingPattern === DataTableLoadingPattern.VirtualScrolling) {
+                const numberOfBufferedDataRow: number = 2;
+                this.dataToDisplay = dataCollection.slice(0, this.virtualScrolling.numberOfRowsPerScroll + numberOfBufferedDataRow);
+                setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
+            } else {
+                this.dataToDisplay = [...this.filteredData];
+            }
+        } else {
+            this.dataToDisplay = [];
+        }
     }
 
     private onPreparationOfDataForPagination = (dataCollection: object[]): void => {

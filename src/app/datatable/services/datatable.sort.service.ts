@@ -47,8 +47,8 @@ export class DataTableSortService {
         let sortedData: object[] = [];
         if (dataCollection && dataCollection.length > 0) {
             sortedData = dataCollection.sort((prev: object, next: object) => {
-                let prevDate: number = Date.parse(prev[propertyName]) ? new Date(prev[propertyName]).getTime() : 0;
-                let nextDate: number = Date.parse(next[propertyName]) ? new Date(next[propertyName]).getTime() : 0;
+                const prevDate: number = Date.parse(prev[propertyName]) ? new Date(prev[propertyName]).getTime() : 0;
+                const nextDate: number = Date.parse(next[propertyName]) ? new Date(next[propertyName]).getTime() : 0;
                 return (sortOrder === DataTableSortOrder.Ascending) ? (prevDate - nextDate) : (nextDate - prevDate);
             });
         }
@@ -66,8 +66,8 @@ export class DataTableSortService {
         let sortedData: object[] = [];
         if (dataCollection && dataCollection.length > 0) {
             sortedData = dataCollection.sort((prev: object, next: object) => {
-                let prevValue: number = parseFloat(prev[propertyName]) || 0;
-                let nextValue: number = parseFloat(next[propertyName]) || 0;
+                const prevValue: number = parseFloat(prev[propertyName]) || 0;
+                const nextValue: number = parseFloat(next[propertyName]) || 0;
                 return (sortOrder === DataTableSortOrder.Ascending) ? (prevValue - nextValue) : (nextValue - prevValue);
             });
         }
@@ -85,8 +85,8 @@ export class DataTableSortService {
         let sortedData: object[] = [];
         if (dataCollection && dataCollection.length > 0) {
             sortedData = dataCollection.sort((prev: object, next: object) => {
-                let prevValue: number = Number.isInteger(prev[propertyName]) ? prev[propertyName] : 0;
-                let nextValue: number = Number.isInteger(next[propertyName]) ? next[propertyName] : 0;
+                const prevValue: number = Number.isInteger(prev[propertyName]) ? prev[propertyName] : 0;
+                const nextValue: number = Number.isInteger(next[propertyName]) ? next[propertyName] : 0;
                 return (sortOrder === DataTableSortOrder.Ascending) ? (prevValue - nextValue) : (nextValue - prevValue);
             });
         }
@@ -104,8 +104,8 @@ export class DataTableSortService {
         let sortedData: object[] = [];
         if (dataCollection && dataCollection.length > 0) {
             sortedData = dataCollection.sort((prev: object, next: object) => {
-                let prevValue: string = prev[propertyName] && typeof (prev[propertyName]) === 'string' ? prev[propertyName].toLowerCase() : '';
-                let nextValue: string = next[propertyName] && typeof (next[propertyName]) === 'string' ? next[propertyName].toLowerCase() : '';
+                const prevValue: string = prev[propertyName] && typeof (prev[propertyName]) === 'string' ? prev[propertyName].toLowerCase() : '';
+                const nextValue: string = next[propertyName] && typeof (next[propertyName]) === 'string' ? next[propertyName].toLowerCase() : '';
                 if (sortOrder === DataTableSortOrder.Ascending) {
                     if (prevValue === nextValue) {
                         return 0;
