@@ -1,14 +1,13 @@
-import { DataTableColumnType, DataTableLoadingPattern } from '../enumerations/datatable.enum';
+import { DataTableColumnType, DataTableFilterType, DataTableLoadingPattern } from '../enumerations/datatable.enum';
 import { DataTablePagination, DataTablePipe } from '../models/datatable.model';
 
 export interface DataTable {
     checkboxSelection?: boolean;
-    columnFilter: boolean;
     columnResponsive: boolean;
     data: Array<object>;
     dataLoadingPattern?: DataTableLoadingPattern;
+    filter: DataTableFilterType;
     filterTextLimit: number;
-    globalFilter: boolean;
     header: DataTableHeader;
     headerStyle?: DataTableHeaderStyle;
     height: string;
@@ -57,6 +56,10 @@ export interface DataTableRowStyle {
 
 export interface DataTableUserActionResponse {
     data?: object[];
+    filterColumn?: string;
+    filterText?: string;
+    sortColumn?: string;
+    sortOrder?: string;
     state?: string;
 }
 

@@ -7,6 +7,13 @@ export enum DataTableColumnType {
     String
 }
 
+export enum DataTableFilterType {
+    Column,
+    CustomColumn,
+    CustomGlobal,
+    Global
+}
+
 export enum DataTableLoadingPattern {
     Pagination,
     VirtualScrolling

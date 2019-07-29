@@ -7,7 +7,7 @@ import { DataTableSelectionService } from '../services/datatable.selection.servi
 import { DataTableSortService } from '../services/datatable.sort.service';
 import { DataTableUIService } from '../services/datatable.ui.service';
 import { DataTableVirtualScrollingService } from '../services/datatable.virtual-scrolling.service';
-import { DataTableColumnType, DataTableLoadingPattern, DataTableSortOrder } from '../enumerations/datatable.enum';
+import { DataTableColumnType, DataTableFilterType, DataTableLoadingPattern, DataTableSortOrder } from '../enumerations/datatable.enum';
 import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, DataTableUserActionResponse, DataTableVirtualScrolling } from '../interfaces/datatable.interface';
 import { DataTablePagination, DataTableTooltip } from '../models/datatable.model';
 
@@ -20,7 +20,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @ViewChild('dataTable') private dataTable: ElementRef;
 
     @Input() public checkboxSelection: boolean;
-    @Input() public columnFilter: boolean;
     @Input() public columnResponsive: boolean;
     @Input() set data(collection: object[]) {
         if (collection && collection.length > 0) {
@@ -29,8 +28,22 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
     }
     @Input() public dataLoadingPattern: DataTableLoadingPattern;
+    @Input() set filter(filterType: DataTableFilterType) {
+        this.filterType = filterType;
+        switch (filterType) {
+            case DataTableFilterType.Column: this.columnFilter = true;
+                break;
+            case DataTableFilterType.CustomColumn: this.columnFilter = true;
+                break;
+            case DataTableFilterType.CustomGlobal: this.globalFilter = true;
+                break;
+            case DataTableFilterType.Global: this.globalFilter = true;
+                break;
+            default:
+                break;
+        }
+    }
     @Input() public filterTextLimit: number;
-    @Input() public globalFilter: boolean;
     @Input() public header: DataTableHeader[];
     @Input() public headerStyle: DataTableHeaderStyle;
     @Input() public height: string;
@@ -38,8 +51,10 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public rowStyle: DataTableRowStyle;
     @Input() public virtualScrolling: DataTableVirtualScrolling;
 
-    @Output() public changeSelectAllCheckboxState = new EventEmitter<DataTableUserActionResponse>();
-    @Output() public selectedDataTableRows = new EventEmitter<DataTableUserActionResponse>();
+    @Output() public getSelectAllCheckboxState = new EventEmitter<DataTableUserActionResponse>();
+    @Output() public getSelectedDataTableRows = new EventEmitter<DataTableUserActionResponse>();
+    @Output() public getCustomFilterInfo = new EventEmitter<DataTableUserActionResponse>();
+    @Output() public getSortingInfo = new EventEmitter<DataTableUserActionResponse>();
 
     public isLoading: boolean;
     public randomIndex: number;
@@ -49,15 +64,19 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public scrollableAreaWidth: string;
     public responsiveColumnWidth: string;
     public verticalScrollableRegion: string;
+    public columnFilter: boolean;
+    public globalFilter: boolean;
     public sortFields: object;
     public currentPaginationSlot: object;
     public tooltipInfo: DataTableTooltip;
+    public dataTableFilterType = DataTableFilterType;
     public dataTableLoadingPattern = DataTableLoadingPattern;
     private dataStore: object[];
     private dataCollection: object[];
     private listOfSelectedDataTableRow: object[];
     private selectAllCheckboxState: string;
-    private searchTextFields: object;
+    private filterType: number;
+    private filteredTextFields: object;
     private isCompletelyRendered: boolean;
     private isFilterTextPresent: boolean;
     private filteredData: object[];
@@ -80,6 +99,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.scrollableAreaWidth = '';
         this.responsiveColumnWidth = '';
         this.verticalScrollableRegion = '';
+        this.columnFilter = false;
+        this.globalFilter = false;
         this.sortFields = {};
         this.currentPaginationSlot = {};
         this.tooltipInfo = new DataTableTooltip();
@@ -87,7 +108,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.dataCollection = [];
         this.listOfSelectedDataTableRow = [];
         this.selectAllCheckboxState = '';
-        this.searchTextFields = {};
+        this.filterType = -1;
+        this.filteredTextFields = {};
         this.isCompletelyRendered = false;
         this.isFilterTextPresent = false;
         this.filteredData = [];
@@ -108,8 +130,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 this.frozenHeader = this.header.filter((header: DataTableHeader) => header.frozen);
                 this.scrollableHeader = this.header.filter((header: DataTableHeader) => !header.frozen);
                 this.header.forEach((header: DataTableHeader) => {
-                    if (this.columnFilter) {
-                        this.searchTextFields[header.propertyName] = '';
+                    if (this.filter === DataTableFilterType.Column) {
+                        this.filteredTextFields[header.propertyName] = '';
                     }
                     this.sortFields[header.propertyName] = DataTableSortOrder.None;
                 });
@@ -167,10 +189,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             this.selectAllCheckboxState = event.currentTarget['checked'] ? 'checked' : 'unchecked';
             this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
             const response: DataTableUserActionResponse = {
-                data: this.selectAllCheckboxState === 'checked' ? this.dataStore : [],
                 state: this.selectAllCheckboxState
             };
-            this.changeSelectAllCheckboxState.emit(response);
+            this.getSelectAllCheckboxState.emit(response);
         }
     }
 
@@ -196,31 +217,33 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 const response: DataTableUserActionResponse = {
                     data: this.listOfSelectedDataTableRow
                 };
-                this.selectedDataTableRows.emit(response);
+                this.getSelectedDataTableRows.emit(response);
             }
         }
     }
 
-    public onApplySearch = (event: KeyboardEvent | MouseEvent, propertyName?: string): void => {
+    /**
+     * This method is responsible for filtering the list of records based on user input
+     * @param event { KeyboardEvent } Keyboard event
+     * @param propertyName? { string } Name of the column on which filter is applied (if column-filter is applicable)
+     */
+    public onApplyFilter = (event: KeyboardEvent | MouseEvent, propertyName?: string): void => {
         let timeOut = setTimeout(() => {
             this.isFilterTextPresent = false;
             if (event && event.target) {
                 const filteredText: string = event.target['value'] && event.target['value'].toLowerCase().trim();
                 this.isFilterTextPresent = false;
-                if (this.globalFilter) {
-                    this.filteredData = filteredText ? this.dataTableFilterService.onApplyGlobalSearch(filteredText, this.dataCollection, this.header) : [...this.dataCollection];
-                    this.isFilterTextPresent = filteredText ? true : false;
-                } else if (this.columnFilter) {
-                    this.searchTextFields[propertyName] = filteredText;
-                    for (let key in this.searchTextFields) {
-                        if (this.searchTextFields.hasOwnProperty(key)) {
-                            if (this.searchTextFields[key]) {
+                if (this.filterType === DataTableFilterType.Column) {
+                    this.filteredTextFields[propertyName] = filteredText;
+                    for (let key in this.filteredTextFields) {
+                        if (this.filteredTextFields.hasOwnProperty(key)) {
+                            if (this.filteredTextFields[key]) {
                                 this.isFilterTextPresent = true;
                                 break;
                             }
                         }
                     }
-                    this.filteredData = this.isFilterTextPresent ? this.dataTableFilterService.onApplyColumnSearch(this.dataCollection, this.searchTextFields) : [...this.dataCollection];
+                    this.filteredData = this.isFilterTextPresent ? this.dataTableFilterService.onApplyColumnFilter(this.dataCollection, this.filteredTextFields) : [...this.dataCollection];
                     if (this.dataLoadingPattern === DataTableLoadingPattern.Pagination) {
                         this.onPreparationOfDataForPagination(this.filteredData);
                         /* Allowing browser to render the new dataset before performing selection related action */
@@ -231,13 +254,36 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                     } else {
                         this.dataToDisplay = [...this.filteredData];
                     }
+                } else if (this.filterType === DataTableFilterType.Global) {
+                    this.filteredData = filteredText ? this.dataTableFilterService.onApplyGlobalFilter(filteredText, this.dataCollection, this.header) : [...this.dataCollection];
+                    this.isFilterTextPresent = filteredText ? true : false;
+                    this.dataToDisplay = [...this.filteredData];
+                } else {
+                    let response: DataTableUserActionResponse;
+                    if (this.filterType === DataTableFilterType.CustomColumn) {
+                        response = {
+                            filterColumn: propertyName,
+                            filterText: filteredText
+                        };
+                    } else if (this.filterType === DataTableFilterType.CustomGlobal) {
+                        response = {
+                            filterText: filteredText
+                        };
+                    }
+                    this.getCustomFilterInfo.emit(response);
                 }
             }
             clearTimeout(timeOut);
         }, 1000);
     }
 
-    public onApplySort = (event: MouseEvent, propertyName: string, type: DataTableColumnType, columnIndex: number): void => {
+    /**
+     * This method is responsible for applying sorting on the respective datatable column
+     * @param event { MouseEvent } Mouse click event
+     * @param propertyName { string } Selected column of the datatable
+     * @param type { DataTableColumnType } Type of the datatable column based on which sorting will be applied
+     */
+    public onApplySort = (event: MouseEvent, propertyName: string, type: DataTableColumnType): void => {
         this.dataTableUIService.onHighlightSelectedElement(event, 'datatable-header', 'highlight-column-header');
         for (let key in this.sortFields) {
             if (this.sortFields.hasOwnProperty(key)) {
@@ -257,7 +303,11 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             dataCollection = this.dataTableSortService.onApplySort(dataCollection, propertyName, type, this.sortFields);
             this.dataToDisplay = [...dataCollection];
         } else {
-            // emit
+            const response: DataTableUserActionResponse = {
+                sortColumn: propertyName,
+                sortOrder: this.sortFields[propertyName]
+            };
+            this.getSortingInfo.emit(response);
         }
         // this.preparePaginationTabs();
     }

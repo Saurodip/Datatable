@@ -31,7 +31,7 @@
                             *ngFor="let dtHeader of frozenHeader; let i = index">
                             <input type="text" *ngIf="columnFilter" id="datatable-column-filter-{{ i + 1 }}" 
                                 [attr.maxlength]="filterTextLimit" placeholder="Search" 
-                                (keyup)="onApplySearch($event, dtHeader?.propertyName)">
+                                (keyup)="onApplyFilter($event, dtHeader?.propertyName)">
                         </div>
                     </ng-template>
                 </div>
@@ -91,14 +91,14 @@
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex', 'width': globalFilter ? '100%' : 'auto' }">
                     <div *ngIf="globalFilter; else columnFilter" class="global-filter-container">
                         <input type="text" id="datatable-global-filter" [attr.maxlength]="filterTextLimit" placeholder="Search"
-                        (keyup)="onApplySearch($event)">
+                        (keyup)="onApplyFilter($event)">
                     </div>
                     <ng-template #columnFilter>
                         <div class="column-filter-container"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of scrollableHeader; let i = index">
                             <input type="text" id="datatable-column-filter-{{ i + 1 }}" [attr.maxlength]="filterTextLimit"
-                                placeholder="Search" (keyup)="onApplySearch($event, dtHeader?.propertyName)">
+                                placeholder="Search" (keyup)="onApplyFilter($event, dtHeader?.propertyName)">
                         </div>
                     </ng-template>
                 </div>

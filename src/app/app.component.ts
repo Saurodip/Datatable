@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from './app.service';
-import { DataTablePipeType, DataTableColumnType, DataTableLoadingPattern } from './datatable/enumerations/datatable.enum';
+import { DataTablePipeType, DataTableColumnType, DataTableFilterType, DataTableLoadingPattern } from './datatable/enumerations/datatable.enum';
 import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, DataTableVirtualScrolling } from './datatable/interfaces/datatable.interface';
 import { DataTablePagination, DataTablePipe } from './datatable/models/datatable.model';
 
@@ -12,6 +12,7 @@ import { DataTablePagination, DataTablePipe } from './datatable/models/datatable
 
 export class AppComponent implements OnInit {
   public data: any[];
+  public dataTableFilterType = DataTableFilterType;
   public dataTableLoadingPattern = DataTableLoadingPattern;
   public error: string;
   public header: DataTableHeader[];
