@@ -52,7 +52,7 @@
                         <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of frozenHeader; let j = index">
-                            <div class="datatable-row-content">{{ dtRow[dtHeader?.propertyName] }}</div>
+                            <input type="text" class="datatable-row-content" value="{{ dtRow[dtHeader?.propertyName] }}" disabled>
                             <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
                                 <div [ngSwitch]="dtRow?.tooltip[dtHeader?.propertyName]?.icon"
                                     (mouseenter)="onHoverTooltipIcon($event, dtRow?.tooltip[dtHeader?.propertyName]?.message)"
@@ -114,7 +114,7 @@
                         <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of scrollableHeader; let j = index">
-                            <div class="datatable-row-content">{{ dtRow[dtHeader?.propertyName] }}</div>
+                            <input type="text" class="datatable-row-content" value="{{ dtRow[dtHeader?.propertyName] }}" disabled>
                             <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
                                 <div [ngSwitch]="dtRow?.tooltip[dtHeader?.propertyName]?.icon"
                                     (mouseenter)="onHoverTooltipIcon($event, dtRow?.tooltip[dtHeader?.propertyName]?.message)"
