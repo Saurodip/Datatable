@@ -69,6 +69,9 @@ export class DataTableSelectionService {
                 if (selectedDataTableRow['RowSelected']) {
                     if (selectionColor) {
                         dataTableRow[i]['style'].backgroundColor = selectionColor;
+                    } else {
+                        const defaultSelectionBackgroundColor: string = '#a1a1a1';
+                        dataTableRow[i]['style'].backgroundColor = defaultSelectionBackgroundColor;
                     }
                 } else {
                     dataTableRow[i]['style'].backgroundColor = '';

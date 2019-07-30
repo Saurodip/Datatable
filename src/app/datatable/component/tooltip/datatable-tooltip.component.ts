@@ -49,7 +49,7 @@ export class DataTableTooltipComponent {
                         dataTableTooltipContainer['style'].left = left - dataTableTooltipContainer['offsetWidth'] + 'px';
                     } else if (tooltipContainer.top < tooltipMainContainer.top && tooltipContainer.right <= tooltipMainContainer.right) {
                         this.arrowDirection = 'left-up';
-                        dataTableTooltipContainer['style'].top = top + dataTableTooltipContainer['offsetHeight'] + tooltipArrowHeight + 'px';
+                        dataTableTooltipContainer['style'].top = top + dataTableTooltipContainer['offsetHeight'] + (tooltipArrowHeight * 2.5) + 'px';
                     } else if (tooltipContainer.top < tooltipMainContainer.top && tooltipContainer.right > tooltipMainContainer.right) {
                         this.arrowDirection = 'right-up';
                         dataTableTooltipContainer['style'].left = left - dataTableTooltipContainer['offsetWidth'] + 'px';

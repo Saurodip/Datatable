@@ -136,6 +136,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                     this.sortFields[header.propertyName] = DataTableSortOrder.None;
                 });
             }
+            /* In case, any of the data loading pattern is applied, then displaying data based on that */
+            this.onDisplayDataBasedOnLoadingPattern(this.dataCollection);
         }, 0);
     }
 
@@ -145,9 +147,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             this.isCompletelyRendered = true;
             this.dataTableUIService.onSetDataTableStyle(this.headerStyle, this.rowStyle, this.randomIndex);
             this.dataTableUIService.onActivateScrollingForHiddenScrollbars();
-
-            /* In case, any of the data loading pattern is applied, then displaying data based on that */
-            this.onDisplayDataBasedOnLoadingPattern(this.dataCollection);
         }
     }
 
@@ -284,9 +283,10 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 }
             }
         }
-        let dataCollection: object[] = this.isFilterTextPresent ? this.dataToDisplay : this.dataCollection;
+        let dataCollection: object[];
         if (type !== DataTableColumnType.Custom) {
-            dataCollection = this.dataTableSortService.onApplySort(dataCollection, propertyName, type, this.sortFields);
+            this.dataCollection = this.dataTableSortService.onApplySort(this.dataCollection, propertyName, type, this.sortFields);
+            dataCollection = this.isFilterTextPresent ? this.dataTableSortService.onApplySort(this.dataToDisplay, propertyName, type, this.sortFields) : [...this.dataCollection];
         } else {
             const response: DataTableUserActionResponse = {
                 sortColumn: propertyName,
@@ -356,28 +356,30 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     @HostListener('scroll', ['$event'])
     onApplyVirtualScrolling(event: Event) {
-        if ((event && event.currentTarget && event.currentTarget['className'].indexOf('scrollable-area-datatable-body') >= 0) && this.virtualScrolling) {
-            const currentTarget: EventTarget = event.currentTarget;
-            let dataCollection: object[] = [];
-            let firstRowIndex: number = 0;
-            if (this.isFilterTextPresent) {
-                dataCollection = this.filteredData;
-                firstRowIndex = (this.filteredData && this.filteredData.length > 0) ? this.filteredData[0]['Index'] : firstRowIndex;
-            } else {
-                dataCollection = this.dataCollection;
-                firstRowIndex = (this.dataCollection && this.dataCollection.length > 0) ? this.dataCollection[0]['Index'] : firstRowIndex;
-            }
-            setTimeout(() => {
-                this.dataToDisplay = this.dataTableVirtualScrollingService.onRetrievalOfNewDataTableRow(currentTarget, dataCollection, this.dataToDisplay);
-                if (this.dataToDisplay && this.dataToDisplay.length > 0) {
-                    const dataTableRow: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-row');
-                    if (currentTarget['scrollTop'] === 0 && firstRowIndex !== this.dataToDisplay[0]['Index']) {
-                        currentTarget['scrollTop'] = dataTableRow ? dataTableRow['offsetHeight'] / 2 : 0;
-                    }
+        if (this.dataLoadingPattern === DataTableLoadingPattern.VirtualScrolling) {
+            if ((event && event.currentTarget && event.currentTarget['className'].indexOf('scrollable-area-datatable-body') >= 0)) {
+                const currentTarget: EventTarget = event.currentTarget;
+                let dataCollection: object[] = [];
+                let firstRowIndex: number = 0;
+                if (this.isFilterTextPresent) {
+                    dataCollection = this.filteredData;
+                    firstRowIndex = (this.filteredData && this.filteredData.length > 0) ? this.filteredData[0]['Index'] : firstRowIndex;
+                } else {
+                    dataCollection = this.dataCollection;
+                    firstRowIndex = (this.dataCollection && this.dataCollection.length > 0) ? this.dataCollection[0]['Index'] : firstRowIndex;
                 }
-            }, 0);
-            /* Allowing browser to render the new dataset before performing selection related action */
-            setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
+                setTimeout(() => {
+                    this.dataToDisplay = this.dataTableVirtualScrollingService.onRetrievalOfNewDataTableRow(currentTarget, dataCollection, this.dataToDisplay);
+                    if (this.dataToDisplay && this.dataToDisplay.length > 0) {
+                        const dataTableRow: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-row');
+                        if (currentTarget['scrollTop'] === 0 && firstRowIndex !== this.dataToDisplay[0]['Index']) {
+                            currentTarget['scrollTop'] = dataTableRow ? dataTableRow['offsetHeight'] / 2 : 0;
+                        }
+                    }
+                }, 0);
+                /* Allowing browser to render the new dataset before performing selection related action */
+                setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
+            }
         }
     }
 
