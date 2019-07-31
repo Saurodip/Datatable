@@ -43,6 +43,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 break;
         }
     }
+    @Input() public editable: boolean;
     @Input() public filterTextLimit: number;
     @Input() public header: DataTableHeader[];
     @Input() public headerStyle: DataTableHeaderStyle;
@@ -64,6 +65,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public scrollableAreaWidth: string;
     public responsiveColumnWidth: string;
     public verticalScrollableRegion: string;
+    public isDataTableCellDisabled: boolean;
     public columnFilter: boolean;
     public globalFilter: boolean;
     public sortFields: object;
@@ -99,6 +101,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.scrollableAreaWidth = '';
         this.responsiveColumnWidth = '';
         this.verticalScrollableRegion = '';
+        this.isDataTableCellDisabled = true;
         this.columnFilter = false;
         this.globalFilter = false;
         this.sortFields = {};
@@ -390,6 +393,14 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             } else if (event.type === 'mouseleave') {
                 this.tooltipInfo = new DataTableTooltip();
             }
+        }
+    }
+
+    public onApplyDataTableEditOption = (): void => {
+        const dataTableEditOption: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-edit-option');
+        if (dataTableEditOption) {
+            dataTableEditOption['checked'] = this.isDataTableCellDisabled;
+            this.isDataTableCellDisabled = !this.isDataTableCellDisabled;
         }
     }
 }

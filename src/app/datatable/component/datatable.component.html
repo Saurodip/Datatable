@@ -52,7 +52,8 @@
                         <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of frozenHeader; let j = index">
-                            <input type="text" class="datatable-row-content" value="{{ dtRow[dtHeader?.propertyName] }}" disabled>
+                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell" class="datatable-input-cell"
+                                value="{{ dtRow[dtHeader?.propertyName] }}" [disabled]="isDataTableCellDisabled">
                             <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
                                 <div [ngSwitch]="dtRow?.tooltip[dtHeader?.propertyName]?.icon"
                                     (mouseenter)="onHoverTooltipIcon($event, dtRow?.tooltip[dtHeader?.propertyName]?.message)"
@@ -114,7 +115,8 @@
                         <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of scrollableHeader; let j = index">
-                            <input type="text" class="datatable-row-content" value="{{ dtRow[dtHeader?.propertyName] }}" disabled>
+                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell" class="datatable-input-cell"
+                                value="{{ dtRow[dtHeader?.propertyName] }}" [disabled]="isDataTableCellDisabled">
                             <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
                                 <div [ngSwitch]="dtRow?.tooltip[dtHeader?.propertyName]?.icon"
                                     (mouseenter)="onHoverTooltipIcon($event, dtRow?.tooltip[dtHeader?.propertyName]?.message)"
@@ -133,18 +135,26 @@
         </div>
     </div>
     <div class="datatable-footer">
-        <div *ngIf="dataLoadingPattern === dataTableLoadingPattern.Pagination" class="pagination-tab-container">
-            <span id="previous-pagination-arrow" class="pagination-navigation">
-                <i class="arrow-previous" (click)="onChangePaginationSlot(currentPaginationSlot?.slot - 2)"></i>
-            </span>
-            <ng-container *ngFor="let paginationTab of currentPaginationSlot?.data; let i = index">
-                <span id="pagination-tab-{{ paginationTab?.index }}" class="pagination-tab"
-                    [ngClass]="{ 'highlight-pagination-tab': paginationTab?.index === 1 }"
-                    (click)="onSelectPaginationTab($event, i)">{{ paginationTab?.index }}
+        <div class="action-container"></div>
+        <div class="pagination-tab-container">
+            <ng-container *ngIf="dataLoadingPattern === dataTableLoadingPattern.Pagination">
+                <span id="previous-pagination-arrow" class="pagination-navigation">
+                    <i class="arrow-previous" (click)="onChangePaginationSlot(currentPaginationSlot?.slot - 2)"></i>
+                </span>
+                <ng-container *ngFor="let paginationTab of currentPaginationSlot?.data; let i = index">
+                    <span id="pagination-tab-{{ paginationTab?.index }}" class="pagination-tab"
+                        [ngClass]="{ 'highlight-pagination-tab': paginationTab?.index === 1 }"
+                        (click)="onSelectPaginationTab($event, i)">{{ paginationTab?.index }}
+                    </span>
+                </ng-container>
+                <span id="next-pagination-arrow" class="pagination-navigation">
+                    <i class="arrow-next" (click)="onChangePaginationSlot(currentPaginationSlot?.slot)"></i>
                 </span>
             </ng-container>
-            <span id="next-pagination-arrow" class="pagination-navigation">
-                <i class="arrow-next" (click)="onChangePaginationSlot(currentPaginationSlot?.slot)"></i>
+        </div>
+        <div class="action-container">
+            <span *ngIf="editable" (click)="onApplyDataTableEditOption($event)">
+                <input type="checkbox" id="datatable-edit-option">Edit
             </span>
         </div>
     </div>

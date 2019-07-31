@@ -6,6 +6,7 @@ export interface DataTable {
     columnResponsive: boolean;
     data: Array<object>;
     dataLoadingPattern?: DataTableLoadingPattern;
+    editable?: boolean;
     filter: DataTableFilterType;
     filterTextLimit: number;
     header: DataTableHeader;

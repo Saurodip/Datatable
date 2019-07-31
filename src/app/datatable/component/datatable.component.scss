@@ -178,7 +178,7 @@ $text-color: #e3e3e3;
                     padding-left: 10px;
                     @include single-line-ellipsis();
 
-                    .datatable-row-content {
+                    .datatable-input-cell {
                         border: none;
                         display: inline-block;
                         width: calc(100% - 30px);
@@ -208,7 +208,7 @@ $text-color: #e3e3e3;
                 &:nth-child(even) {
                     background-color: white;
 
-                    .datatable-row-content {
+                    .datatable-input-cell {
                         background-color: transparent;
                     }
                 }
@@ -216,7 +216,7 @@ $text-color: #e3e3e3;
                 &:nth-child(odd) {
                     background-color: #f5f5f5;
 
-                    .datatable-row-content {
+                    .datatable-input-cell {
                         background-color: transparent;
                     }
                 }
@@ -244,6 +244,22 @@ $text-color: #e3e3e3;
         justify-content: center;
         position: relative;
         width: 100%;
+
+        .action-container {
+            width: 25%;
+
+            span {
+                cursor: pointer;
+                margin-right: 15px;
+
+                input[type="checkbox"] {
+                    cursor: pointer;
+                    margin-right: 5px;
+                    position: relative;
+                    top: 2px;
+                }
+            }
+        }
 
         .pagination-tab-container {
             text-align: center;

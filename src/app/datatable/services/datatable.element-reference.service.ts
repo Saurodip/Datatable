@@ -31,6 +31,7 @@ export class DataTableElementReferenceService {
             case 'previous-pagination-arrow': return document.querySelector('#previous-pagination-arrow');
             case 'pagination-tab': return document.querySelector('.pagination-tab-' + index);
             case 'next-pagination-arrow': return document.querySelector('#next-pagination-arrow');
+            case 'datatable-edit-option': return document.querySelector('#datatable-edit-option');
             default: break;
         }
     }
