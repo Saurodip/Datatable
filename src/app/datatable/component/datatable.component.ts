@@ -83,6 +83,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     private isFilterTextPresent: boolean;
     private filteredData: object[];
     private paginationData: object[];
+    private listOfEditedDataTableRows: object[];
 
     constructor(
         private dataTableElementReferenceService: DataTableElementReferenceService,
@@ -117,6 +118,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.isFilterTextPresent = false;
         this.filteredData = [];
         this.paginationData = [];
+        this.listOfEditedDataTableRows = [];
     }
 
     ngOnInit() {
@@ -198,23 +200,25 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
      */
     public onSelectDataTableRow = (event: MouseEvent): void => {
         if ((event && event.currentTarget) && (this.dataCollection && this.dataCollection.length > 0)) {
-            const selectedRowIndex: number = event.currentTarget['id'] && parseInt(event.currentTarget['id'].replace(/^\D+/g, ''), 10);
-            const selectedDataTableRow: object = this.dataCollection.find((rowData: object) => rowData['Index'] === selectedRowIndex);
-            if (selectedDataTableRow) {
-                selectedDataTableRow['RowSelected'] = !selectedDataTableRow['RowSelected'];
-                this.selectAllCheckboxState = this.dataTableSelectionService.onSelectDataTableRow(selectedDataTableRow, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
-                const matchedRowIndex: number = this.listOfSelectedDataTableRow.findIndex((rowData: object) => rowData['Index'] === selectedDataTableRow['Index']);
-                if (selectedDataTableRow['RowSelected']) {
-                    if (matchedRowIndex < 0) {
-                        this.listOfSelectedDataTableRow.push(this.dataStore[selectedDataTableRow['Index'] - 1]);
+            const selectedRowIndex: number = event.currentTarget['id'] && parseInt(event.currentTarget['id'].replace(/^\D+/g, ''), 10) || 0;
+            if (selectedRowIndex > 0) {
+                const selectedDataTableRow: object = this.dataCollection.find((rowData: object) => rowData['Index'] === selectedRowIndex);
+                if (selectedDataTableRow) {
+                    selectedDataTableRow['RowSelected'] = !selectedDataTableRow['RowSelected'];
+                    this.selectAllCheckboxState = this.dataTableSelectionService.onSelectDataTableRow(selectedDataTableRow, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
+                    const matchedRowIndex: number = this.listOfSelectedDataTableRow.findIndex((rowData: object) => rowData['Index'] === selectedDataTableRow['Index']);
+                    if (selectedDataTableRow['RowSelected']) {
+                        if (matchedRowIndex < 0) {
+                            this.listOfSelectedDataTableRow.push(this.dataStore[selectedDataTableRow['Index'] - 1]);
+                        }
+                    } else {
+                        this.listOfSelectedDataTableRow.splice(matchedRowIndex, 1);
                     }
-                } else {
-                    this.listOfSelectedDataTableRow.splice(matchedRowIndex, 1);
+                    const response: DataTableUserActionResponse = {
+                        data: this.listOfSelectedDataTableRow
+                    };
+                    this.getSelectedDataTableRows.emit(response);
                 }
-                const response: DataTableUserActionResponse = {
-                    data: this.listOfSelectedDataTableRow
-                };
-                this.getSelectedDataTableRows.emit(response);
             }
         }
     }
@@ -402,5 +406,28 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             dataTableEditOption['checked'] = this.isDataTableCellDisabled;
             this.isDataTableCellDisabled = !this.isDataTableCellDisabled;
         }
+    }
+
+    public onEditDataTableCell = (event: KeyboardEvent, propertyName: string, type: DataTableColumnType): void => {
+        let timeOut = setTimeout(() => {
+            if ((event && event.target) && (this.dataCollection && this.dataCollection.length > 0)) {
+                const editedDataTableRowIndex: number = event.target['id'] && parseInt(event.target['id'].match(/\d+/g, ''), 10) || 0;
+                if (editedDataTableRowIndex > 0) {
+                    const matchedRow: object = this.dataCollection[editedDataTableRowIndex - 1];
+                    if (this.listOfEditedDataTableRows && this.listOfEditedDataTableRows.length > 0) {
+                        const matchedEditedRow: object = this.listOfEditedDataTableRows.find((rowData: object) => rowData['Index'] === matchedRow['Index']);
+                        if (matchedEditedRow) {
+                            matchedEditedRow[propertyName] = event.target['value'];
+                        } else {
+                            this.listOfEditedDataTableRows.push(matchedRow);
+                        }
+                    } else {
+                        matchedRow[propertyName] = event.target['value'];
+                        this.listOfEditedDataTableRows.push(matchedRow);
+                    }
+                }
+            }
+            clearTimeout(timeOut);
+        }, 1000);
     }
 }

@@ -52,8 +52,9 @@
                         <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of frozenHeader; let j = index">
-                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell" class="datatable-input-cell"
-                                value="{{ dtRow[dtHeader?.propertyName] }}" [disabled]="isDataTableCellDisabled">
+                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell-{{ j + 1 }}" class="datatable-input-cell"
+                                value="{{ dtRow[dtHeader?.propertyName] }}" [disabled]="isDataTableCellDisabled"
+                                (keyup)="onEditDataTableCell($event, dtHeader?.propertyName, dtHeader?.type)">
                             <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
                                 <div [ngSwitch]="dtRow?.tooltip[dtHeader?.propertyName]?.icon"
                                     (mouseenter)="onHoverTooltipIcon($event, dtRow?.tooltip[dtHeader?.propertyName]?.message)"
@@ -115,8 +116,9 @@
                         <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of scrollableHeader; let j = index">
-                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell" class="datatable-input-cell"
-                                value="{{ dtRow[dtHeader?.propertyName] }}" [disabled]="isDataTableCellDisabled">
+                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell-{{ j + 1 }}" class="datatable-input-cell"
+                                value="{{ dtRow[dtHeader?.propertyName] }}" [disabled]="isDataTableCellDisabled"
+                                (keyup)="onEditDataTableCell($event, dtHeader?.propertyName, dtHeader?.type)">
                             <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
                                 <div [ngSwitch]="dtRow?.tooltip[dtHeader?.propertyName]?.icon"
                                     (mouseenter)="onHoverTooltipIcon($event, dtRow?.tooltip[dtHeader?.propertyName]?.message)"
@@ -155,6 +157,9 @@
         <div class="action-container">
             <span *ngIf="editable" (click)="onApplyDataTableEditOption($event)">
                 <input type="checkbox" id="datatable-edit-option">Edit
+            </span>
+            <span *ngIf="editable" (click)="onApplyDataTableEditOption($event)">
+                <input type="checkbox" id="datatable-save-option">Save
             </span>
         </div>
     </div>
