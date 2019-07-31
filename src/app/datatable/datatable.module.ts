@@ -4,6 +4,7 @@ import { CurrencyPipe, DatePipe, DecimalPipe, LowerCasePipe, UpperCasePipe } fro
 import { DataTableComponent } from './component/datatable.component';
 import { DataTableTooltipComponent } from './component/tooltip/datatable-tooltip.component';
 import { DataTableHoverDirective } from './directive/hover.directive';
+import { DataTableActionsToolbarService } from './services/datatable.actions-toolbar.service';
 import { DataTableElementReferenceService } from './services/datatable.element-reference.service';
 import { DataTablePaginationService } from './services/datatable.pagination.service';
 import { DataTablePipeService } from './services/datatable.pipe';
@@ -29,6 +30,7 @@ import { DataTableVirtualScrollingService } from './services/datatable.virtual-s
     ],
     providers: [
         CurrencyPipe,
+        DataTableActionsToolbarService,
         DataTableElementReferenceService,
         DataTablePaginationService,
         DataTablePipeService,

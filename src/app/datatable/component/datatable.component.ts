@@ -1,4 +1,5 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { DataTableActionsToolbarService } from '../services/datatable.actions-toolbar.service';
 import { DataTableElementReferenceService } from '../services/datatable.element-reference.service';
 import { DataTableFilterService } from '../services/datatable.filter.service';
 import { DataTablePaginationService } from '../services/datatable.pagination.service';
@@ -52,10 +53,11 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public rowStyle: DataTableRowStyle;
     @Input() public virtualScrolling: DataTableVirtualScrolling;
 
-    @Output() public getSelectAllCheckboxState = new EventEmitter<DataTableUserActionResponse>();
-    @Output() public getSelectedDataTableRows = new EventEmitter<DataTableUserActionResponse>();
-    @Output() public getCustomFilterInfo = new EventEmitter<DataTableUserActionResponse>();
-    @Output() public getSortingInfo = new EventEmitter<DataTableUserActionResponse>();
+    @Output() public getDataTableSelectAllCheckboxState = new EventEmitter<DataTableUserActionResponse>();
+    @Output() public getDataTableSelectedRows = new EventEmitter<DataTableUserActionResponse>();
+    @Output() public getDataTableCustomFilterInfo = new EventEmitter<DataTableUserActionResponse>();
+    @Output() public getDataTableSortingInfo = new EventEmitter<DataTableUserActionResponse>();
+    @Output() public getDataTableEditedData = new EventEmitter<DataTableUserActionResponse>();
 
     public isLoading: boolean;
     public randomIndex: number;
@@ -83,9 +85,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     private isFilterTextPresent: boolean;
     private filteredData: object[];
     private paginationData: object[];
-    private listOfEditedDataTableRows: object[];
 
     constructor(
+        private dataTableActionsToolbarService: DataTableActionsToolbarService,
         private dataTableElementReferenceService: DataTableElementReferenceService,
         private dataTableFilterService: DataTableFilterService,
         private dataTablePaginationService: DataTablePaginationService,
@@ -118,7 +120,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.isFilterTextPresent = false;
         this.filteredData = [];
         this.paginationData = [];
-        this.listOfEditedDataTableRows = [];
     }
 
     ngOnInit() {
@@ -190,7 +191,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             const response: DataTableUserActionResponse = {
                 state: this.selectAllCheckboxState
             };
-            this.getSelectAllCheckboxState.emit(response);
+            this.getDataTableSelectAllCheckboxState.emit(response);
         }
     }
 
@@ -217,7 +218,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                     const response: DataTableUserActionResponse = {
                         data: this.listOfSelectedDataTableRow
                     };
-                    this.getSelectedDataTableRows.emit(response);
+                    this.getDataTableSelectedRows.emit(response);
                 }
             }
         }
@@ -260,7 +261,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                             filterText: filteredText
                         };
                     }
-                    this.getCustomFilterInfo.emit(response);
+                    this.getDataTableCustomFilterInfo.emit(response);
                 }
                 /* In case, any of the data loading pattern is applied, then displaying data based on that */
                 this.onDisplayDataBasedOnLoadingPattern(this.filteredData);
@@ -299,7 +300,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 sortColumn: propertyName,
                 sortOrder: this.sortFields[propertyName]
             };
-            this.getSortingInfo.emit(response);
+            this.getDataTableSortingInfo.emit(response);
         }
         /* In case, any of the data loading pattern is applied, then displaying data based on that */
         this.onDisplayDataBasedOnLoadingPattern(dataCollection);
@@ -408,25 +409,19 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
     }
 
+    /**
+     * This method gets triggered on edition of datatable cell
+     * @param event { KeyboardEvent } Keyup event
+     * @param propertyName { string } Column header of the cell that has been modified
+     * @param type { DataTableColumnType } Type of the column of which cell is modified
+     */
     public onEditDataTableCell = (event: KeyboardEvent, propertyName: string, type: DataTableColumnType): void => {
         let timeOut = setTimeout(() => {
-            if ((event && event.target) && (this.dataCollection && this.dataCollection.length > 0)) {
-                const editedDataTableRowIndex: number = event.target['id'] && parseInt(event.target['id'].match(/\d+/g, ''), 10) || 0;
-                if (editedDataTableRowIndex > 0) {
-                    const matchedRow: object = this.dataCollection[editedDataTableRowIndex - 1];
-                    if (this.listOfEditedDataTableRows && this.listOfEditedDataTableRows.length > 0) {
-                        const matchedEditedRow: object = this.listOfEditedDataTableRows.find((rowData: object) => rowData['Index'] === matchedRow['Index']);
-                        if (matchedEditedRow) {
-                            matchedEditedRow[propertyName] = event.target['value'];
-                        } else {
-                            this.listOfEditedDataTableRows.push(matchedRow);
-                        }
-                    } else {
-                        matchedRow[propertyName] = event.target['value'];
-                        this.listOfEditedDataTableRows.push(matchedRow);
-                    }
-                }
-            }
+            const listOfEditedDataTableRows: object[] = this.dataTableActionsToolbarService.onPrepareListOfEditedRows(event, this.dataCollection, propertyName, type);
+            const response: DataTableUserActionResponse = {
+                data: listOfEditedDataTableRows
+            };
+            this.getDataTableEditedData.emit(response);
             clearTimeout(timeOut);
         }, 1000);
     }
