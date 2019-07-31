@@ -421,7 +421,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             const response: DataTableUserActionResponse = {
                 data: listOfEditedDataTableRows
             };
-            this.getDataTableEditedData.emit(response);
             clearTimeout(timeOut);
         }, 1000);
     }
