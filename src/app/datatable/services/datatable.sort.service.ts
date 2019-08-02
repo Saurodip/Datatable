@@ -15,7 +15,7 @@ export class DataTableSortService {
      * return sortedData { object[] } Data collection after sorting operation
      */
     public onApplySort = (dataCollection: object[], propertyName: string, type: DataTableColumnType, sortFields?: object): object[] => {
-        const sortOrder: number = sortFields[propertyName] || DataTableSortOrder.None;
+        const sortOrder: number = sortFields && sortFields[propertyName] || DataTableSortOrder.Ascending;
         let sortedData: object[] = [];
         switch (type) {
             case DataTableColumnType.Date:

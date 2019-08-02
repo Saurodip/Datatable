@@ -155,10 +155,10 @@
             </ng-container>
         </div>
         <div class="action-container">
-            <span *ngIf="editable" (click)="onApplyDataTableEditOption($event)">
+            <span *ngIf="editable" (click)="onApplyDataTableEditOption()">
                 <input type="checkbox" id="datatable-edit-option">Edit
             </span>
-            <span *ngIf="editable" (click)="onApplyDataTableEditOption($event)">
+            <span *ngIf="editable" (click)="onSaveDataTableUpdatedData()">
                 <input type="checkbox" id="datatable-save-option">Save
             </span>
         </div>

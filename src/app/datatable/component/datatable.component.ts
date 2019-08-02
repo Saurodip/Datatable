@@ -77,6 +77,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public dataTableLoadingPattern = DataTableLoadingPattern;
     private dataStore: object[];
     private dataCollection: object[];
+    private listOfInternalObjectProperties: string[];
     private listOfSelectedDataTableRow: object[];
     private selectAllCheckboxState: string;
     private filterType: number;
@@ -85,6 +86,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     private isFilterTextPresent: boolean;
     private filteredData: object[];
     private paginationData: object[];
+    private listOfEditedDataTableRows: object[];
 
     constructor(
         private dataTableActionsToolbarService: DataTableActionsToolbarService,
@@ -112,6 +114,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.tooltipInfo = new DataTableTooltip();
         this.dataStore = [];
         this.dataCollection = [];
+        this.listOfInternalObjectProperties = ['Index', 'RowSelected'];
         this.listOfSelectedDataTableRow = [];
         this.selectAllCheckboxState = '';
         this.filterType = -1;
@@ -120,6 +123,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.isFilterTextPresent = false;
         this.filteredData = [];
         this.paginationData = [];
+        this.listOfEditedDataTableRows = [];
     }
 
     ngOnInit() {
@@ -417,11 +421,42 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
      */
     public onEditDataTableCell = (event: KeyboardEvent, propertyName: string, type: DataTableColumnType): void => {
         let timeOut = setTimeout(() => {
-            const listOfEditedDataTableRows: object[] = this.dataTableActionsToolbarService.onPrepareListOfEditedRows(event, this.dataCollection, propertyName, type);
-            const response: DataTableUserActionResponse = {
-                data: listOfEditedDataTableRows
-            };
+            this.listOfEditedDataTableRows = JSON.parse(JSON.stringify(this.dataTableActionsToolbarService.onPrepareListOfDataTableEditedRows(event, this.dataCollection, propertyName, type)));
             clearTimeout(timeOut);
         }, 1000);
+    }
+
+    public onSaveDataTableUpdatedData = (): void => {
+        if ((this.listOfEditedDataTableRows && this.listOfEditedDataTableRows.length > 0) && (this.dataCollection && this.dataCollection.length > 0) && (this.dataStore && this.dataStore.length > 0)) {
+            this.listOfEditedDataTableRows.forEach((editedRowData: object, index: number) => {
+                const matchedRow: object = this.dataCollection.find((rowData: object) => rowData['Index'] === editedRowData['Index']);
+                if (matchedRow) {
+                    this.header.some((header: DataTableHeader) => {
+                        if (editedRowData[header.propertyName] === matchedRow[header.propertyName]) {
+                            this.listOfEditedDataTableRows.splice(index, 1);
+                        }
+                        return true;
+                    });
+                }
+            });
+            this.listOfEditedDataTableRows = [...this.dataTableSortService.onApplySort(this.listOfEditedDataTableRows, 'Index', DataTableColumnType.Integer)];
+            this.listOfEditedDataTableRows = this.onRemoveInternalObjectProperties(this.listOfEditedDataTableRows);
+            const response: DataTableUserActionResponse = {
+                data: this.listOfEditedDataTableRows
+            };
+            this.getDataTableEditedData.emit(response);
+        }
+    }
+
+    private onRemoveInternalObjectProperties = (dataCollection: object[]): object[] => {
+        if ((this.listOfInternalObjectProperties && this.listOfInternalObjectProperties.length > 0) && (dataCollection && dataCollection.length > 0)) {
+            dataCollection.forEach((rowData: object) => {
+                this.listOfInternalObjectProperties.forEach((internalPropertyName: string) => {
+                    delete rowData[internalPropertyName];
+                });
+            });
+            return dataCollection;
+        }
+        return dataCollection;
     }
 }
