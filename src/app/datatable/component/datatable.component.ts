@@ -78,7 +78,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     private dataStore: object[];
     private dataCollection: object[];
     private listOfInternalObjectProperties: string[];
-    private listOfSelectedDataTableRow: object[];
+    private listOfSelectedDataTableRows: object[];
     private selectAllCheckboxState: string;
     private filterType: number;
     private filteredTextFields: object;
@@ -115,7 +115,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.dataStore = [];
         this.dataCollection = [];
         this.listOfInternalObjectProperties = ['Index', 'RowSelected'];
-        this.listOfSelectedDataTableRow = [];
+        this.listOfSelectedDataTableRows = [];
         this.selectAllCheckboxState = '';
         this.filterType = -1;
         this.filteredTextFields = {};
@@ -200,32 +200,17 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     /**
-     * This method gets triggered on select of individiual datatable row
+     * This method gets triggered on selection of individiual datatable row
      * @param event { MouseEvent } Mouse click event
      */
     public onSelectDataTableRow = (event: MouseEvent): void => {
-        if ((event && event.currentTarget) && (this.dataCollection && this.dataCollection.length > 0)) {
-            const selectedRowIndex: number = event.currentTarget['id'] && parseInt(event.currentTarget['id'].replace(/^\D+/g, ''), 10) || 0;
-            if (selectedRowIndex > 0) {
-                const selectedDataTableRow: object = this.dataCollection.find((rowData: object) => rowData['Index'] === selectedRowIndex);
-                if (selectedDataTableRow) {
-                    selectedDataTableRow['RowSelected'] = !selectedDataTableRow['RowSelected'];
-                    this.selectAllCheckboxState = this.dataTableSelectionService.onSelectDataTableRow(selectedDataTableRow, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
-                    const matchedRowIndex: number = this.listOfSelectedDataTableRow.findIndex((rowData: object) => rowData['Index'] === selectedDataTableRow['Index']);
-                    if (selectedDataTableRow['RowSelected']) {
-                        if (matchedRowIndex < 0) {
-                            this.listOfSelectedDataTableRow.push(this.dataStore[selectedDataTableRow['Index'] - 1]);
-                        }
-                    } else {
-                        this.listOfSelectedDataTableRow.splice(matchedRowIndex, 1);
-                    }
-                    const response: DataTableUserActionResponse = {
-                        data: this.listOfSelectedDataTableRow
-                    };
-                    this.getDataTableSelectedRows.emit(response);
-                }
-            }
-        }
+        const rowSelectionInfo = this.dataTableSelectionService.onSelectDataTableRow(event, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
+        Object.assign(this, rowSelectionInfo);
+        this.onRemoveInternalObjectProperties(this.listOfSelectedDataTableRows);
+        const response: DataTableUserActionResponse = {
+            data: this.listOfSelectedDataTableRows
+        };
+        this.getDataTableSelectedRows.emit(response);
     }
 
     /**
@@ -234,44 +219,48 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
      * @param propertyName? { string } Name of the column on which filter is applied (if column-filter is applicable)
      */
     public onApplyFilter = (event: KeyboardEvent | MouseEvent, propertyName?: string): void => {
-        let timeOut = setTimeout(() => {
-            this.isFilterTextPresent = false;
-            if (event && event.target) {
-                const filteredText: string = event.target['value'] && event.target['value'].toLowerCase().trim();
+        if (this.listOfEditedDataTableRows && this.listOfEditedDataTableRows.length <= 0) {
+            let timeOut = setTimeout(() => {
                 this.isFilterTextPresent = false;
-                if (this.filterType === DataTableFilterType.Column) {
-                    this.filteredTextFields[propertyName] = filteredText;
-                    for (let key in this.filteredTextFields) {
-                        if (this.filteredTextFields.hasOwnProperty(key)) {
-                            if (this.filteredTextFields[key]) {
-                                this.isFilterTextPresent = true;
-                                break;
+                if (event && event.target) {
+                    const filteredText: string = event.target['value'] && event.target['value'].toLowerCase().trim();
+                    this.isFilterTextPresent = false;
+                    if (this.filterType === DataTableFilterType.Column) {
+                        this.filteredTextFields[propertyName] = filteredText;
+                        for (let key in this.filteredTextFields) {
+                            if (this.filteredTextFields.hasOwnProperty(key)) {
+                                if (this.filteredTextFields[key]) {
+                                    this.isFilterTextPresent = true;
+                                    break;
+                                }
                             }
                         }
+                        this.filteredData = this.isFilterTextPresent ? this.dataTableFilterService.onApplyColumnFilter(this.dataCollection, this.filteredTextFields) : [...this.dataCollection];
+                    } else if (this.filterType === DataTableFilterType.Global) {
+                        this.filteredData = filteredText ? this.dataTableFilterService.onApplyGlobalFilter(filteredText, this.dataCollection, this.header) : [...this.dataCollection];
+                        this.isFilterTextPresent = filteredText ? true : false;
+                    } else {
+                        let response: DataTableUserActionResponse;
+                        if (this.filterType === DataTableFilterType.CustomColumn) {
+                            response = {
+                                filterColumn: propertyName,
+                                filterText: filteredText
+                            };
+                        } else if (this.filterType === DataTableFilterType.CustomGlobal) {
+                            response = {
+                                filterText: filteredText
+                            };
+                        }
+                        this.getDataTableCustomFilterInfo.emit(response);
                     }
-                    this.filteredData = this.isFilterTextPresent ? this.dataTableFilterService.onApplyColumnFilter(this.dataCollection, this.filteredTextFields) : [...this.dataCollection];
-                } else if (this.filterType === DataTableFilterType.Global) {
-                    this.filteredData = filteredText ? this.dataTableFilterService.onApplyGlobalFilter(filteredText, this.dataCollection, this.header) : [...this.dataCollection];
-                    this.isFilterTextPresent = filteredText ? true : false;
-                } else {
-                    let response: DataTableUserActionResponse;
-                    if (this.filterType === DataTableFilterType.CustomColumn) {
-                        response = {
-                            filterColumn: propertyName,
-                            filterText: filteredText
-                        };
-                    } else if (this.filterType === DataTableFilterType.CustomGlobal) {
-                        response = {
-                            filterText: filteredText
-                        };
-                    }
-                    this.getDataTableCustomFilterInfo.emit(response);
+                    /* In case, any of the data loading pattern is applied, then displaying data based on that */
+                    this.onDisplayDataBasedOnLoadingPattern(this.filteredData);
                 }
-                /* In case, any of the data loading pattern is applied, then displaying data based on that */
-                this.onDisplayDataBasedOnLoadingPattern(this.filteredData);
-            }
-            clearTimeout(timeOut);
-        }, 1000);
+                clearTimeout(timeOut);
+            }, 1000);
+        } else {
+            // show dialog
+        }
     }
 
     /**
@@ -281,33 +270,37 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
      * @param type { DataTableColumnType } Type of the datatable column based on which sorting will be applied
      */
     public onApplySort = (event: MouseEvent, propertyName: string, type: DataTableColumnType): void => {
-        this.dataTableUIService.onHighlightSelectedElement(event, 'datatable-header', 'highlight-column-header');
-        for (let key in this.sortFields) {
-            if (this.sortFields.hasOwnProperty(key)) {
-                if (key !== propertyName) {
-                    this.sortFields[key] = DataTableSortOrder.None;
-                } else {
-                    if (this.sortFields[propertyName] === DataTableSortOrder.None || this.sortFields[propertyName] === DataTableSortOrder.Descending) {
-                        this.sortFields[propertyName] = DataTableSortOrder.Ascending;
+        if (this.listOfEditedDataTableRows && this.listOfEditedDataTableRows.length <= 0) {
+            this.dataTableUIService.onHighlightSelectedElement(event, 'datatable-header', 'highlight-column-header');
+            for (let key in this.sortFields) {
+                if (this.sortFields.hasOwnProperty(key)) {
+                    if (key !== propertyName) {
+                        this.sortFields[key] = DataTableSortOrder.None;
                     } else {
-                        this.sortFields[propertyName] = DataTableSortOrder.Descending;
+                        if (this.sortFields[propertyName] === DataTableSortOrder.None || this.sortFields[propertyName] === DataTableSortOrder.Descending) {
+                            this.sortFields[propertyName] = DataTableSortOrder.Ascending;
+                        } else {
+                            this.sortFields[propertyName] = DataTableSortOrder.Descending;
+                        }
                     }
                 }
             }
-        }
-        let dataCollection: object[];
-        if (type !== DataTableColumnType.Custom) {
-            this.dataCollection = this.dataTableSortService.onApplySort(this.dataCollection, propertyName, type, this.sortFields);
-            dataCollection = this.isFilterTextPresent ? this.dataTableSortService.onApplySort(this.dataToDisplay, propertyName, type, this.sortFields) : [...this.dataCollection];
+            let dataCollection: object[];
+            if (type !== DataTableColumnType.Custom) {
+                this.dataCollection = this.dataTableSortService.onApplySort(this.dataCollection, propertyName, type, this.sortFields);
+                dataCollection = this.isFilterTextPresent ? this.dataTableSortService.onApplySort(this.dataToDisplay, propertyName, type, this.sortFields) : [...this.dataCollection];
+            } else {
+                const response: DataTableUserActionResponse = {
+                    sortColumn: propertyName,
+                    sortOrder: this.sortFields[propertyName]
+                };
+                this.getDataTableSortingInfo.emit(response);
+            }
+            /* In case, any of the data loading pattern is applied, then displaying data based on that */
+            this.onDisplayDataBasedOnLoadingPattern(dataCollection);
         } else {
-            const response: DataTableUserActionResponse = {
-                sortColumn: propertyName,
-                sortOrder: this.sortFields[propertyName]
-            };
-            this.getDataTableSortingInfo.emit(response);
+            // Show dialog
         }
-        /* In case, any of the data loading pattern is applied, then displaying data based on that */
-        this.onDisplayDataBasedOnLoadingPattern(dataCollection);
     }
 
     /**
@@ -421,33 +414,39 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
      */
     public onEditDataTableCell = (event: KeyboardEvent, propertyName: string, type: DataTableColumnType): void => {
         let timeOut = setTimeout(() => {
-            this.listOfEditedDataTableRows = JSON.parse(JSON.stringify(this.dataTableActionsToolbarService.onPrepareListOfDataTableEditedRows(event, this.dataCollection, propertyName, type)));
+            this.listOfEditedDataTableRows = JSON.parse(JSON.stringify(this.dataTableActionsToolbarService.onPrepareListOfDataTableEditedRows(event, this.dataCollection, this.header, propertyName, type)));
+            this.onRemoveInternalObjectProperties(this.listOfEditedDataTableRows);
             clearTimeout(timeOut);
         }, 1000);
     }
 
+    /**
+     * This method gets triggered on saving of edited datatable rows
+     */
     public onSaveDataTableUpdatedData = (): void => {
-        if ((this.listOfEditedDataTableRows && this.listOfEditedDataTableRows.length > 0) && (this.dataCollection && this.dataCollection.length > 0) && (this.dataStore && this.dataStore.length > 0)) {
-            this.listOfEditedDataTableRows.forEach((editedRowData: object, index: number) => {
-                const matchedRow: object = this.dataCollection.find((rowData: object) => rowData['Index'] === editedRowData['Index']);
-                if (matchedRow) {
-                    this.header.some((header: DataTableHeader) => {
-                        if (editedRowData[header.propertyName] === matchedRow[header.propertyName]) {
-                            this.listOfEditedDataTableRows.splice(index, 1);
-                        }
-                        return true;
-                    });
-                }
-            });
-            this.listOfEditedDataTableRows = [...this.dataTableSortService.onApplySort(this.listOfEditedDataTableRows, 'Index', DataTableColumnType.Integer)];
-            this.listOfEditedDataTableRows = this.onRemoveInternalObjectProperties(this.listOfEditedDataTableRows);
-            const response: DataTableUserActionResponse = {
-                data: this.listOfEditedDataTableRows
-            };
-            this.getDataTableEditedData.emit(response);
-        }
+        const response: DataTableUserActionResponse = {
+            data: this.listOfEditedDataTableRows
+        };
+        this.getDataTableEditedData.emit(response);
+        this.listOfEditedDataTableRows = [];
     }
 
+    /**
+     * This method is responsible for deleting selected datatable rows
+     */
+    public onDeleteDataTableData = (): void => {
+        const response: DataTableUserActionResponse = {
+            data: this.listOfSelectedDataTableRows
+        };
+        this.getDataTableSelectedRows.emit(response);
+        this.listOfSelectedDataTableRows = [];
+    }
+
+    /**
+     * This method is responsible for removing internal object properties used for datatable from actual data collection provided by invoked component
+     * @param dataCollection { object[] } Collection of datatable rows
+     * return dataCollection { object[] } Collection of datatable rows after removing internal used properties
+     */
     private onRemoveInternalObjectProperties = (dataCollection: object[]): object[] => {
         if ((this.listOfInternalObjectProperties && this.listOfInternalObjectProperties.length > 0) && (dataCollection && dataCollection.length > 0)) {
             dataCollection.forEach((rowData: object) => {

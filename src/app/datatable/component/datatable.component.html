@@ -158,8 +158,13 @@
             <span *ngIf="editable" (click)="onApplyDataTableEditOption()">
                 <input type="checkbox" id="datatable-edit-option">Edit
             </span>
-            <span *ngIf="editable" (click)="onSaveDataTableUpdatedData()">
-                <input type="checkbox" id="datatable-save-option">Save
+            <span *ngIf="editable" (click)="onSaveDataTableUpdatedData($event)">
+                <input type="button" id="datatable-save-option" value="Save"
+                    [disabled]="listOfEditedDataTableRows && listOfEditedDataTableRows.length <= 0">
+            </span>
+            <span *ngIf="editable" (click)="onDeleteDataTableData($event)">
+                <input type="button" id="datatable-delete-option" value="Delete"
+                    [disabled]="listOfSelectedDataTableRows && listOfSelectedDataTableRows.length <= 0">
             </span>
         </div>
     </div>

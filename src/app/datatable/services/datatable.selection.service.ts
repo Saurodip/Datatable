@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import { DataTableElementReferenceService } from './datatable.element-reference.service';
+import { DataTableSortService } from './datatable.sort.service';
+import { DataTableColumnType } from '../enumerations/datatable.enum';
 
 @Injectable()
 export class DataTableSelectionService {
     private noOfRowsSelected: number;
+    private listOfSelectedDataTableRows: object[];
 
     constructor(
-        private dataTableElementReferenceService: DataTableElementReferenceService) {
+        private dataTableElementReferenceService: DataTableElementReferenceService,
+        private dataTableSortService: DataTableSortService) {
         this.noOfRowsSelected = 0;
+        this.listOfSelectedDataTableRows = [];
     }
 
     /**
@@ -58,37 +63,61 @@ export class DataTableSelectionService {
 
     /**
      * This method is responsible to select or deselect datatable rows based on user interaction
-     * @param selectedDataTableRow { object } Currently selected datatable row
+     * @param event { MouseEvent } Mouse click event
      * @param dataCollection { object[] } Total number of datatable rows
      * @param isCheckboxSelectionEnabled { boolean } Value provided from the invoked component to display checkbox selection or not
      * @param selectionColor? { string } Optional - Selection color provided from the invoked component
-     * return selectAllCheckboxState { string } State of the 'Select All' checkbox
+     * return rowSelectionInfo { object } List of selected rows with current state of 'Select All' checkbox
      */
-    public onSelectDataTableRow = (selectedDataTableRow: object, dataCollection: object[], isCheckboxSelectionEnabled: boolean, selectionColor?: string): string => {
-        this.noOfRowsSelected = selectedDataTableRow['RowSelected'] ? ++this.noOfRowsSelected : --this.noOfRowsSelected;
-        const dataTableRow: NodeList = this.dataTableElementReferenceService.getNodeListReference('current-datatable-row', selectedDataTableRow['Index']);
-        if (dataTableRow && dataTableRow.length > 0) {
-            for (let i = 0; i < dataTableRow.length; i++) {
-                if (selectedDataTableRow['RowSelected']) {
-                    if (selectionColor) {
-                        dataTableRow[i]['style'].backgroundColor = selectionColor;
+    public onSelectDataTableRow = (event: MouseEvent, dataCollection: object[], isCheckboxSelectionEnabled: boolean, selectionColor?: string): object => {
+        let rowSelectionInfo: object = {
+            listOfSelectedDataTableRows: [],
+            selectAllCheckboxState: 'unchecked'
+        };
+        if ((event && event.currentTarget) && (dataCollection && dataCollection.length > 0)) {
+            const selectedRowIndex: number = event.currentTarget['id'] && parseInt(event.currentTarget['id'].replace(/^\D+/g, ''), 10) || 0;
+            if (selectedRowIndex > 0) {
+                const selectedDataTableRow: object = dataCollection.find((rowData: object) => rowData['Index'] === selectedRowIndex);
+                if (selectedDataTableRow) {
+                    selectedDataTableRow['RowSelected'] = !selectedDataTableRow['RowSelected'];
+                    this.noOfRowsSelected = selectedDataTableRow['RowSelected'] ? ++this.noOfRowsSelected : --this.noOfRowsSelected;
+                    const matchedRowIndex: number = this.listOfSelectedDataTableRows.findIndex((rowData: object) => rowData['Index'] === selectedDataTableRow['Index']);
+                    if (selectedDataTableRow['RowSelected']) {
+                        if (matchedRowIndex < 0) {
+                            this.listOfSelectedDataTableRows.push(dataCollection[selectedDataTableRow['Index'] - 1]);
+                        }
                     } else {
-                        const defaultSelectionBackgroundColor: string = '#a1a1a1';
-                        dataTableRow[i]['style'].backgroundColor = defaultSelectionBackgroundColor;
+                        this.listOfSelectedDataTableRows.splice(matchedRowIndex, 1);
                     }
-                } else {
-                    dataTableRow[i]['style'].backgroundColor = '';
+                    const dataTableRow: NodeList = this.dataTableElementReferenceService.getNodeListReference('current-datatable-row', selectedDataTableRow['Index']);
+                    if (dataTableRow && dataTableRow.length > 0) {
+                        for (let i = 0; i < dataTableRow.length; i++) {
+                            if (selectedDataTableRow['RowSelected']) {
+                                if (selectionColor) {
+                                    dataTableRow[i]['style'].backgroundColor = selectionColor;
+                                } else {
+                                    const defaultSelectionBackgroundColor: string = '#a1a1a1';
+                                    dataTableRow[i]['style'].backgroundColor = defaultSelectionBackgroundColor;
+                                }
+                            } else {
+                                dataTableRow[i]['style'].backgroundColor = '';
+                            }
+                        }
+                    }
+                    if (isCheckboxSelectionEnabled) {
+                        const checkboxElement: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('current-datatable-checkbox', selectedDataTableRow['Index']);
+                        if (checkboxElement) {
+                            checkboxElement['checked'] = selectedDataTableRow['RowSelected'];
+                        }
+                    }
+                    const selectAllCheckboxState: string = this.determineSelectAllCheckboxState(dataCollection && dataCollection.length);
+                    this.listOfSelectedDataTableRows = [...this.dataTableSortService.onApplySort(this.listOfSelectedDataTableRows, 'Index', DataTableColumnType.Integer)];
+                    rowSelectionInfo = { listOfSelectedDataTableRows: JSON.parse(JSON.stringify(this.listOfSelectedDataTableRows)), selectAllCheckboxState: selectAllCheckboxState };
+                    return rowSelectionInfo;
                 }
             }
         }
-        if (isCheckboxSelectionEnabled) {
-            const checkboxElement: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('current-datatable-checkbox', selectedDataTableRow['Index']);
-            if (checkboxElement) {
-                checkboxElement['checked'] = selectedDataTableRow['RowSelected'];
-            }
-        }
-        const selectAllCheckboxState: string = this.determineSelectAllCheckboxState(dataCollection && dataCollection.length);
-        return selectAllCheckboxState;
+        return rowSelectionInfo;
     }
 
     /**
