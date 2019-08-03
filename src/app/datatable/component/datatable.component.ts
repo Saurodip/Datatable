@@ -57,6 +57,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Output() public getDataTableCustomFilterInfo = new EventEmitter<DataTableUserActionResponse>();
     @Output() public getDataTableSortingInfo = new EventEmitter<DataTableUserActionResponse>();
     @Output() public getDataTableEditedData = new EventEmitter<DataTableUserActionResponse>();
+    @Output() public getDataTableRowsToDelete = new EventEmitter<DataTableUserActionResponse>();
 
     public isLoading: boolean;
     public randomIndex: number;
@@ -205,7 +206,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         Object.assign(this, rowSelectionInfo);
         this.onRemoveInternalObjectProperties(this.listOfSelectedDataTableRows);
         const response: DataTableUserActionResponse = {
-            data: this.listOfSelectedDataTableRows
+            data: this.listOfSelectedDataTableRows,
+            state: this.selectAllCheckboxState
         };
         this.getDataTableSelectedRows.emit(response);
     }
@@ -435,7 +437,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         const response: DataTableUserActionResponse = {
             data: this.listOfSelectedDataTableRows
         };
-        this.getDataTableSelectedRows.emit(response);
+        this.getDataTableRowsToDelete.emit(response);
         this.listOfSelectedDataTableRows = [];
     }
 
