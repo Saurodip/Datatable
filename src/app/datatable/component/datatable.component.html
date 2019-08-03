@@ -158,11 +158,11 @@
             <span *ngIf="editable" (click)="onApplyDataTableEditOption()">
                 <input type="checkbox" id="datatable-edit-option">Edit
             </span>
-            <span *ngIf="editable" (click)="onSaveDataTableUpdatedData($event)">
+            <span *ngIf="editable" (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Save)">
                 <input type="button" id="datatable-save-option" value="Save"
                     [disabled]="listOfEditedDataTableRows && listOfEditedDataTableRows.length <= 0">
             </span>
-            <span *ngIf="editable" (click)="onDeleteDataTableData($event)">
+            <span *ngIf="editable" (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Delete)">
                 <input type="button" id="datatable-delete-option" value="Delete"
                     [disabled]="listOfSelectedDataTableRows && listOfSelectedDataTableRows.length <= 0">
             </span>
@@ -171,5 +171,8 @@
     <div *ngIf="isLoading" class="spinner">
         <img src="assets/images/spinner.gif" alt="loading-spinner">
     </div>
+    <app-datatable-popup [visible]="isDataTablePopupVisible"
+        (getDataTablePopupConfirmationAction)="onConfirmDataTablePopupAction($event)"
+        (getDataTablePopupCancellationAction)="onCancelDataTablePopupAction($event)"></app-datatable-popup>
     <app-datatable-tooltip *ngIf="tooltipInfo?.content" [tooltipInfo]="tooltipInfo"></app-datatable-tooltip>
 </div>

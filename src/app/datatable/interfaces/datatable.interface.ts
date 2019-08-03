@@ -62,6 +62,7 @@ export interface DataTableUserActionResponse {
     sortColumn?: string;
     sortOrder?: string;
     state?: string;
+    visible?: boolean;
 }
 
 export interface DataTableVirtualScrolling {

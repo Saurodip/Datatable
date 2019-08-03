@@ -33,3 +33,10 @@ export enum DataTableSortOrder {
     Descending = 1,
     None = 0
 }
+
+export enum DataTableToolbarActionType {
+    Delete = 1,
+    Edit = 2,
+    None = 0,
+    Save = 3
+}

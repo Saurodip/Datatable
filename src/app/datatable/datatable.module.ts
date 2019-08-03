@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { CurrencyPipe, DatePipe, DecimalPipe, LowerCasePipe, UpperCasePipe } from '@angular/common';
 import { DataTableComponent } from './component/datatable.component';
+import { DataTablePopupComponent } from './component/popup/datatable-popup.component';
 import { DataTableTooltipComponent } from './component/tooltip/datatable-tooltip.component';
 import { DataTableHoverDirective } from './directive/hover.directive';
 import { DataTableActionsToolbarService } from './services/datatable.actions-toolbar.service';
@@ -17,11 +18,13 @@ import { DataTableVirtualScrollingService } from './services/datatable.virtual-s
 @NgModule({
     declarations: [
         DataTableComponent,
+        DataTablePopupComponent,
         DataTableTooltipComponent,
         DataTableHoverDirective
     ],
     exports: [
         DataTableComponent,
+        DataTablePopupComponent,
         DataTableTooltipComponent,
         DataTableHoverDirective
     ],

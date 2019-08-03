@@ -1,0 +1,14 @@
+<div *ngIf="visible" id="datatable-popup-wrapper">
+    <div id="datatable-popup-container">
+        <h2>{{ 'Popup Header' }}
+            <span class="close-popup-icon" (click)="onCloseDataTablePopup()">&#10006;</span>
+        </h2>
+        <div class="popup-message">
+            <span>{{ 'popupContent' }}</span>
+        </div>
+        <div class="popup-action-container">
+            <input type="button" value="Proceed" (click)="onProceedWithDataTablePopupAction()">
+            <input type="button" value="Cancel" (click)="onCloseDataTablePopup()">
+        </div>
+    </div>
+</div>
