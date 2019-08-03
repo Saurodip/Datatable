@@ -24,7 +24,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public columnResponsive: boolean;
     @Input() set data(collection: object[]) {
         if (collection && collection.length > 0) {
-            this.dataStore = JSON.parse(JSON.stringify(collection));
             this.onReceiveOfDataTableData(collection);
         }
     }
@@ -75,7 +74,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public tooltipInfo: DataTableTooltip;
     public dataTableFilterType = DataTableFilterType;
     public dataTableLoadingPattern = DataTableLoadingPattern;
-    private dataStore: object[];
     private dataCollection: object[];
     private listOfInternalObjectProperties: string[];
     private listOfSelectedDataTableRows: object[];
@@ -112,7 +110,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.sortFields = {};
         this.currentPaginationSlot = {};
         this.tooltipInfo = new DataTableTooltip();
-        this.dataStore = [];
         this.dataCollection = [];
         this.listOfInternalObjectProperties = ['Index', 'RowSelected'];
         this.listOfSelectedDataTableRows = [];
