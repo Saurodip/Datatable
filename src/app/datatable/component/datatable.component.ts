@@ -9,7 +9,7 @@ import { DataTableSortService } from '../services/datatable.sort.service';
 import { DataTableUIService } from '../services/datatable.ui.service';
 import { DataTableVirtualScrollingService } from '../services/datatable.virtual-scrolling.service';
 import { DataTableColumnType, DataTableFilterType, DataTableLoadingPattern, DataTableSortOrder, DataTableToolbarActionType, DataTablePopupType } from '../enumerations/datatable.enum';
-import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, DataTableUserActionResponse, DataTableVirtualScrolling } from '../interfaces/datatable.interface';
+import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, DataTableToolbar, DataTableUserActionResponse, DataTableVirtualScrolling } from '../interfaces/datatable.interface';
 import { DataTablePagination, DataTablePopup, DataTableTooltip } from '../models/datatable.model';
 
 @Component({
@@ -43,7 +43,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 break;
         }
     }
-    @Input() public editable: boolean;
     @Input() public filterTextLimit: number;
     @Input() public header: DataTableHeader[];
     @Input() public headerStyle: DataTableHeaderStyle;
@@ -51,6 +50,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public pagination: DataTablePagination;
     @Input() public popup: DataTablePopup;
     @Input() public rowStyle: DataTableRowStyle;
+    @Input() public toolbar: DataTableToolbar;
     @Input() public virtualScrolling: DataTableVirtualScrolling;
 
     @Output() public getDataTableSelectAllCheckboxState = new EventEmitter<DataTableUserActionResponse>();

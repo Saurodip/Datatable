@@ -2,7 +2,6 @@
     <app-datatable 
         class="app-datatable"
         [checkboxSelection]="true"
-        [editable]="true"
         [filter]="dataTableFilterType.Column"
         [columnResponsive]="true"
         [data]="data"
@@ -15,6 +14,7 @@
         [pagination]="paginationData"
         [popup]="popupData"
         [rowStyle]="rowStyle"
+        [toolbar]="toolbarData"
         [virtualScrolling]="virtualScrollingData">
     </app-datatable>
 </div>

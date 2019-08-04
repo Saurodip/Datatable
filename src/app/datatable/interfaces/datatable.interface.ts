@@ -6,7 +6,6 @@ export interface DataTable {
     columnResponsive: boolean;
     data: Array<object>;
     dataLoadingPattern?: DataTableLoadingPattern;
-    editable?: boolean;
     filter: DataTableFilterType;
     filterTextLimit: number;
     header: DataTableHeader;
@@ -15,6 +14,7 @@ export interface DataTable {
     pagination?: DataTablePagination;
     popup?: DataTablePopup;
     rowStyle?: DataTableRowStyle;
+    toolbar?: DataTableToolbar;
     virtualScrolling?: DataTableVirtualScrolling;
 }
 
@@ -54,6 +54,13 @@ export interface DataTableRowStyle {
     padding?: string;
     selectionColor?: string;
     textAlign?: string;
+}
+
+export interface DataTableToolbar {
+    delete?: boolean;
+    edit?: boolean;
+    reset?: boolean;
+    save?: boolean;
 }
 
 export interface DataTableUserActionResponse {

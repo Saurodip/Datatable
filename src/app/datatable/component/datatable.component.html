@@ -155,18 +155,18 @@
             </ng-container>
         </div>
         <div class="action-container">
-            <span *ngIf="editable" (click)="onApplyDataTableEditOption()">
+            <span *ngIf="toolbar?.edit" (click)="onApplyDataTableEditOption()">
                 <input type="checkbox" id="datatable-edit-option">Edit
             </span>
-            <span *ngIf="editable" (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Save)">
+            <span *ngIf="toolbar?.save" (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Save)">
                 <input type="button" id="datatable-save-option" value="Save"
                     [disabled]="listOfEditedDataTableRows && listOfEditedDataTableRows.length <= 0">
             </span>
-            <span *ngIf="editable" (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Delete)">
+            <span *ngIf="toolbar?.delete" (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Delete)">
                 <input type="button" id="datatable-delete-option" value="Delete"
                     [disabled]="listOfSelectedDataTableRows && listOfSelectedDataTableRows.length <= 0">
             </span>
-            <span *ngIf="editable" (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Reset)">
+            <span *ngIf="toolbar?.reset" (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Reset)">
                 <input type="button" id="datatable-reset-option" value="Reset">
             </span>
         </div>
