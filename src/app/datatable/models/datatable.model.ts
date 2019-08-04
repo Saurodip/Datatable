@@ -1,4 +1,4 @@
-import { DataTablePipeType } from '../enumerations/datatable.enum';
+import { DataTablePipeType, DataTablePopupType } from '../enumerations/datatable.enum';
 
 export class DataTablePipe {
     public type: DataTablePipeType;
@@ -21,6 +21,20 @@ export class DataTablePagination {
     constructor() {
         this.numberOfRowsPerTab = 10;
         this.numberOfTabsPerSlot = 5;
+    }
+}
+
+export class DataTablePopup {
+    public heading: string;
+    public message: string;
+    public type: DataTablePopupType;
+    public visible: boolean;
+
+    constructor() {
+        this.heading = '';
+        this.message = '';
+        this.type = DataTablePopupType.None;
+        this.visible = false;
     }
 }
 

@@ -29,6 +29,11 @@ export class DataTableSelectionService {
                 this.noOfRowsSelected = dataCollection.length;
             } else if (selectAllCheckboxState === 'unchecked') {
                 this.noOfRowsSelected = 0;
+                const dataTableSelectAllCheckbox: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-select-all-checkbox');
+                if (dataTableSelectAllCheckbox) {
+                    dataTableSelectAllCheckbox['checked'] = false;
+                    dataTableSelectAllCheckbox['indeterminate'] = false;
+                }
             }
             dataCollection.forEach((row: object) => {
                 if (selectAllCheckboxState === 'checked') {

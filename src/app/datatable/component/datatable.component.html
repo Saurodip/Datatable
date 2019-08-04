@@ -1,5 +1,5 @@
 <div #dataTable id="datatable{{ randomIndex }}" class="datatable" [ngStyle]="{ 'height': height }">
-    <div class="datatable-main-section">
+    <div *ngIf="isDataTableVisible" class="datatable-main-section">
         <div class="datatable-frozen-area">
             <div class="datatable-header-wrapper">
                 <div class="datatable-header-container"
@@ -166,13 +166,16 @@
                 <input type="button" id="datatable-delete-option" value="Delete"
                     [disabled]="listOfSelectedDataTableRows && listOfSelectedDataTableRows.length <= 0">
             </span>
+            <span *ngIf="editable" (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Reset)">
+                <input type="button" id="datatable-reset-option" value="Reset">
+            </span>
         </div>
     </div>
     <div *ngIf="isLoading" class="spinner">
         <img src="assets/images/spinner.gif" alt="loading-spinner">
     </div>
-    <app-datatable-popup [visible]="isDataTablePopupVisible"
-        (getDataTablePopupConfirmationAction)="onConfirmDataTablePopupAction($event)"
-        (getDataTablePopupCancellationAction)="onCancelDataTablePopupAction($event)"></app-datatable-popup>
+    <app-datatable-popup [data]="popup"
+        (getDataTablePopupConfirmationAction)="onConfirmDataTablePopupAction($event)">
+    </app-datatable-popup>
     <app-datatable-tooltip *ngIf="tooltipInfo?.content" [tooltipInfo]="tooltipInfo"></app-datatable-tooltip>
 </div>

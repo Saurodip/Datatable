@@ -1,3 +1,19 @@
+@mixin singleline-ellipsis() {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@mixin multiline-ellipsis($height, $line-clamp) {
+    display: -webkit-box;
+    height: $height;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: $line-clamp;
+    /* autoprefixer: off */
+    -webkit-box-orient: vertical;
+}
+
 #datatable-popup-wrapper {
     background-color: rgba(241, 241, 241, 0.5);
     display: flex;
@@ -12,16 +28,20 @@
         background-color: white;
         border: 1px solid lightgray;
         box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.5);
-        height: 40%;
+        max-height: 80%;
+        max-width: 90%;
+        min-height: 40%;
+        min-width: 40%;
         justify-content: center;
         margin: auto;
         padding: 15px;
         position: relative;
-        width: 40%;
 
         h2 {
-            height: 20%;
+            height: 2rem;
             margin: 0px;
+            width: 95%;
+            @include singleline-ellipsis();
 
             .close-popup-icon {
                 color: #615d5d;
@@ -34,16 +54,16 @@
         }
 
         .popup-message {
-            align-items: center;
-            display: flex;
-            height: 50%;
-            justify-content: center;
+            margin: 1rem 0rem;
+            min-height: 4rem;
+            text-align: center;
+            @include multiline-ellipsis(80%, 12)
         }
 
         .popup-action-container {
             align-items: center;
             display: flex;
-            height: 30%;
+            height: 4rem;
             justify-content: center;
 
             input[type="button"] {
@@ -51,12 +71,12 @@
                 border: 1px solid lightgray;
                 box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
                 cursor: pointer;
-                margin-right: 10px;
+                margin: 0rem 0.5rem;
                 padding: 7px;
                 width: 100px;
 
                 &:hover {
-                    background-color: #d4d2cf;
+                    background-color: #dcdcdc;
                 }
             }
         }

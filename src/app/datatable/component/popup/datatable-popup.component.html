@@ -1,12 +1,14 @@
-<div *ngIf="visible" id="datatable-popup-wrapper">
+<div *ngIf="data?.visible" id="datatable-popup-wrapper">
     <div id="datatable-popup-container">
-        <h2>{{ 'Popup Header' }}
+        <h2>
+            <span>icon</span>
+            {{ data?.heading }}
             <span class="close-popup-icon" (click)="onCloseDataTablePopup()">&#10006;</span>
         </h2>
         <div class="popup-message">
-            <span>{{ 'popupContent' }}</span>
+            <span>{{ data?.message }}</span>
         </div>
-        <div class="popup-action-container">
+        <div *ngIf="data?.type === dataTablePopupType.Confirmation" class="popup-action-container">
             <input type="button" value="Proceed" (click)="onProceedWithDataTablePopupAction()">
             <input type="button" value="Cancel" (click)="onCloseDataTablePopup()">
         </div>

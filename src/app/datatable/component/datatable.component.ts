@@ -8,9 +8,9 @@ import { DataTableSelectionService } from '../services/datatable.selection.servi
 import { DataTableSortService } from '../services/datatable.sort.service';
 import { DataTableUIService } from '../services/datatable.ui.service';
 import { DataTableVirtualScrollingService } from '../services/datatable.virtual-scrolling.service';
-import { DataTableColumnType, DataTableFilterType, DataTableLoadingPattern, DataTableSortOrder, DataTableToolbarActionType } from '../enumerations/datatable.enum';
+import { DataTableColumnType, DataTableFilterType, DataTableLoadingPattern, DataTableSortOrder, DataTableToolbarActionType, DataTablePopupType } from '../enumerations/datatable.enum';
 import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, DataTableUserActionResponse, DataTableVirtualScrolling } from '../interfaces/datatable.interface';
-import { DataTablePagination, DataTableTooltip } from '../models/datatable.model';
+import { DataTablePagination, DataTablePopup, DataTableTooltip } from '../models/datatable.model';
 
 @Component({
     selector: 'app-datatable',
@@ -49,6 +49,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public headerStyle: DataTableHeaderStyle;
     @Input() public height: string;
     @Input() public pagination: DataTablePagination;
+    @Input() public popup: DataTablePopup;
     @Input() public rowStyle: DataTableRowStyle;
     @Input() public virtualScrolling: DataTableVirtualScrolling;
 
@@ -61,6 +62,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     public isLoading: boolean;
     public randomIndex: number;
+    public isDataTableVisible: boolean;
     public dataToDisplay: object[];
     public frozenHeader: DataTableHeader[];
     public scrollableHeader: DataTableHeader[];
@@ -73,7 +75,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public sortFields: object;
     public currentPaginationSlot: object;
     public tooltipInfo: DataTableTooltip;
-    public isDataTablePopupVisible: boolean;
     public dataTableFilterType = DataTableFilterType;
     public dataTableLoadingPattern = DataTableLoadingPattern;
     public dataTableToolbarActionType = DataTableToolbarActionType;
@@ -102,6 +103,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         private dataTableVirtualScrollingService: DataTableVirtualScrollingService) {
         this.isLoading = true;
         this.randomIndex = Math.floor(1000 + Math.random() * 9000);
+        this.isDataTableVisible = true;
         this.dataToDisplay = [];
         this.frozenHeader = [];
         this.scrollableHeader = [];
@@ -114,7 +116,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.sortFields = {};
         this.currentPaginationSlot = {};
         this.tooltipInfo = new DataTableTooltip();
-        this.isDataTablePopupVisible = false;
         this.dataCollection = [];
         this.listOfInternalObjectProperties = ['Index', 'RowSelected'];
         this.listOfSelectedDataTableRows = [];
@@ -142,12 +143,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             if (this.header && this.header.length > 0) {
                 this.frozenHeader = this.header.filter((header: DataTableHeader) => header.frozen);
                 this.scrollableHeader = this.header.filter((header: DataTableHeader) => !header.frozen);
-                this.header.forEach((header: DataTableHeader) => {
-                    if (this.filterType === DataTableFilterType.Column || this.filterType === DataTableFilterType.CustomColumn) {
-                        this.filteredTextFields[header.propertyName] = '';
-                    }
-                    this.sortFields[header.propertyName] = DataTableSortOrder.None;
-                });
+                this.onInitializeDataTableFields();
             }
             /* In case, any of the data loading pattern is applied, then displaying data based on that */
             this.onDisplayDataBasedOnLoadingPattern(this.dataCollection);
@@ -189,18 +185,30 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     /**
+     * This method is responsible for initializing datatable fields (filter, sorting etc.)
+     */
+    private onInitializeDataTableFields = (): void => {
+        if (this.header && this.header.length > 0) {
+            this.header.forEach((header: DataTableHeader) => {
+                if (this.filterType === DataTableFilterType.Column || this.filterType === DataTableFilterType.CustomColumn) {
+                    this.filteredTextFields[header.propertyName] = '';
+                }
+                this.sortFields[header.propertyName] = DataTableSortOrder.None;
+            });
+        }
+    }
+
+    /**
      * This method gets triggered on change of 'Select All' checkbox state
      * @param event { MouseEvent } Change event
      */
-    public onSelectDataTableSelectAll = (event: MouseEvent): void => {
-        if (event && event.currentTarget) {
-            this.selectAllCheckboxState = event.currentTarget['checked'] ? 'checked' : 'unchecked';
-            this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
-            const response: DataTableUserActionResponse = {
-                state: this.selectAllCheckboxState
-            };
-            this.getDataTableSelectAllCheckboxState.emit(response);
-        }
+    public onSelectDataTableSelectAll = (event?: MouseEvent): void => {
+        this.selectAllCheckboxState = event && event.currentTarget['checked'] ? 'checked' : 'unchecked';
+        this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
+        const response: DataTableUserActionResponse = {
+            state: this.selectAllCheckboxState
+        };
+        this.getDataTableSelectAllCheckboxState.emit(response);
     }
 
     /**
@@ -320,8 +328,10 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, dataCollection, this.checkboxSelection, this.rowStyle.selectionColor), 0);
             } else if (this.dataLoadingPattern === DataTableLoadingPattern.VirtualScrolling) {
                 const numberOfBufferedDataRow: number = 2;
-                this.dataToDisplay = dataCollection.slice(0, this.virtualScrolling.numberOfRowsPerScroll + numberOfBufferedDataRow);
-                setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
+                setTimeout(() => {
+                    this.dataToDisplay = dataCollection.slice(0, this.virtualScrolling.numberOfRowsPerScroll + numberOfBufferedDataRow);
+                    this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor);
+                }, 0);
             } else {
                 this.dataToDisplay = [...this.filteredData];
             }
@@ -404,15 +414,40 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     public onSelectDataTableToolbarOption = (actionType: DataTableToolbarActionType): void => {
-        this.toolbarAction = actionType;
-        this.isDataTablePopupVisible = true;
+        let dataTablePopupHeading: string = '';
+        let dataTablePopupMessage: string = '';
+        this.toolbarAction = actionType || DataTableToolbarActionType.None;
+        switch (actionType) {
+            case DataTableToolbarActionType.Delete:
+                dataTablePopupHeading = 'Delete';
+                dataTablePopupMessage = 'Do you want to delete the selected rows?';
+                break;
+            case DataTableToolbarActionType.Reset:
+                dataTablePopupHeading = 'Reset';
+                dataTablePopupMessage = 'Do you want to reset the data table?';
+                break;
+            case DataTableToolbarActionType.Save:
+                dataTablePopupHeading = 'Save';
+                dataTablePopupMessage = 'Do you want to save the unsaved data?';
+                break;
+            default:
+                break;
+        }
+        this.popup = {
+            heading: dataTablePopupHeading,
+            message: dataTablePopupMessage,
+            type: DataTablePopupType.Confirmation,
+            visible: true
+        };
     }
 
     public onConfirmDataTablePopupAction = (event: DataTableUserActionResponse): void => {
-        this.isDataTablePopupVisible = event && event.visible || false;
         switch (this.toolbarAction) {
             case DataTableToolbarActionType.Delete:
                 this.onApplyDataTableDeleteOption();
+                break;
+            case DataTableToolbarActionType.Reset:
+                this.onApplyDataTableResetOption();
                 break;
             case DataTableToolbarActionType.Save:
                 this.onApplyDataTableSaveOption();
@@ -422,8 +457,16 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
     }
 
-    public onCancelDataTablePopupAction = (event: DataTableUserActionResponse): void => {
-        this.isDataTablePopupVisible = event && event.visible || false;
+    /**
+     * This method is responsible for deleting selected datatable rows
+     */
+    private onApplyDataTableDeleteOption = (): void => {
+        const response: DataTableUserActionResponse = {
+            data: this.listOfSelectedDataTableRows
+        };
+        this.getDataTableRowsToDelete.emit(response);
+        this.listOfSelectedDataTableRows = [];
+        this.onSelectDataTableSelectAll();
     }
 
     public onApplyDataTableEditOption = (): void => {
@@ -451,7 +494,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     /**
      * This method gets triggered on saving of edited datatable rows
      */
-    public onApplyDataTableSaveOption = (): void => {
+    private onApplyDataTableSaveOption = (): void => {
         const response: DataTableUserActionResponse = {
             data: this.listOfEditedDataTableRows
         };
@@ -460,14 +503,19 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     /**
-     * This method is responsible for deleting selected datatable rows
+     * This method is responsible for resetting the edited datatable rows
      */
-    public onApplyDataTableDeleteOption = (): void => {
-        const response: DataTableUserActionResponse = {
-            data: this.listOfSelectedDataTableRows
-        };
-        this.getDataTableRowsToDelete.emit(response);
+    private onApplyDataTableResetOption = (): void => {
+        this.isDataTableVisible = false;
+        this.isDataTableCellDisabled = false;
+        this.dataToDisplay = [];
+        this.listOfEditedDataTableRows = [];
         this.listOfSelectedDataTableRows = [];
+        this.onSelectDataTableSelectAll();
+        this.onDisplayDataBasedOnLoadingPattern(this.dataCollection);
+        this.onInitializeDataTableFields();
+        this.onApplyDataTableEditOption();
+        setTimeout(() => this.isDataTableVisible = true, 0);
     }
 
     /**

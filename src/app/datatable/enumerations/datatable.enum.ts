@@ -28,6 +28,13 @@ export enum DataTablePipeType {
     UpperCasePipe
 }
 
+export enum DataTablePopupType {
+    Confirmation,
+    Failure,
+    None,
+    Successful
+}
+
 export enum DataTableSortOrder {
     Ascending = -1,
     Descending = 1,
@@ -38,5 +45,6 @@ export enum DataTableToolbarActionType {
     Delete = 1,
     Edit = 2,
     None = 0,
-    Save = 3
+    Save = 3,
+    Reset = 4
 }

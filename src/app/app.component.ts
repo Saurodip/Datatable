@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AppService } from './app.service';
 import { DataTablePipeType, DataTableColumnType, DataTableFilterType, DataTableLoadingPattern } from './datatable/enumerations/datatable.enum';
 import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, DataTableVirtualScrolling } from './datatable/interfaces/datatable.interface';
-import { DataTablePagination, DataTablePipe } from './datatable/models/datatable.model';
+import { DataTablePagination, DataTablePipe, DataTablePopup } from './datatable/models/datatable.model';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +18,7 @@ export class AppComponent implements OnInit {
   public header: DataTableHeader[];
   public headerStyle: DataTableHeaderStyle;
   public paginationData: DataTablePagination;
+  public popupData: DataTablePopup;
   public rowStyle: DataTableRowStyle;
   public virtualScrollingData: DataTableVirtualScrolling;
 
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit {
     this.header = [];
     this.headerStyle = {};
     this.paginationData = { numberOfRowsPerTab: 10, numberOfTabsPerSlot: 2 };
+    this.popupData = new DataTablePopup();
     this.rowStyle = {};
     this.virtualScrollingData = { numberOfRowsPerScroll: 10 };
   }

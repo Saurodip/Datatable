@@ -1,5 +1,5 @@
 import { DataTableColumnType, DataTableFilterType, DataTableLoadingPattern } from '../enumerations/datatable.enum';
-import { DataTablePagination, DataTablePipe } from '../models/datatable.model';
+import { DataTablePagination, DataTablePipe, DataTablePopup } from '../models/datatable.model';
 
 export interface DataTable {
     checkboxSelection?: boolean;
@@ -13,6 +13,7 @@ export interface DataTable {
     headerStyle?: DataTableHeaderStyle;
     height: string;
     pagination?: DataTablePagination;
+    popup?: DataTablePopup;
     rowStyle?: DataTableRowStyle;
     virtualScrolling?: DataTableVirtualScrolling;
 }

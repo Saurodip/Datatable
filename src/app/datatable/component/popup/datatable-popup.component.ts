@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { DataTablePopupType } from '../../enumerations/datatable.enum';
 import { DataTableUserActionResponse } from '../../interfaces/datatable.interface';
+import { DataTablePopup } from '../../models/datatable.model';
 
 @Component({
     selector: 'app-datatable-popup',
@@ -7,10 +9,11 @@ import { DataTableUserActionResponse } from '../../interfaces/datatable.interfac
     styleUrls: ['./datatable-popup.component.scss']
 })
 export class DataTablePopupComponent {
-    @Input() public visible: boolean;
+    @Input() public data: DataTablePopup;
 
     @Output() public getDataTablePopupConfirmationAction = new EventEmitter<DataTableUserActionResponse>();
-    @Output() public getDataTablePopupCancellationAction = new EventEmitter<DataTableUserActionResponse>();
+
+    public dataTablePopupType = DataTablePopupType;
 
     constructor() {
     }
@@ -19,21 +22,14 @@ export class DataTablePopupComponent {
      * This method gets triggered on confirmation of user action
      */
     public onProceedWithDataTablePopupAction = (): void => {
-        // this.visible = false;
-        const response: DataTableUserActionResponse = {
-            visible: false
-        };
-        this.getDataTablePopupConfirmationAction.emit(response);
+        this.data = new DataTablePopup();
+        this.getDataTablePopupConfirmationAction.emit();
     }
 
     /**
      * This method is responsible for closing datatable popup
      */
     public onCloseDataTablePopup = (): void => {
-        // this.visible = false;
-        const response: DataTableUserActionResponse = {
-            visible: false
-        };
-        this.getDataTablePopupCancellationAction.emit(response);
+        this.data = new DataTablePopup();
     }
 }
