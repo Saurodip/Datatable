@@ -74,7 +74,6 @@ $text-color: #e3e3e3;
                     border-bottom: $cell-border;
                     border-right: $cell-border;
                     box-sizing: border-box;
-                    cursor: pointer;
                     display: flex;
                     padding-left: 5px;
                     position: relative;
@@ -86,7 +85,7 @@ $text-color: #e3e3e3;
                     }
 
                     .sort-icon-container {
-                        width: 15%;
+                        width: 10%;
 
                         i {
                             cursor: pointer;
@@ -260,6 +259,7 @@ $text-color: #e3e3e3;
                     background-color: transparent;
                     border: none;
                     cursor: pointer;
+
                     &:disabled {
                         color: lightgray;
                         cursor: not-allowed;

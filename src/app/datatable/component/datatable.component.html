@@ -8,12 +8,11 @@
                         <input type="checkbox" id="datatable-select-all-checkbox"
                             (change)="onSelectDataTableSelectAll($event)">
                     </div>
-                    <div title="{{ dtHeader?.title }}" class="datatable-header custom-header-style"
+                    <div title="{{ dtHeader?.title }}" id="datatable-header-{{ dtHeader?.Index }}" class="datatable-header custom-header-style"
                         [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
-                        *ngFor="let dtHeader of frozenHeader; let i = index"
-                        (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
+                        *ngFor="let dtHeader of frozenHeader; let i = index">
                         <div class="header-name">{{ dtHeader?.title }}</div>
-                        <div class="sort-icon-container">
+                        <div class="sort-icon-container" (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
                             <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === -1" class="ascending-arrow"></i>
                             <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === 1" class="descending-arrow"></i>
                         </div>
@@ -76,12 +75,11 @@
             <div class="datatable-header-wrapper">
                 <div class="datatable-header-container"
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }">
-                    <div title="{{ dtHeader?.title }}" class="datatable-header custom-header-style"
+                    <div title="{{ dtHeader?.title }}" id="datatable-header-{{ dtHeader?.Index }}" class="datatable-header custom-header-style"
                         [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
-                        *ngFor="let dtHeader of scrollableHeader; let i = index"
-                        (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
+                        *ngFor="let dtHeader of scrollableHeader; let i = index">
                         <div class="header-name">{{ dtHeader?.title }}</div>
-                        <div class="sort-icon-container">
+                        <div class="sort-icon-container" (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
                             <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === -1" class="ascending-arrow"></i>
                             <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === 1" class="descending-arrow"></i>
                         </div>

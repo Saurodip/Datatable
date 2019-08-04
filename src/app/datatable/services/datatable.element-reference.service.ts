@@ -18,6 +18,7 @@ export class DataTableElementReferenceService {
             case 'datatable-scrollable-area': return document.querySelector('.datatable-scrollable-area');
             case 'datatable-scrollable-header-wrapper': return document.querySelector('.datatable-scrollable-area .datatable-header-wrapper');
             case 'datatable-header-container': return document.querySelector('.datatable-header-container');
+            case 'datatable-header': return document.querySelector('#datatable-header-' + index);
             case 'datatable-scrollable-filter-wrapper': return document.querySelector('.datatable-scrollable-area .datatable-filter-wrapper');
             case 'datatable-filter-container': return document.querySelector('.datatable-filter-container');
             case 'datatable-select-all-checkbox': return document.querySelector('#datatable-select-all-checkbox');

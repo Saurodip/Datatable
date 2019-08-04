@@ -90,6 +90,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     private paginationData: object[];
     private listOfEditedDataTableRows: object[];
     private toolbarAction: DataTableToolbarActionType;
+    private dataTableColumnCurrentPosition: number;
 
     constructor(
         private dataTableActionsToolbarService: DataTableActionsToolbarService,
@@ -128,6 +129,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.paginationData = [];
         this.listOfEditedDataTableRows = [];
         this.toolbarAction = DataTableToolbarActionType.None;
+        this.dataTableColumnCurrentPosition = 0;
     }
 
     ngOnInit() {
@@ -140,11 +142,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 const headerInfo = this.dataTableUIService.onCalculateDataTableHeaderWidth(this.dataTable.nativeElement, this.header, this.columnResponsive);
                 Object.assign(this, headerInfo);
             }
-            if (this.header && this.header.length > 0) {
-                this.frozenHeader = this.header.filter((header: DataTableHeader) => header.frozen);
-                this.scrollableHeader = this.header.filter((header: DataTableHeader) => !header.frozen);
-                this.onInitializeDataTableFields();
-            }
+            this.onInitializeDataTableFields();
             /* In case, any of the data loading pattern is applied, then displaying data based on that */
             this.onDisplayDataBasedOnLoadingPattern(this.dataCollection);
         }, 0);
@@ -189,12 +187,16 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
      */
     private onInitializeDataTableFields = (): void => {
         if (this.header && this.header.length > 0) {
-            this.header.forEach((header: DataTableHeader) => {
+            this.header.forEach((header: DataTableHeader, index: number) => {
+                /* Setting unique index value to each column header to use for individual column identification */
+                header['Index'] = index + 1;
                 if (this.filterType === DataTableFilterType.Column || this.filterType === DataTableFilterType.CustomColumn) {
                     this.filteredTextFields[header.propertyName] = '';
                 }
                 this.sortFields[header.propertyName] = DataTableSortOrder.None;
             });
+            this.frozenHeader = this.header.filter((header: DataTableHeader) => header.frozen);
+            this.scrollableHeader = this.header.filter((header: DataTableHeader) => !header.frozen);
         }
     }
 
