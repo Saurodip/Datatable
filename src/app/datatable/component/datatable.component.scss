@@ -35,7 +35,7 @@ $text-color: #e3e3e3;
         }
     }
 
-    .datatable-main-section {
+    #datatable-main-section {
         display: flex;
         flex-direction: row;
 
@@ -245,24 +245,53 @@ $text-color: #e3e3e3;
         width: 100%;
 
         .action-container {
-            width: 25%;
+            width: 30%;
 
-            span {
-                input[type="checkbox"] {
-                    cursor: pointer;
+            input[type="button"] {
+                background-color: transparent;
+                border: none;
+                cursor: pointer;
+
+                &:disabled {
+                    color: lightgray;
+                    cursor: not-allowed;
+                }
+            }
+
+            &:first-of-type {
+                padding-left: 1rem;
+
+                span {
+                    margin-right: 10px; 
+                }
+
+                input[type="radio"] {
                     margin-right: 5px;
                     position: relative;
                     top: 2px;
                 }
 
-                input[type="button"] {
-                    background-color: transparent;
-                    border: none;
-                    cursor: pointer;
+                label {
+                    margin-right: 10px;
+                }
 
-                    &:disabled {
-                        color: lightgray;
-                        cursor: not-allowed;
+                input[type="text"] {
+                    margin-right: 5px;
+                    padding-left: 5px;
+                    width: 8rem;
+                }
+            }
+
+            &:last-of-type {
+                padding-right: 1rem;
+                text-align: right;
+
+                span {
+                    input[type="checkbox"] {
+                        cursor: pointer;
+                        margin-right: 5px;
+                        position: relative;
+                        top: 2px;
                     }
                 }
             }
@@ -270,7 +299,7 @@ $text-color: #e3e3e3;
 
         .pagination-tab-container {
             text-align: center;
-            width: 50%;
+            width: 40%;
 
             span {
                 bottom: 3px;

@@ -7,6 +7,7 @@ import { DataTableTooltipComponent } from './component/tooltip/datatable-tooltip
 import { DataTableHoverDirective } from './directive/hover.directive';
 import { DataTableActionsToolbarService } from './services/datatable.actions-toolbar.service';
 import { DataTableElementReferenceService } from './services/datatable.element-reference.service';
+import { DataTableExportService } from './services/datatable.export.service';
 import { DataTablePaginationService } from './services/datatable.pagination.service';
 import { DataTablePipeService } from './services/datatable.pipe';
 import { DataTableFilterService } from './services/datatable.filter.service';
@@ -35,6 +36,7 @@ import { DataTableVirtualScrollingService } from './services/datatable.virtual-s
         CurrencyPipe,
         DataTableActionsToolbarService,
         DataTableElementReferenceService,
+        DataTableExportService,
         DataTablePaginationService,
         DataTablePipeService,
         DataTableFilterService,

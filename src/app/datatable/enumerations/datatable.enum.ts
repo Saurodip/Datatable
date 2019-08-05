@@ -7,6 +7,12 @@ export enum DataTableColumnType {
     String
 }
 
+export enum DataTableExportType {
+    Excel = 1,
+    None = 0,
+    PDF = 2
+}
+
 export enum DataTableFilterType {
     Column,
     CustomColumn,

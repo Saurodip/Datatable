@@ -1,5 +1,5 @@
 <div #dataTable id="datatable{{ randomIndex }}" class="datatable" [ngStyle]="{ 'height': height }">
-    <div *ngIf="isDataTableVisible" class="datatable-main-section">
+    <div *ngIf="isDataTableVisible" id="datatable-main-section">
         <div class="datatable-frozen-area">
             <div class="datatable-header-wrapper">
                 <div class="datatable-header-container"
@@ -135,7 +135,14 @@
         </div>
     </div>
     <div class="datatable-footer">
-        <div class="action-container"></div>
+        <div class="action-container">
+            <input type="radio" class="datatable-export-option" name="export" value="excel" (click)="onSelectDataTableExportType(dataTableExportType.Excel)">
+            <label for="datatable-excel-export">Excel</label>
+            <input type="radio" class="datatable-export-option" name="export" value="pdf" (click)="onSelectDataTableExportType(dataTableExportType.PDF)">
+            <label for="datatable-pdf-export">PDF</label>
+            <input type="text" id="datatable-export-file-name" placeholder="File name" maxlength="50">
+            <input type="button" id="datatable-export-button" value="Export" [disabled]="!dataTableExportFileType" (click)="onExportDataTableData()">
+        </div>
         <div class="pagination-tab-container">
             <ng-container *ngIf="dataLoadingPattern === dataTableLoadingPattern.Pagination">
                 <span id="previous-pagination-arrow" class="pagination-navigation">
@@ -154,7 +161,8 @@
         </div>
         <div class="action-container">
             <span *ngIf="toolbar?.edit" (click)="onApplyDataTableEditOption()">
-                Edit <input type="checkbox"> |
+                <label for="datatable-edit-option">Edit </label>
+                <input type="checkbox" id="datatable-edit-option"> |
             </span>
             <span *ngIf="toolbar?.save">
                 <input type="button" id="datatable-save-option" value="Save"

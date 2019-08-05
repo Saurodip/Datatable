@@ -1,6 +1,7 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { DataTableActionsToolbarService } from '../services/datatable.actions-toolbar.service';
 import { DataTableElementReferenceService } from '../services/datatable.element-reference.service';
+import { DataTableExportService } from '../services/datatable.export.service';
 import { DataTableFilterService } from '../services/datatable.filter.service';
 import { DataTablePaginationService } from '../services/datatable.pagination.service';
 import { DataTablePipeService } from '../services/datatable.pipe';
@@ -8,7 +9,7 @@ import { DataTableSelectionService } from '../services/datatable.selection.servi
 import { DataTableSortService } from '../services/datatable.sort.service';
 import { DataTableUIService } from '../services/datatable.ui.service';
 import { DataTableVirtualScrollingService } from '../services/datatable.virtual-scrolling.service';
-import { DataTableColumnType, DataTableFilterType, DataTableLoadingPattern, DataTableSortOrder, DataTableToolbarActionType, DataTablePopupType } from '../enumerations/datatable.enum';
+import { DataTableColumnType, DataTableExportType, DataTableFilterType, DataTableLoadingPattern, DataTableSortOrder, DataTableToolbarActionType, DataTablePopupType } from '../enumerations/datatable.enum';
 import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, DataTableToolbar, DataTableUserActionResponse, DataTableVirtualScrolling } from '../interfaces/datatable.interface';
 import { DataTablePagination, DataTablePopup, DataTableTooltip } from '../models/datatable.model';
 
@@ -75,9 +76,11 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public sortFields: object;
     public currentPaginationSlot: object;
     public tooltipInfo: DataTableTooltip;
+    public dataTableExportFileType: DataTableExportType;
     public dataTableFilterType = DataTableFilterType;
     public dataTableLoadingPattern = DataTableLoadingPattern;
     public dataTableToolbarActionType = DataTableToolbarActionType;
+    public dataTableExportType = DataTableExportType;
     private dataCollection: object[];
     private listOfInternalObjectProperties: string[];
     private listOfSelectedDataTableRows: object[];
@@ -90,11 +93,11 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     private paginationData: object[];
     private listOfEditedDataTableRows: object[];
     private toolbarAction: DataTableToolbarActionType;
-    private dataTableColumnCurrentPosition: number;
 
     constructor(
         private dataTableActionsToolbarService: DataTableActionsToolbarService,
         private dataTableElementReferenceService: DataTableElementReferenceService,
+        private dataTableExportService: DataTableExportService,
         private dataTableFilterService: DataTableFilterService,
         private dataTablePaginationService: DataTablePaginationService,
         private dataTablePipeService: DataTablePipeService,
@@ -117,6 +120,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.sortFields = {};
         this.currentPaginationSlot = {};
         this.tooltipInfo = new DataTableTooltip();
+        this.dataTableExportFileType = DataTableExportType.None;
         this.dataCollection = [];
         this.listOfInternalObjectProperties = ['Index', 'RowSelected'];
         this.listOfSelectedDataTableRows = [];
@@ -129,7 +133,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.paginationData = [];
         this.listOfEditedDataTableRows = [];
         this.toolbarAction = DataTableToolbarActionType.None;
-        this.dataTableColumnCurrentPosition = 0;
     }
 
     ngOnInit() {
@@ -412,6 +415,20 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             } else if (event.type === 'mouseleave') {
                 this.tooltipInfo = new DataTableTooltip();
             }
+        }
+    }
+
+    public onSelectDataTableExportType = (dataTableExportType: DataTableExportType): void => {
+        this.dataTableExportFileType = dataTableExportType || DataTableExportType.None;
+    }
+
+    public onExportDataTableData = (): void => {
+        const dataTableExportFileName: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-export-file-name');
+        const fileName: string = dataTableExportFileName && dataTableExportFileName['value'] || '';
+        if (this.dataTableExportFileType === DataTableExportType.Excel) {
+            this.dataTableExportService.onExcelExportDataTableData(this.dataCollection, fileName);
+        } else if (this.dataTableExportFileType === DataTableExportType.PDF) {
+            this.dataTableExportService.onExcelExportDataTableData(this.dataCollection, fileName);
         }
     }
 

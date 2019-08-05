@@ -13,7 +13,7 @@ export class DataTableElementReferenceService {
      */
     public getHTMLElementRefernce = (domElement: string, index?: number): HTMLElement => {
         switch (domElement) {
-            case 'datatable-main-section': return document.querySelector('.datatable-main-section');
+            case 'datatable-main-section': return document.querySelector('#datatable-main-section');
             case 'datatable-frozen-area': return document.querySelector('.datatable-frozen-area');
             case 'datatable-scrollable-area': return document.querySelector('.datatable-scrollable-area');
             case 'datatable-scrollable-header-wrapper': return document.querySelector('.datatable-scrollable-area .datatable-header-wrapper');
@@ -29,6 +29,7 @@ export class DataTableElementReferenceService {
             case 'datatable-tooltip-container': return document.querySelector('#datatable-tooltip-container');
             case 'current-datatable-checkbox': return document.querySelector('#datatable-checkbox-' + index);
             case 'datatable-footer': return document.querySelector('.datatable-footer');
+            case 'datatable-export-file-name': return document.querySelector('#datatable-export-file-name');
             case 'previous-pagination-arrow': return document.querySelector('#previous-pagination-arrow');
             case 'pagination-tab': return document.querySelector('.pagination-tab-' + index);
             case 'next-pagination-arrow': return document.querySelector('#next-pagination-arrow');
