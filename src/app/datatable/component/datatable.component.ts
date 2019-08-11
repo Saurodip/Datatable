@@ -608,7 +608,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         const nextColumnWidth: number = this.nextColumnWidth - pageXDifference;
         console.log('pageX: ' + pageXDifference);
         if (this.dataTableSelectedColumn && this.dataTableSelectedColumn.length > 0) {
-            if (event.pageX + 20 <= endPageXPosition || endPageXPosition <= event.pageX) {
+            if (event.pageX + 70 <= endPageXPosition || endPageXPosition <= event.pageX) {
                 for (let i = 0; i < this.dataTableSelectedColumn.length; i++) {
                     this.dataTableSelectedColumn[i]['style'].width = selectedColumnWidth + 'px';
                     this.dataTableNextColumn[i]['style'].width = nextColumnWidth + 'px';

@@ -161,11 +161,7 @@ export class DataTableUIService {
                 NodeElement[i]['className'] = NodeElement[i]['className'] && NodeElement[i]['className'].replace(highlightedClass, '').trim();
             }
         }
-        if (event && event.currentTarget && event.currentTarget['parentElement'] && event.currentTarget['parentElement']['className']) {
-            if (event.currentTarget['parentElement']['className'].indexOf(highlightedClass) < 0) {
-                event.currentTarget['parentElement']['className'] = highlightedClass + ' ' + event.currentTarget['parentElement']['className'];
-            }
-        }
+        event.currentTarget['parentElement']['className'] = highlightedClass + ' ' + event.currentTarget['parentElement']['className'];
     }
 
     /**
