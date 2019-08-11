@@ -8,14 +8,18 @@
                         <input type="checkbox" id="datatable-select-all-checkbox"
                             (change)="onSelectDataTableSelectAll($event)">
                     </div>
-                    <div title="{{ dtHeader?.title }}" id="datatable-header-{{ dtHeader?.Index }}" class="datatable-header custom-header-style"
+                    <div title="{{ dtHeader?.title }}" id="datatable-header-{{ dtHeader?.Index }}" class="datatable-header datatable-column-{{ dtHeader?.index }} custom-header-style"
                         [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                         *ngFor="let dtHeader of frozenHeader; let i = index">
-                        <div class="header-name">{{ dtHeader?.title }}</div>
                         <div class="sort-icon-container" (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
                             <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === -1" class="ascending-arrow"></i>
                             <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === 1" class="descending-arrow"></i>
                         </div>
+                        <div class="header-name">{{ dtHeader?.title }}</div>
+                        <ng-container *ngIf="columnResponsive && frozenHeader && i !== frozenHeader.length - 1">
+                            <i id="column-resizer-{{ dtHeader?.index }}" class="column-resizer"
+                                (mousedown)="onStartDataTableColumnResizing($event)">&#8942;</i>
+                        </ng-container>
                     </div>
                 </div>
             </div>
@@ -25,10 +29,10 @@
                     <div class="action-container" [ngStyle]="{ 'width': globalFilter ? '0px' : '30px' }"></div>
                     <ng-template *ngIf="globalFilter; else columnFilter"></ng-template>
                     <ng-template #columnFilter>
-                        <div class="column-filter-container"
+                        <div class="column-filter-container datatable-column-{{ dtHeader?.index }}"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of frozenHeader; let i = index">
-                            <input type="text" *ngIf="columnFilter" id="datatable-column-filter-{{ i + 1 }}" 
+                            <input type="text" *ngIf="columnFilter" id="datatable-column-filter-{{ dtHeader?.index }}" 
                                 [attr.maxlength]="filterTextLimit" placeholder="Search" 
                                 (keyup)="onApplyFilter($event, dtHeader?.propertyName)">
                         </div>
@@ -48,7 +52,7 @@
                             <input type="checkbox" id="datatable-checkbox-{{ dtRow?.Index }}"
                             [ngStyle]="{ 'visibility': checkboxSelection ? 'visible': 'hidden' }">
                         </div>
-                        <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
+                        <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data datatable-column-{{ dtHeader?.index }}"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of frozenHeader; let j = index">
                             <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell-{{ j + 1 }}" class="datatable-input-cell"
@@ -75,14 +79,18 @@
             <div class="datatable-header-wrapper">
                 <div class="datatable-header-container"
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }">
-                    <div title="{{ dtHeader?.title }}" id="datatable-header-{{ dtHeader?.Index }}" class="datatable-header custom-header-style"
+                    <div title="{{ dtHeader?.title }}" id="datatable-header-{{ dtHeader?.Index }}" class="datatable-header datatable-column-{{ dtHeader?.index }} custom-header-style"
                         [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                         *ngFor="let dtHeader of scrollableHeader; let i = index">
-                        <div class="header-name">{{ dtHeader?.title }}</div>
                         <div class="sort-icon-container" (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
                             <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === -1" class="ascending-arrow"></i>
                             <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === 1" class="descending-arrow"></i>
                         </div>
+                        <div class="header-name">{{ dtHeader?.title }}</div>
+                        <ng-container *ngIf="columnResponsive && scrollableHeader && i !== scrollableHeader.length - 1">
+                            <i id="column-resizer-{{ dtHeader?.index }}" class="column-resizer" 
+                                (mousedown)="onStartDataTableColumnResizing($event)">&#8942;</i>
+                        </ng-container>
                     </div>
                 </div>
             </div>
@@ -94,10 +102,10 @@
                         (keyup)="onApplyFilter($event)">
                     </div>
                     <ng-template #columnFilter>
-                        <div class="column-filter-container"
+                        <div class="column-filter-container datatable-column-{{ dtHeader?.index }}"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of scrollableHeader; let i = index">
-                            <input type="text" id="datatable-column-filter-{{ i + 1 }}" [attr.maxlength]="filterTextLimit"
+                            <input type="text" id="datatable-column-filter-{{ dtHeader?.index }}" [attr.maxlength]="filterTextLimit"
                                 placeholder="Search" (keyup)="onApplyFilter($event, dtHeader?.propertyName)">
                         </div>
                     </ng-template>
@@ -111,7 +119,7 @@
                         [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                         [ngClass]="{ 'selected-row': dtRow?.RowSelected }"
                         *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
-                        <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data"
+                        <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data datatable-column-{{ dtHeader?.index }}"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of scrollableHeader; let j = index">
                             <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell-{{ j + 1 }}" class="datatable-input-cell"

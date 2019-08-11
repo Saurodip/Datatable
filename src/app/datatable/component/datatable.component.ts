@@ -93,6 +93,11 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     private paginationData: object[];
     private listOfEditedDataTableRows: object[];
     private toolbarAction: DataTableToolbarActionType;
+    private startPageXPosition: number;
+    private dataTableSelectedColumn: NodeList;
+    private selectedColumnWidth: number;
+    private dataTableNextColumn: NodeList;
+    private nextColumnWidth: number;
 
     constructor(
         private dataTableActionsToolbarService: DataTableActionsToolbarService,
@@ -133,6 +138,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.paginationData = [];
         this.listOfEditedDataTableRows = [];
         this.toolbarAction = DataTableToolbarActionType.None;
+        this.startPageXPosition = 0;
+        this.selectedColumnWidth = 0;
+        this.nextColumnWidth = 0;
     }
 
     ngOnInit() {
@@ -192,7 +200,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         if (this.header && this.header.length > 0) {
             this.header.forEach((header: DataTableHeader, index: number) => {
                 /* Setting unique index value to each column header to use for individual column identification */
-                header['Index'] = index + 1;
+                header['index'] = index + 1;
                 if (this.filterType === DataTableFilterType.Column || this.filterType === DataTableFilterType.CustomColumn) {
                     this.filteredTextFields[header.propertyName] = '';
                 }
@@ -272,7 +280,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                         this.getDataTableCustomFilterInfo.emit(response);
                     }
                     /* In case, any of the data loading pattern is applied, then displaying data based on that */
-                    this.onDisplayDataBasedOnLoadingPattern(this.filteredData);
+                    this.onDisplayDataBasedOnLoadingPattern(this.filteredData, event);
                 }
                 clearTimeout(timeOut);
             }, 1000);
@@ -325,17 +333,28 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
      * This method is responsible for displaying data based on the selected data loading pattern, if applicable
      * @param dataCollection { object[] } Collection of data to display
      */
-    private onDisplayDataBasedOnLoadingPattern = (dataCollection: object[]): void => {
+    private onDisplayDataBasedOnLoadingPattern = (dataCollection: object[], event?: KeyboardEvent | MouseEvent): void => {
         if (dataCollection && dataCollection.length > 0) {
+            const selectedResizerIndex: number = event && event.target['id'] && parseInt(event.target['id'].replace(/^\D+/g, ''), 10) || 0;
             if (this.dataLoadingPattern === DataTableLoadingPattern.Pagination) {
                 this.onPreparationOfDataForPagination(dataCollection);
                 /* Allowing browser to render the new dataset before performing selection related action */
-                setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, dataCollection, this.checkboxSelection, this.rowStyle.selectionColor), 0);
+                setTimeout(() => {
+                    this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
+                    if (selectedResizerIndex > 0) {
+                        document.getElementById('column-resizer-' + selectedResizerIndex).click();
+                    }
+                }, 0);
             } else if (this.dataLoadingPattern === DataTableLoadingPattern.VirtualScrolling) {
                 const numberOfBufferedDataRow: number = 2;
                 setTimeout(() => {
                     this.dataToDisplay = dataCollection.slice(0, this.virtualScrolling.numberOfRowsPerScroll + numberOfBufferedDataRow);
                     this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor);
+                    if (selectedResizerIndex > 0) {
+                        setTimeout(() => {
+                            document.getElementById('column-resizer-' + selectedResizerIndex).click();
+                        }, 0);
+                    }
                 }, 0);
             } else {
                 this.dataToDisplay = [...this.filteredData];
@@ -552,5 +571,53 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             return dataCollection;
         }
         return dataCollection;
+    }
+
+    /**
+     * This method is responsible for getting the start column dragging position
+     * @param event { MouseEvent } Mouse click event
+     */
+    public onStartDataTableColumnResizing = (event: MouseEvent): void => {
+        if (event && event.currentTarget) {
+            const self = this;
+            this.startPageXPosition = event.pageX;
+            const selectedResizerIndex: number = event.currentTarget['id'] && parseInt(event.currentTarget['id'].replace(/^\D+/g, ''), 10) || 0;
+            if (selectedResizerIndex > 0) {
+                this.dataTableSelectedColumn = this.dataTableElementReferenceService.getNodeListReference('datatable-column-index', selectedResizerIndex);
+                this.dataTableNextColumn = this.dataTableElementReferenceService.getNodeListReference('datatable-column-index', selectedResizerIndex + 1);
+                if ((this.dataTableSelectedColumn && this.dataTableSelectedColumn.length > 0) && (this.dataTableNextColumn && this.dataTableNextColumn.length > 0)) {
+                    this.selectedColumnWidth = this.dataTableSelectedColumn[0]['offsetWidth'];
+                    this.nextColumnWidth = this.dataTableNextColumn[0]['offsetWidth'];
+                }
+            }
+            document.addEventListener('mousemove', this.mouseMove);
+            document.addEventListener('mouseup', function (e) {
+                self.dataTableSelectedColumn = undefined;
+                self.selectedColumnWidth = 0;
+                self.dataTableNextColumn = undefined;
+                self.nextColumnWidth = 0;
+                self.startPageXPosition = 0;
+            });
+        }
+    }
+
+    private mouseMove = (event: MouseEvent) => {
+        const pageXDifference = event.pageX - this.startPageXPosition;
+        const endPageXPosition: number = pageXDifference > 0 ? this.startPageXPosition + this.nextColumnWidth : this.startPageXPosition - this.selectedColumnWidth;
+        const selectedColumnWidth: number = this.selectedColumnWidth + pageXDifference;
+        const nextColumnWidth: number = this.nextColumnWidth - pageXDifference;
+        console.log('pageX: ' + pageXDifference);
+        if (this.dataTableSelectedColumn && this.dataTableSelectedColumn.length > 0) {
+            if (event.pageX + 20 <= endPageXPosition || endPageXPosition <= event.pageX) {
+                for (let i = 0; i < this.dataTableSelectedColumn.length; i++) {
+                    this.dataTableSelectedColumn[i]['style'].width = selectedColumnWidth + 'px';
+                    this.dataTableNextColumn[i]['style'].width = nextColumnWidth + 'px';
+                    console.log('Current: ' + this.dataTableSelectedColumn[i]['offsetWidth']);
+                    console.log('Next: ' + this.dataTableNextColumn[i]['offsetWidth']);
+                }
+            } else {
+                document.removeEventListener('mousemove', this.mouseMove);
+            }
+        }
     }
 }

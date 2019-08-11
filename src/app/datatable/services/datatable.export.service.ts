@@ -22,12 +22,12 @@ export class DataTableExportService {
             csvRows.push(values.join(','));
         }
         let final = csvRows.join('\n');
-        const blob = new Blob([final], { type: 'text/pdf' });
+        const blob = new Blob([final], { type: 'text/csv' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.setAttribute('hidden', '');
         a.setAttribute('href', url);
-        a.setAttribute('download', 'download.pdf');
+        a.setAttribute('download', 'download.csv');
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

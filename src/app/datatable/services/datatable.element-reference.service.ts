@@ -48,6 +48,7 @@ export class DataTableElementReferenceService {
         switch (domElement) {
             case 'current-datatable-row': return document.querySelectorAll('.datatable-row-' + index);
             case 'datatable-header': return document.querySelectorAll('.datatable-header');
+            case 'datatable-column-index': return document.querySelectorAll('.datatable-column-' + index);
             case 'datatable-body': return document.querySelectorAll('.datatable-body');
             case 'pagination-tab': return document.querySelectorAll('.pagination-tab');
             default: break;
