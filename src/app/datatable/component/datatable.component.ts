@@ -606,8 +606,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         const totalWidth: number = this.selectedColumnWidth + this.nextColumnWidth;
         const selectedColumnWidth: number = this.selectedColumnWidth + pageXDifference;
         const nextColumnWidth: number = this.nextColumnWidth - pageXDifference;
+        const minimumGap: number = 70;
         console.log('selected: ' + selectedColumnWidth);
-        if ((pageXDifference >= 0 && selectedColumnWidth + 70 <= totalWidth) || (pageXDifference <= 0 && nextColumnWidth + 70 <= totalWidth)) {
+        if ((pageXDifference >= 0 && selectedColumnWidth + minimumGap <= totalWidth) || (pageXDifference <= 0 && nextColumnWidth + minimumGap <= totalWidth)) {
             if (this.dataTableSelectedColumn && this.dataTableSelectedColumn.length > 0) {
                 for (let i = 0; i < this.dataTableSelectedColumn.length; i++) {
                     this.dataTableSelectedColumn[i]['style'].width = selectedColumnWidth + 'px';
