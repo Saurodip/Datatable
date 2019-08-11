@@ -603,21 +603,21 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     private mouseMove = (event: MouseEvent) => {
         const pageXDifference = event.pageX - this.startPageXPosition;
-        const endPageXPosition: number = pageXDifference > 0 ? this.startPageXPosition + this.nextColumnWidth : this.startPageXPosition - this.selectedColumnWidth;
+        const totalWidth: number = this.selectedColumnWidth + this.nextColumnWidth;
         const selectedColumnWidth: number = this.selectedColumnWidth + pageXDifference;
         const nextColumnWidth: number = this.nextColumnWidth - pageXDifference;
-        console.log('pageX: ' + pageXDifference);
-        if (this.dataTableSelectedColumn && this.dataTableSelectedColumn.length > 0) {
-            if (event.pageX + 70 <= endPageXPosition || endPageXPosition <= event.pageX) {
+        console.log('selected: ' + selectedColumnWidth);
+        if ((pageXDifference >= 0 && selectedColumnWidth + 70 <= totalWidth) || (pageXDifference <= 0 && nextColumnWidth + 70 <= totalWidth)) {
+            if (this.dataTableSelectedColumn && this.dataTableSelectedColumn.length > 0) {
                 for (let i = 0; i < this.dataTableSelectedColumn.length; i++) {
                     this.dataTableSelectedColumn[i]['style'].width = selectedColumnWidth + 'px';
                     this.dataTableNextColumn[i]['style'].width = nextColumnWidth + 'px';
                     console.log('Current: ' + this.dataTableSelectedColumn[i]['offsetWidth']);
                     console.log('Next: ' + this.dataTableNextColumn[i]['offsetWidth']);
                 }
-            } else {
-                document.removeEventListener('mousemove', this.mouseMove);
             }
+        } else {
+            document.removeEventListener('mousemove', this.mouseMove);
         }
     }
 }
