@@ -509,6 +509,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     public onApplyDataTableEditOption = (): void => {
         this.isDataTableCellDisabled = !this.isDataTableCellDisabled;
+
     }
 
     /**
@@ -593,6 +594,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 self.dataTableNextColumn = undefined;
                 self.nextColumnWidth = 0;
                 self.startPageXPosition = 0;
+                document.removeEventListener('mousemove', self.mouseMove);
             });
         }
     }
@@ -613,8 +615,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                     console.log('Next: ' + this.dataTableNextColumn[i]['offsetWidth']);
                 }
             }
-        } else {
-            document.removeEventListener('mousemove', this.mouseMove);
         }
     }
 }
