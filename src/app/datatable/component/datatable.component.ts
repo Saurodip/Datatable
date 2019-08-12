@@ -125,7 +125,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.sortFields = {};
         this.currentPaginationSlot = {};
         this.tooltipInfo = new DataTableTooltip();
-        this.dataTableExportFileType = DataTableExportType.None;
+        this.dataTableExportFileType = DataTableExportType.Excel;
         this.dataCollection = [];
         this.listOfInternalObjectProperties = ['Index', 'RowSelected'];
         this.listOfSelectedDataTableRows = [];
@@ -508,11 +508,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     public onApplyDataTableEditOption = (): void => {
-        const dataTableEditOption: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-edit-option');
-        if (dataTableEditOption) {
-            dataTableEditOption['checked'] = this.isDataTableCellDisabled;
-            this.isDataTableCellDisabled = !this.isDataTableCellDisabled;
-        }
+        this.isDataTableCellDisabled = !this.isDataTableCellDisabled;
     }
 
     /**

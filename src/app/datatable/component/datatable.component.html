@@ -144,10 +144,16 @@
     </div>
     <div class="datatable-footer">
         <div class="action-container">
-            <input type="radio" class="datatable-export-option" name="export" value="excel" (click)="onSelectDataTableExportType(dataTableExportType.Excel)">
-            <label for="datatable-excel-export">Excel</label>
-            <input type="radio" class="datatable-export-option" name="export" value="pdf" (click)="onSelectDataTableExportType(dataTableExportType.PDF)">
-            <label for="datatable-pdf-export">PDF</label>
+            <span (click)="onSelectDataTableExportType(dataTableExportType.Excel)">
+                <input type="radio" class="datatable-export-option" name="export" value="excel"
+                    [checked]="dataTableExportFileType === dataTableExportType.Excel">
+                <label for="datatable-excel-export">Excel</label>
+            </span>
+            <span (click)="onSelectDataTableExportType(dataTableExportType.PDF)">
+                <input type="radio" class="datatable-export-option" name="export" value="pdf"
+                    [checked]="dataTableExportFileType === dataTableExportType.PDF">
+                <label for="datatable-pdf-export">PDF</label>
+            </span>
             <input type="text" id="datatable-export-file-name" placeholder="File name" maxlength="50">
             <input type="button" id="datatable-export-button" value="Export" [disabled]="!dataTableExportFileType" (click)="onExportDataTableData()">
         </div>
@@ -170,7 +176,7 @@
         <div class="action-container">
             <span *ngIf="toolbar?.edit" (click)="onApplyDataTableEditOption()">
                 <label for="datatable-edit-option">Edit </label>
-                <input type="checkbox" id="datatable-edit-option"> |
+                <input type="checkbox" id="datatable-edit-option" [checked]="!isDataTableCellDisabled"> |
             </span>
             <span *ngIf="toolbar?.save">
                 <input type="button" id="datatable-save-option" value="Save"

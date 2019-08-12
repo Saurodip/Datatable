@@ -277,12 +277,14 @@ $text-color: #e3e3e3;
                 }
 
                 input[type="radio"] {
+                    cursor: pointer;
                     margin-right: 5px;
                     position: relative;
                     top: 2px;
                 }
 
                 label {
+                    cursor: pointer;
                     margin-right: 10px;
                 }
 
@@ -299,6 +301,10 @@ $text-color: #e3e3e3;
                 text-align: right;
 
                 span {
+                    label {
+                        cursor: pointer;
+                    }
+
                     input[type="checkbox"] {
                         cursor: pointer;
                         margin-right: 5px;
