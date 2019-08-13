@@ -106,7 +106,7 @@ export class AppComponent implements OnInit {
     };
 
     this.rowStyle = {
-      backgroundColor: 'red'
+
     };
   }
 }

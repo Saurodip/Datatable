@@ -47,7 +47,10 @@ export interface DataTableHeaderStyle {
 
 export interface DataTableRowStyle {
     backgroundColor?: string;
-    border?: string;
+    borderBottom?: string;
+    borderLeft?: string;
+    borderRight?: string;
+    borderTop?: string;
     color?: string;
     cursor?: string;
     font?: string;
