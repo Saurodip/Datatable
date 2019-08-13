@@ -163,7 +163,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         let dataTableBody: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('scrollable-area-datatable-body');
         if ((dataTableBody && dataTableBody['children'].length > 0) && (this.dataCollection && this.dataCollection.length > 0) && !this.isCompletelyRendered) {
             this.isCompletelyRendered = true;
-            this.dataTableUIService.onSetDataTableStyle(this.headerStyle, this.rowStyle, this.randomIndex);
+            this.dataTableUIService.onSetDataTableStyle(this.headerStyle, this.rowStyle, this.randomIndex, (this.header && this.header.length));
             this.dataTableUIService.onActivateScrollingForHiddenScrollbars();
         }
     }
@@ -335,26 +335,21 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
      */
     private onDisplayDataBasedOnLoadingPattern = (dataCollection: object[], event?: KeyboardEvent | MouseEvent): void => {
         if (dataCollection && dataCollection.length > 0) {
-            const selectedResizerIndex: number = event && event.target['id'] && parseInt(event.target['id'].replace(/^\D+/g, ''), 10) || 0;
             if (this.dataLoadingPattern === DataTableLoadingPattern.Pagination) {
                 this.onPreparationOfDataForPagination(dataCollection);
                 /* Allowing browser to render the new dataset before performing selection related action */
-                setTimeout(() => {
-                    this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, dataCollection, this.checkboxSelection, this.rowStyle.selectionColor);
-                    if (selectedResizerIndex > 0) {
-                        document.getElementById('column-resizer-' + selectedResizerIndex).click();
-                    }
-                }, 0);
+                setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, dataCollection, this.checkboxSelection, this.rowStyle.selectionColor), 0);
             } else if (this.dataLoadingPattern === DataTableLoadingPattern.VirtualScrolling) {
                 const numberOfBufferedDataRow: number = 2;
                 setTimeout(() => {
                     this.dataToDisplay = dataCollection.slice(0, this.virtualScrolling.numberOfRowsPerScroll + numberOfBufferedDataRow);
                     this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor);
-                    if (selectedResizerIndex > 0) {
-                        setTimeout(() => {
-                            document.getElementById('column-resizer-' + selectedResizerIndex).click();
-                        }, 0);
-                    }
+                    // const selectedResizerIndex: number = event && event.target['id'] && parseInt(event.target['id'].replace(/^\D+/g, ''), 10) || 0;
+                    // if (selectedResizerIndex > 0) {
+                    //     setTimeout(() => {
+                    //         document.getElementById('column-resizer-' + selectedResizerIndex).onmousedown = this.onStartDataTableColumnResizing;
+                    //     }, 5000);
+                    // }
                 }, 0);
             } else {
                 this.dataToDisplay = [...this.filteredData];
@@ -605,14 +600,11 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         const selectedColumnWidth: number = this.selectedColumnWidth + pageXDifference;
         const nextColumnWidth: number = this.nextColumnWidth - pageXDifference;
         const minimumGap: number = 70;
-        console.log('selected: ' + selectedColumnWidth);
         if ((pageXDifference >= 0 && selectedColumnWidth + minimumGap <= totalWidth) || (pageXDifference <= 0 && nextColumnWidth + minimumGap <= totalWidth)) {
             if (this.dataTableSelectedColumn && this.dataTableSelectedColumn.length > 0) {
                 for (let i = 0; i < this.dataTableSelectedColumn.length; i++) {
                     this.dataTableSelectedColumn[i]['style'].width = selectedColumnWidth + 'px';
                     this.dataTableNextColumn[i]['style'].width = nextColumnWidth + 'px';
-                    console.log('Current: ' + this.dataTableSelectedColumn[i]['offsetWidth']);
-                    console.log('Next: ' + this.dataTableNextColumn[i]['offsetWidth']);
                 }
             }
         }

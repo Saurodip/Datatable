@@ -30,13 +30,18 @@ export interface DataTableHeader {
 
 export interface DataTableHeaderStyle {
     backgroundColor?: string;
-    borderColor?: string;
+    borderLeft?: string;
+    borderRight?: string;
     color?: string;
-    font?: string;
+    fontFamily?: string;
+    fontSize?: string;
+    fontStyle?: string;
+    letterSpacing?: string;
     lineHeight?: string;
     maxWidth?: string;
     minWidth?: string;
     padding?: string;
+    selectionColor?: string;
     textAlign?: string;
 }
 

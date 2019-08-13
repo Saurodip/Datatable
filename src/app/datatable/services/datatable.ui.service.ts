@@ -91,8 +91,9 @@ export class DataTableUIService {
      * This method is responsible for setting custom styles of datatable received from the invoked component
      * @param headerStyle { DataTableHeaderStyle } Custom datatable header style
      * @param rowStyle { DataTableRowStyle } Custom datatable row style
+     * @param headerCount { number } Number of header
      */
-    public onSetDataTableStyle = (headerStyle: DataTableHeaderStyle, rowStyle: DataTableRowStyle, index: number): void => {
+    public onSetDataTableStyle = (headerStyle: DataTableHeaderStyle, rowStyle: DataTableRowStyle, index: number, headerCount: number): void => {
         const headElement = document.getElementsByTagName('head') && document.getElementsByTagName('head')[0];
         const style = document.createElement('style');
         style.type = 'text/css';
@@ -102,10 +103,12 @@ export class DataTableUIService {
             for (let property in headerStyle) {
                 if (headerStyle.hasOwnProperty(property)) {
                     let cssProperty = property.replace(/[A-Z]/g, (propertyName: string) => '-' + propertyName.toLowerCase());
-                    cssProperties += `${ cssProperty }: ${ headerStyle[property] } !important; `;
+                    cssProperties += `${ cssProperty }: ${ headerStyle[property] }; `;
                 }
             }
-            style.innerHTML += ` .custom-header-style { ${cssProperties}}`;
+            for (let i: number = 0; i <= headerCount; i++) {
+                style.innerHTML += `#datatable${index} #datatable-header-${i}.custom-header-style { ${cssProperties}}`;
+            }
         }
         if (Object.getOwnPropertyNames(rowStyle).length !== 0) {
             let cssProperties: string = '';
