@@ -97,7 +97,6 @@ export class DataTableUIService {
         const headElement = document.getElementsByTagName('head') && document.getElementsByTagName('head')[0];
         const style = document.createElement('style');
         style.type = 'text/css';
-        style.innerHTML = `#datatable${index}`;
         if (Object.getOwnPropertyNames(headerStyle).length !== 0) {
             let cssProperties: string = '';
             for (let property in headerStyle) {
@@ -118,7 +117,7 @@ export class DataTableUIService {
                     cssProperties += `${ cssProperty }: ${ rowStyle[property] }; `;
                 }
             }
-            style.innerHTML += ` .datatable-row.custom-row-style { ${cssProperties}}`;
+            style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-row-style { ${cssProperties}}`;
         }
         if (headElement) {
             headElement.appendChild(style);
