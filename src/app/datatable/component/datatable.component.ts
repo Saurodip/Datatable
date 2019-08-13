@@ -297,7 +297,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
      */
     public onApplySort = (event: MouseEvent, propertyName: string, type: DataTableColumnType): void => {
         if (this.listOfEditedDataTableRows && this.listOfEditedDataTableRows.length <= 0) {
-            this.dataTableUIService.onHighlightSelectedElement(event, 'datatable-header', 'highlight-column-header');
+            this.dataTableUIService.onHighlightSelectedElement(event, 'datatable-header', 'highlight-column-header', (this.headerStyle && this.headerStyle.selectionColor));
             for (let key in this.sortFields) {
                 if (this.sortFields.hasOwnProperty(key)) {
                     if (key !== propertyName) {

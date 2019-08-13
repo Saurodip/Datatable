@@ -102,7 +102,12 @@ export class AppComponent implements OnInit {
 
   private setDataTableStyle = (): void => {
     this.headerStyle = {
-
+      backgroundColor: 'pink',
+      borderRight: '1px solid red',
+      color: 'blue',
+      fontSize: '18px',
+      fontStyle: 'italic',
+      textAlign: 'left'
     };
 
     this.rowStyle = {

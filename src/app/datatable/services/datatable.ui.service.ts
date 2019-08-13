@@ -156,15 +156,24 @@ export class DataTableUIService {
      * @param event { MouseEvent } Event data
      * @param element { string } Name of the element that needs to be highlighted
      * @param highlightedClass { string } Highlighted class name
+     * @param highlightColor? { string } Highlighting color provided from the invoked component
      */
-    public onHighlightSelectedElement = (event: MouseEvent, element: string, highlightedClass: string): void => {
+    public onHighlightSelectedElement = (event: MouseEvent, element: string, highlightedClass: string, highlightingColor?: string): void => {
         const NodeElement: NodeList = this.dataTableElementReferenceService.getNodeListReference(element);
         if (NodeElement && NodeElement.length > 0) {
             for (let i = 0; i < NodeElement.length; i++) {
-                NodeElement[i]['className'] = NodeElement[i]['className'] && NodeElement[i]['className'].replace(highlightedClass, '').trim();
+                if (highlightingColor) {
+                    NodeElement[i]['style'].backgroundColor = '';
+                } else {
+                    NodeElement[i]['className'] = NodeElement[i]['className'] && NodeElement[i]['className'].replace(highlightedClass, '').trim();
+                }
             }
         }
-        event.currentTarget['parentElement']['className'] = highlightedClass + ' ' + event.currentTarget['parentElement']['className'];
+        if (highlightingColor) {
+            event.currentTarget['parentElement']['style'].backgroundColor = highlightingColor;
+        } else {
+            event.currentTarget['parentElement']['className'] = highlightedClass + ' ' + event.currentTarget['parentElement']['className'];
+        }
     }
 
     /**
