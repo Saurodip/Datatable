@@ -115,10 +115,10 @@ export class DataTableUIService {
             for (let property in rowStyle) {
                 if (rowStyle.hasOwnProperty(property) && property !== 'selectionColor') {
                     let cssProperty = property.replace(/[A-Z]/g, (propertyName: string) => '-' + propertyName.toLowerCase());
-                    cssProperties += `${ cssProperty }: ${ rowStyle[property] } !important; `;
+                    cssProperties += `${ cssProperty }: ${ rowStyle[property] }; `;
                 }
             }
-            style.innerHTML += ` .custom-row-style { ${cssProperties}}`;
+            style.innerHTML += ` .datatable-row.custom-row-style { ${cssProperties}}`;
         }
         if (headElement) {
             headElement.appendChild(style);
@@ -156,7 +156,7 @@ export class DataTableUIService {
      * @param event { MouseEvent } Event data
      * @param element { string } Name of the element that needs to be highlighted
      * @param highlightedClass { string } Highlighted class name
-     * @param highlightColor? { string } Highlighting color provided from the invoked component
+     * @param highlightingColor? { string } Highlighting color provided from the invoked component
      */
     public onHighlightSelectedElement = (event: MouseEvent, element: string, highlightedClass: string, highlightingColor?: string): void => {
         const NodeElement: NodeList = this.dataTableElementReferenceService.getNodeListReference(element);
