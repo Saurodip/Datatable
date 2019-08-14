@@ -189,6 +189,7 @@ $text-color: #e3e3e3;
                     
                     .datatable-input-cell {
                         border: none;
+                        box-sizing: border-box;
                         display: inline-block;
                         height: 100%;
                         width: calc(100% - 30px);

@@ -34,8 +34,7 @@ export interface DataTableHeaderStyle {
     borderRight?: string;
     color?: string;
     fontFamily?: string;
-    fontSize?: string;
-    fontStyle?: string;
+    font?: string;
     letterSpacing?: string;
     lineHeight?: string;
     maxWidth?: string;
@@ -52,13 +51,11 @@ export interface DataTableRowStyle {
     borderRight?: string;
     borderTop?: string;
     color?: string;
-    cursor?: string;
     font?: string;
+    letterSpacing?: string;
     height?: string;
     hoverColor?: string;
     lineHeight?: string;
-    maxWidth?: string;
-    minWidth?: string;
     padding?: string;
     selectionColor?: string;
     textAlign?: string;

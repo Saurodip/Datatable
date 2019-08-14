@@ -50,14 +50,14 @@
                         [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                         [ngClass]="{ 'selected-row': dtRow?.RowSelected }"
                         *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
-                        <div class="action-container">
+                        <div class="action-container custom-cell-style">
                             <input type="checkbox" id="datatable-checkbox-{{ dtRow?.Index }}"
                             [ngStyle]="{ 'visibility': checkboxSelection ? 'visible': 'hidden' }">
                         </div>
-                        <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data datatable-column-{{ dtHeader?.index }}"
+                        <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data datatable-column-{{ dtHeader?.index }} custom-cell-style"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of frozenHeader; let j = index">
-                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell-{{ j + 1 }}" class="datatable-input-cell"
+                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell-{{ j + 1 }}" class="datatable-input-cell custom-input-style"
                                 value="{{ dtRow[dtHeader?.propertyName] }}" [disabled]="isDataTableCellDisabled"
                                 (keyup)="onEditDataTableCell($event, dtHeader?.propertyName, dtHeader?.type)">
                             <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
@@ -123,10 +123,10 @@
                         [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                         [ngClass]="{ 'selected-row': dtRow?.RowSelected }"
                         *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
-                        <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data datatable-column-{{ dtHeader?.index }}"
+                        <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data datatable-column-{{ dtHeader?.index }} custom-cell-style"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of scrollableHeader; let j = index">
-                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell-{{ j + 1 }}" class="datatable-input-cell"
+                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell-{{ j + 1 }}" class="datatable-input-cell custom-input-style"
                                 value="{{ dtRow[dtHeader?.propertyName] }}" [disabled]="isDataTableCellDisabled"
                                 (keyup)="onEditDataTableCell($event, dtHeader?.propertyName, dtHeader?.type)">
                             <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">

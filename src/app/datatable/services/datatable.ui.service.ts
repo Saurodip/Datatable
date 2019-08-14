@@ -110,14 +110,24 @@ export class DataTableUIService {
             }
         }
         if (Object.getOwnPropertyNames(rowStyle).length !== 0) {
-            let cssProperties: string = '';
+            let cssPropertiesForRow: string = '';
+            let cssPropertiesForCell: string = '';
+            let cssPropertiesForInput: string = '';
             for (let property in rowStyle) {
-                if (rowStyle.hasOwnProperty(property) && property !== 'selectionColor') {
+                if (rowStyle.hasOwnProperty(property) && (property !== 'selectionColor' && property !== 'hoverColor')) {
                     let cssProperty = property.replace(/[A-Z]/g, (propertyName: string) => '-' + propertyName.toLowerCase());
-                    cssProperties += `${ cssProperty }: ${ rowStyle[property] }; `;
+                    if (property === 'backgroundColor' || property === 'height') {
+                        cssPropertiesForRow += `${ cssProperty }: ${ rowStyle[property] }; `;
+                        style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-row-style { ${cssPropertiesForRow}}`;
+                    } else if (property === 'color' || property === 'font' || property === 'letterSpacing' || property === 'padding' || property === 'textAlign') {
+                        cssPropertiesForInput += `${ cssProperty }: ${ rowStyle[property] }; `;
+                        style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-input-style { ${cssPropertiesForInput}}`;
+                    } else {
+                        cssPropertiesForCell += `${ cssProperty }: ${ rowStyle[property] }; `;
+                        style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-cell-style { ${cssPropertiesForCell}}`;
+                    }
                 }
             }
-            style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-row-style { ${cssProperties}}`;
         }
         if (headElement) {
             headElement.appendChild(style);
