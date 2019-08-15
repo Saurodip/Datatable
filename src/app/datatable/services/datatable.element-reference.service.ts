@@ -22,7 +22,7 @@ export class DataTableElementReferenceService {
             case 'datatable-scrollable-filter-wrapper': return document.querySelector('.datatable-scrollable-area .datatable-filter-wrapper');
             case 'datatable-filter-container': return document.querySelector('.datatable-filter-container');
             case 'datatable-select-all-checkbox': return document.querySelector('#datatable-select-all-checkbox');
-            case 'action-container': return document.querySelector('.action-container');
+            case 'checkbox-container': return document.querySelector('.checkbox-container');
             case 'frozen-area-datatable-body': return document.querySelector('.datatable-frozen-area .datatable-body');
             case 'scrollable-area-datatable-body': return document.querySelector('.datatable-scrollable-area .datatable-body');
             case 'datatable-row': return document.querySelector('.datatable-row');

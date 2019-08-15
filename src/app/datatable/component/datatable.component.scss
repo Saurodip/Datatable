@@ -40,7 +40,7 @@ $text-color: #e3e3e3;
         flex-direction: row;
 
         .datatable-frozen-area {
-            .action-container {
+            .checkbox-container {
                 align-items: center;
                 border-bottom: $cell-border;
                 border-right: $cell-border;
@@ -139,7 +139,7 @@ $text-color: #e3e3e3;
                 justify-content: flex-end;
                 margin-bottom: 3px;
 
-                .action-container {
+                .checkbox-container {
                     border-bottom: 0px;
                 }
 
@@ -285,11 +285,6 @@ $text-color: #e3e3e3;
         .action-container {
             width: 35%;
 
-            span.disabled {
-                color: #333333;
-                cursor: not-allowed;
-            }
-
             i {
                 color: #797171;
                 margin: 0px 5px;
@@ -399,7 +394,7 @@ input:focus {
 }
 
 .disabled {
-    opacity: 0.3;
+    opacity: 0.5;
     cursor: not-allowed !important;
 }
 

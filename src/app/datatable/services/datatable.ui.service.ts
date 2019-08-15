@@ -52,7 +52,7 @@ export class DataTableUIService {
             scrollableAreaWidth: '0px'
         };
         const scrollbarWidth: number = 17;
-        const actionContainer: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('action-container');
+        const actionContainer: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('checkbox-container');
         if (dataTable && (dataTableHeader && dataTableHeader.length > 0) && actionContainer) {
             /* In case, column resonsiveness is not explicitly set,
                measuring the entire width of the columns provided from the invoked component

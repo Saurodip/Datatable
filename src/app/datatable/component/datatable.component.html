@@ -4,7 +4,7 @@
             <div class="datatable-header-wrapper">
                 <div class="datatable-header-container"
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }">
-                    <div id="datatable-header-0" class="action-container custom-header-style">
+                    <div id="datatable-header-0" class="checkbox-container custom-header-style">
                         <input type="checkbox" id="datatable-select-all-checkbox"
                             (change)="onSelectDataTableSelectAll($event)">
                     </div>
@@ -28,7 +28,7 @@
             <div class="datatable-filter-wrapper hide-header-horizontal-scrollbar">
                 <div class="datatable-filter-container"
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex', 'width': globalFilter ? '100%' : 'auto' }">
-                    <div class="action-container" [ngStyle]="{ 'width': globalFilter ? '0px' : '30px' }"></div>
+                    <div class="checkbox-container" [ngStyle]="{ 'width': globalFilter ? '0px' : '30px' }"></div>
                     <ng-template *ngIf="globalFilter; else columnFilter"></ng-template>
                     <ng-template #columnFilter>
                         <div class="column-filter-container datatable-column-{{ dtHeader?.index }}"
@@ -51,7 +51,7 @@
                         [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                         [ngClass]="{ 'selected-row': dtRow?.RowSelected, 'custom-odd-row-style': dtRow?.Index % 2 !== 0, 'custom-even-row-style': dtRow?.Index % 2 === 0 }"
                         *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
-                        <div class="action-container custom-cell-style">
+                        <div class="checkbox-container custom-cell-style">
                             <input type="checkbox" id="datatable-checkbox-{{ dtRow?.Index }}"
                             [ngStyle]="{ 'visibility': checkboxSelection ? 'visible': 'hidden' }">
                         </div>
@@ -167,7 +167,7 @@
             </span>
             <input type="text" id="datatable-export-file-name" placeholder="File name" maxlength="50">
             <button type="button" id="datatable-export-button" [disabled]="!dataTableExportFileType" (click)="onExportDataTableData()">
-                <i class="fa fa-download" aria-hidden="true"></i> Export
+                <i class="fa fa-download" aria-hidden="true"></i> Download
             </button>
         </div>
         <div class="pagination-tab-container">

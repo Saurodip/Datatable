@@ -46,7 +46,7 @@ export class DataTableActionsToolbarService {
     }
 
     /**
-     * This method is responsible for detecting the actual edited rows whose data is different from the data collection
+     * This method is responsible for detecting the actual edited rows, data of which user has modified
      * @param dataCollection { object[] } Collection of datatable records
      * @param headerInfo { DataTableHeader[] } Datatable header information
      */
