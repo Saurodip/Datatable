@@ -149,12 +149,19 @@ $text-color: #e3e3e3;
                     box-sizing: border-box;
                     height: 100%;
                     padding: 0px 25px 0px 10px;
+                
+                    &+i.fa.fa-search {
+                        color: lightgray;
+                        line-height: 30px;
+                        position: absolute;
+                        right: 7px;
+                    }
                 }
 
                 .global-filter-container {
                     input[type="text"] {
                         border-left: $cell-border;
-                        width: 300px;
+                        width: 250px;
                     }
                 }
 
@@ -165,13 +172,6 @@ $text-color: #e3e3e3;
                     input[type="text"] {
                         width: 100%;
                         @include single-line-ellipsis();
-
-                        &+i.fa.fa-search {
-                            color: lightgray;
-                            line-height: 30px;
-                            position: absolute;
-                            right: 7px;
-                        }
                     }
                 }
             }
