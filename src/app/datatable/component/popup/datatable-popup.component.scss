@@ -43,13 +43,17 @@
             width: 95%;
             @include singleline-ellipsis();
 
+            i {
+                margin-right: 10px;
+            }
+
             .close-popup-icon {
                 color: #615d5d;
                 cursor: pointer;
                 font-size: 1rem;
                 position: absolute;
-                right: 10px;
-                top: 7px;
+                right: 15px;
+                top: 10px;
             }
         }
 

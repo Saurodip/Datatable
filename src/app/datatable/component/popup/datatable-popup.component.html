@@ -1,7 +1,12 @@
 <div *ngIf="data?.visible" id="datatable-popup-wrapper">
     <div id="datatable-popup-container">
         <h2>
-            <span>icon</span>
+            <span [ngSwitch]="data?.type">
+                <i *ngSwitchCase="dataTablePopupType.Confirmation" class="fa fa-info-circle" aria-hidden="true"></i>
+                <i *ngSwitchCase="dataTablePopupType.Failure" class="fa fa-times-circle-o" aria-hidden="true"></i>
+                <i *ngSwitchCase="dataTablePopupType.Successful" class="fa fa-check-circle-o" aria-hidden="true"></i>
+                <i *ngSwitchSDefault class="fa fa-info-circle"></i>
+            </span>
             {{ data?.heading }}
             <span class="close-popup-icon" (click)="onCloseDataTablePopup()">&#10006;</span>
         </h2>
