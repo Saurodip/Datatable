@@ -221,6 +221,22 @@ $text-color: #e3e3e3;
                             i {
                                 font-size: 13px;
                                 font-style: normal;
+                                
+                                &.info {
+                                    color: blue;
+                                }
+
+                                &.help {
+                                    color: orange;
+                                }
+
+                                &.failure {
+                                    color: red;
+                                }
+
+                                &.successful {
+                                    color: lightgreen;
+                                }
                             }
                         }
                     }

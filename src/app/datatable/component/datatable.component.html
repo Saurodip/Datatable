@@ -65,9 +65,10 @@
                                 <div [ngSwitch]="dtRow?.tooltip[dtHeader?.propertyName]?.icon"
                                     (mouseenter)="onHoverTooltipIcon($event, dtRow?.tooltip[dtHeader?.propertyName]?.message)"
                                     (mouseleave)="onHoverTooltipIcon($event)">
-                                    <i *ngSwitchCase="'info'">&#9432;</i>
-                                    <i *ngSwitchCase="'help'">?</i>
-                                    <i *ngSwitchCase="'error'">&#10006;</i>
+                                    <i *ngSwitchCase="'failure'" class="failure">&#10006;</i>
+                                    <i *ngSwitchCase="'info'" class="info">&#9432;</i>
+                                    <i *ngSwitchCase="'help'" class="help">?</i>
+                                    <i *ngSwitchCase="'successful'" class="successful">&#10004;</i>
                                     <i *ngSwitchDefault></i>
                                 </div>
                             </div>
@@ -135,9 +136,10 @@
                                 <div [ngSwitch]="dtRow?.tooltip[dtHeader?.propertyName]?.icon"
                                     (mouseenter)="onHoverTooltipIcon($event, dtRow?.tooltip[dtHeader?.propertyName]?.message)"
                                     (mouseleave)="onHoverTooltipIcon($event)">
-                                    <i *ngSwitchCase="'info'">&#9432;</i>
-                                    <i *ngSwitchCase="'help'">?</i>
-                                    <i *ngSwitchCase="'error'">&#10006;</i>
+                                    <i *ngSwitchCase="'failure'" class="failure">&#10006;</i>
+                                    <i *ngSwitchCase="'info'" class="info">&#9432;</i>
+                                    <i *ngSwitchCase="'help'" class="help">?</i>
+                                    <i *ngSwitchCase="'successful'" class="successful">&#10004;</i>
                                     <i *ngSwitchDefault></i>
                                 </div>
                             </div>
