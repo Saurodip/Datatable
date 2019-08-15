@@ -114,17 +114,27 @@ export class DataTableUIService {
             let cssPropertiesForCell: string = '';
             let cssPropertiesForInput: string = '';
             for (let property in rowStyle) {
-                if (rowStyle.hasOwnProperty(property) && (property !== 'selectionColor' && property !== 'hoverColor')) {
-                    let cssProperty = property.replace(/[A-Z]/g, (propertyName: string) => '-' + propertyName.toLowerCase());
-                    if (property === 'backgroundColor' || property === 'height') {
-                        cssPropertiesForRow += `${ cssProperty }: ${ rowStyle[property] }; `;
-                        style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-row-style { ${cssPropertiesForRow}}`;
-                    } else if (property === 'color' || property === 'font' || property === 'letterSpacing' || property === 'padding' || property === 'textAlign') {
-                        cssPropertiesForInput += `${ cssProperty }: ${ rowStyle[property] }; `;
-                        style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-input-style { ${cssPropertiesForInput}}`;
-                    } else {
-                        cssPropertiesForCell += `${ cssProperty }: ${ rowStyle[property] }; `;
-                        style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-cell-style { ${cssPropertiesForCell}}`;
+                if (rowStyle.hasOwnProperty(property)) {
+                    if (property !== 'hoverColor' && property !== 'selectionColor') {
+                        const cssProperty = property.replace(/[A-Z]/g, (propertyName: string) => '-' + propertyName.toLowerCase());
+                        if (property === 'backgroundColorEvenRow' || property === 'backgroundColorOddRow' || property === 'height') {
+                            if (property === 'backgroundColorEvenRow') {
+                                const cssPropertiesForEvenRow: string = `background-color: ${ rowStyle[property] };`;
+                                style.innerHTML += `#datatable${ index } #datatable-main-section .datatable-body .custom-even-row-style { ${ cssPropertiesForEvenRow }}`;
+                            } else if (property === 'backgroundColorOddRow') {
+                                const cssPropertiesForOddRow: string = `background-color: ${ rowStyle[property] };`;
+                                style.innerHTML += `#datatable${ index } #datatable-main-section .datatable-body .custom-odd-row-style { ${ cssPropertiesForOddRow }}`;
+                            } else {
+                                cssPropertiesForRow += `${ cssProperty }: ${ rowStyle[property] }; `;
+                                style.innerHTML += `#datatable${ index } #datatable-main-section .datatable-body .custom-row-style { ${ cssPropertiesForRow }}`;
+                            }
+                        } else if (property === 'color' || property === 'font' || property === 'letterSpacing' || property === 'padding' || property === 'textAlign') {
+                            cssPropertiesForInput += `${ cssProperty }: ${ rowStyle[property] }; `;
+                            style.innerHTML += `#datatable${ index } #datatable-main-section .datatable-body .custom-input-style { ${ cssPropertiesForInput }}`;
+                        } else {
+                            cssPropertiesForCell += `${ cssProperty }: ${ rowStyle[property] }; `;
+                            style.innerHTML += `#datatable${ index } #datatable-main-section .datatable-body .custom-cell-style { ${ cssPropertiesForCell }}`;
+                        }
                     }
                 }
             }

@@ -48,7 +48,7 @@
                     <div id="frozen-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style" 
                         appDataTableRowHover [hoverColor]="rowStyle.hoverColor"
                         [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
-                        [ngClass]="{ 'selected-row': dtRow?.RowSelected }"
+                        [ngClass]="{ 'selected-row': dtRow?.RowSelected, 'custom-odd-row-style': dtRow?.Index % 2 !== 0, 'custom-even-row-style': dtRow?.Index % 2 === 0 }"
                         *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
                         <div class="action-container custom-cell-style">
                             <input type="checkbox" id="datatable-checkbox-{{ dtRow?.Index }}"
@@ -121,7 +121,7 @@
                     <div id="scrollable-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style"
                         appDataTableRowHover [hoverColor]="rowStyle.hoverColor"
                         [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
-                        [ngClass]="{ 'selected-row': dtRow?.RowSelected }"
+                        [ngClass]="{ 'selected-row': dtRow?.RowSelected, 'custom-odd-row-style': dtRow?.Index % 2 !== 0, 'custom-even-row-style': dtRow?.Index % 2 === 0 }"
                         *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
                         <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data datatable-column-{{ dtHeader?.index }} custom-cell-style"
                             [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
