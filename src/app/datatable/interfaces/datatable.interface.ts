@@ -15,6 +15,7 @@ export interface DataTable {
     popup?: DataTablePopup;
     rowStyle?: DataTableRowStyle;
     toolbar?: DataTableToolbar;
+    treeGrid?: boolean;
     virtualScrolling?: DataTableVirtualScrolling;
 }
 

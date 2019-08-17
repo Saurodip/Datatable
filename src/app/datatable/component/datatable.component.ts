@@ -52,6 +52,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public popup: DataTablePopup;
     @Input() public rowStyle: DataTableRowStyle;
     @Input() public toolbar: DataTableToolbar;
+    @Input() public treeGrid: boolean;
     @Input() public virtualScrolling: DataTableVirtualScrolling;
 
     @Output() public getDataTableSelectAllCheckboxState = new EventEmitter<DataTableUserActionResponse>();
@@ -174,16 +175,21 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
      */
     private onReceiveOfDataTableData = (collection: object[]): void => {
         if ((collection && collection.length > 0) && (this.header && this.header.length > 0)) {
+            let isPipePresent: boolean = false;
             collection.forEach((rowData: object, index: number) => {
-                this.header.forEach((columnHeader: DataTableHeader) => {
-                    if (columnHeader.pipe) {
-                        this.dataTablePipeService.onApplyPipe(rowData, columnHeader.propertyName, columnHeader.pipe);
-                    }
-                });
                 /* Setting unique index value to each row to use for individual row identification */
                 rowData['Index'] = index + 1;
                 /* Setting 'RowSelected' attribute to each row, initialized with 'false' to keep track of individual row selection state */
                 rowData['RowSelected'] = false;
+                if (!isPipePresent) {
+                    this.header.forEach((columnHeader: DataTableHeader) => {
+                        if (columnHeader.pipe) {
+                            isPipePresent = true;
+                            this.dataTablePipeService.onApplyPipe(rowData, columnHeader.propertyName, columnHeader.pipe);
+                        }
+                    });
+                    isPipePresent = !isPipePresent;
+                }
             });
         }
         /* This variable is responsible for holding entire collection of data prepared for datatable */
