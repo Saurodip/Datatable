@@ -74,7 +74,6 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="dataToDisplay && dataToDisplay.length === 0" class="background-screen"></div>
                 </div>
             </div>
         </div>
@@ -151,6 +150,7 @@
             </div>
         </div>
     </div>
+    <div *ngIf="dataToDisplay && dataToDisplay.length === 0" class="background-screen">No data available.</div>
     <div class="datatable-footer">
         <div class="action-container">
             <span (click)="onSelectDataTableExportType(dataTableExportType.Excel)">

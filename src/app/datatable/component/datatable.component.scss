@@ -9,6 +9,36 @@ $text-color: #e3e3e3;
     white-space: nowrap;
 }
 
+@mixin arrow-down {
+    border-left: $arrow-border-width solid transparent;
+    border-right: $arrow-border-width solid transparent;
+    border-top: $arrow-border-width solid $arrow-border-color;
+}
+
+@mixin arrow-left {
+    border-bottom: $arrow-border-width solid transparent;
+    border-left: $arrow-border-width solid transparent;
+    border-right: $arrow-border-width solid $arrow-border-color;
+    border-top: $arrow-border-width solid transparent;
+    font-size: 0px;
+    height: 0px;
+}
+
+@mixin arrow-right {
+    border-bottom: $arrow-border-width solid transparent;
+    border-left: $arrow-border-width solid $arrow-border-color;
+    border-right: $arrow-border-width solid transparent;
+    border-top: $arrow-border-width solid transparent;
+    font-size: 0px;
+    height: 0px;
+}
+
+@mixin arrow-up {
+    border-bottom: $arrow-border-width solid $arrow-border-color;
+    border-left: $arrow-border-width solid transparent;
+    border-right: $arrow-border-width solid transparent;
+}
+
 .datatable {
     background-color: #f1f1f1;
     border: $cell-border;
@@ -93,17 +123,13 @@ $text-color: #e3e3e3;
                         }
 
                         .ascending-arrow {
-                            border-bottom: $arrow-border-width solid $arrow-border-color;
-                            border-left: $arrow-border-width solid transparent;
-                            border-right: $arrow-border-width solid transparent;
                             top: 8px;
+                            @include arrow-up();
                         }
 
                         .descending-arrow {
-                            border-left: $arrow-border-width solid transparent;
-                            border-right: $arrow-border-width solid transparent;
-                            border-top: $arrow-border-width solid $arrow-border-color;
                             top: 18px;
+                            @include arrow-down();
                         }
                     }
 
@@ -149,7 +175,7 @@ $text-color: #e3e3e3;
                     box-sizing: border-box;
                     height: 100%;
                     padding: 0px 25px 0px 10px;
-                
+
                     &+i.fa.fa-search {
                         color: lightgray;
                         line-height: 30px;
@@ -221,7 +247,7 @@ $text-color: #e3e3e3;
                             i {
                                 font-size: 13px;
                                 font-style: normal;
-                                
+
                                 &.info {
                                     color: blue;
                                 }
@@ -259,17 +285,25 @@ $text-color: #e3e3e3;
                 }
             }
 
-            .background-screen {
-                background-color: #f1f1f1;
-                height: 100%;
-                width: 100%;
-            }
-
             &.hide-filter-horizontal-scrollbar {
                 bottom: 38px;
                 position: relative;
                 z-index: 1;
             }
+        }
+
+        &+.background-screen {
+            align-items: center;
+            background-color: #f1f1f1;
+            color: gray;
+            display: flex;
+            font-size: 1.2rem;
+            height: calc(100% - 94px);
+            justify-content: center;
+            position: absolute;
+            top: 65px;
+            width: 100%;
+            z-index: 99;
         }
     }
 
@@ -290,7 +324,8 @@ $text-color: #e3e3e3;
                 margin: 0px 5px;
             }
 
-            input[type="button"], button {
+            input[type="button"],
+            button {
                 background-color: transparent;
                 border: none;
                 cursor: pointer;
@@ -314,6 +349,7 @@ $text-color: #e3e3e3;
                 label {
                     cursor: pointer;
                     margin-right: 10px;
+                    text-transform: capitalize;
                 }
 
                 input[type="text"] {
@@ -331,6 +367,7 @@ $text-color: #e3e3e3;
                 span {
                     label {
                         cursor: pointer;
+                        text-transform: capitalize;
                     }
 
                     input[type="checkbox"] {
@@ -357,24 +394,16 @@ $text-color: #e3e3e3;
 
                 .arrow-previous {
                     bottom: 4px;
-                    border-bottom: $arrow-border-width solid transparent;
-                    border-left: $arrow-border-width solid transparent;
-                    border-right: $arrow-border-width solid $arrow-border-color;
-                    border-top: $arrow-border-width solid transparent;
-                    font-size: 0px;
                     position: relative;
                     right: 10px;
+                    @include arrow-left();
                 }
 
                 .arrow-next {
                     bottom: 4px;
-                    border-bottom: $arrow-border-width solid transparent;
-                    border-left: $arrow-border-width solid $arrow-border-color;
-                    border-right: $arrow-border-width solid transparent;
-                    border-top: $arrow-border-width solid transparent;
-                    font-size: 0px;
                     left: 10px;
                     position: relative;
+                    @include arrow-right();
                 }
 
                 &.highlight-pagination-tab {
