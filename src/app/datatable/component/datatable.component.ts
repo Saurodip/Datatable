@@ -23,6 +23,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public columnResponsive: boolean;
     @Input() set data(collection: object[]) {
         if (collection && collection.length > 0) {
+            this.rawData = [...collection];
             this.onReceiveOfDataTableData(collection);
         }
     }
@@ -80,6 +81,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public dataTableLoadingPattern = DataTableLoadingPattern;
     public dataTableToolbarActionType = DataTableToolbarActionType;
     public dataTableExportType = DataTableExportType;
+    private rawData: object[];
     private dataCollection: object[];
     private listOfInternalObjectProperties: string[];
     private listOfSelectedDataTableRows: object[];
@@ -548,7 +550,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.listOfEditedDataTableRows = [];
         this.listOfSelectedDataTableRows = [];
         this.onSelectDataTableSelectAll();
-        this.onDisplayDataBasedOnLoadingPattern(this.dataCollection);
+        this.onDisplayDataBasedOnLoadingPattern(this.rawData);
         this.onInitializeDataTableFields();
         this.onApplyDataTableEditOption();
         setTimeout(() => this.isDataTableVisible = true, 0);
