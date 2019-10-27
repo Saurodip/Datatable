@@ -544,13 +544,15 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
      * This method is responsible for resetting the edited datatable rows
      */
     private onApplyDataTableResetOption = (): void => {
+        this.dataCollection = [...this.rawData];
         this.isDataTableVisible = false;
         this.isDataTableCellDisabled = false;
+        this.isFilterTextPresent = false;
         this.dataToDisplay = [];
         this.listOfEditedDataTableRows = [];
         this.listOfSelectedDataTableRows = [];
         this.onSelectDataTableSelectAll();
-        this.onDisplayDataBasedOnLoadingPattern(this.rawData);
+        this.onDisplayDataBasedOnLoadingPattern(this.dataCollection);
         this.onInitializeDataTableFields();
         this.onApplyDataTableEditOption();
         setTimeout(() => this.isDataTableVisible = true, 0);
