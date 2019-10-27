@@ -8,14 +8,18 @@
                         <input type="checkbox" id="datatable-select-all-checkbox"
                             (change)="onSelectDataTableSelectAll($event)">
                     </div>
-                    <div title="{{ dtHeader?.title }}" id="datatable-header-{{ dtHeader?.index }}" class="datatable-header datatable-column-{{ dtHeader?.index }} custom-header-style"
-                        [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
+                    <div title="{{ dtHeader?.title }}" id="datatable-header-{{ dtHeader?.index }}"
+                        class="datatable-header datatable-column-{{ dtHeader?.index }} custom-header-style"
+                        [ngStyle]="{ 'width': dtHeader?.columnWidth }"
                         *ngFor="let dtHeader of frozenHeader; let i = index">
-                        <div class="sort-icon-container" (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
+                        <div class="sort-icon-container"
+                            (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
                             <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === -1"
-                                class="ascending-arrow" [ngStyle]="{ 'border-bottom-color': headerStyle?.color ? headerStyle?.color : 'black' }"></i>
+                                class="ascending-arrow"
+                                [ngStyle]="{ 'border-bottom-color': headerStyle?.color ? headerStyle?.color : 'black' }"></i>
                             <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === 1"
-                                class="descending-arrow" [ngStyle]="{ 'border-top-color': headerStyle?.color ? headerStyle?.color : 'black' }"></i>
+                                class="descending-arrow"
+                                [ngStyle]="{ 'border-top-color': headerStyle?.color ? headerStyle?.color : 'black' }"></i>
                         </div>
                         <div class="header-name">{{ dtHeader?.title }}</div>
                         <ng-container *ngIf="columnResponsive && frozenHeader && i !== frozenHeader.length - 1">
@@ -32,33 +36,35 @@
                     <ng-template *ngIf="globalFilter; else columnFilter"></ng-template>
                     <ng-template #columnFilter>
                         <div class="column-filter-container datatable-column-{{ dtHeader?.index }}"
-                            [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
+                            [ngStyle]="{ 'width': dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of frozenHeader; let i = index">
-                            <input type="text" *ngIf="columnFilter" id="datatable-column-filter-{{ dtHeader?.index }}" 
-                                [attr.maxlength]="filterTextLimit" placeholder="Search" 
+                            <input type="text" *ngIf="columnFilter" id="datatable-column-filter-{{ dtHeader?.index }}"
+                                [attr.maxlength]="filterTextLimit" placeholder="Search"
                                 (keyup)="onApplyFilter($event, dtHeader?.propertyName)">
-                                <i class="fa fa-search" aria-hidden="true"></i>
+                            <i class="fa fa-search" aria-hidden="true"></i>
                         </div>
                     </ng-template>
                 </div>
             </div>
             <div class="datatable-body frozen-area-datatable-body hide-filter-horizontal-scrollbar"
-                [ngStyle]="{ 'height': verticalScrollableRegion }"
-                (scroll)="onApplyVirtualScrolling($event)">
+                [ngStyle]="{ 'height': verticalScrollableRegion }" (scroll)="onApplyVirtualScrolling($event)">
                 <div class="datatable-row-container">
-                    <div id="frozen-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style" 
-                        appDataTableRowHover [hoverColor]="rowStyle.hoverColor"
+                    <div id="frozen-area-datatable-row-{{ dtRow?.Index }}"
+                        class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style" appDataTableRowHover
+                        [hoverColor]="rowStyle.hoverColor"
                         [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                         [ngClass]="{ 'selected-row': dtRow?.RowSelected, 'custom-odd-row-style': dtRow?.Index % 2 !== 0, 'custom-even-row-style': dtRow?.Index % 2 === 0 }"
                         *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
                         <div class="checkbox-container custom-cell-style">
                             <input type="checkbox" id="datatable-checkbox-{{ dtRow?.Index }}"
-                            [ngStyle]="{ 'visibility': checkboxSelection ? 'visible': 'hidden' }">
+                                [ngStyle]="{ 'visibility': checkboxSelection ? 'visible': 'hidden' }">
                         </div>
-                        <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data datatable-column-{{ dtHeader?.index }} custom-cell-style"
-                            [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
+                        <div title="{{ dtRow[dtHeader?.propertyName] }}"
+                            class="datatable-row-data datatable-column-{{ dtHeader?.index }} custom-cell-style"
+                            [ngStyle]="{ 'width': dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of frozenHeader; let j = index">
-                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell-{{ j + 1 }}" class="datatable-input-cell custom-input-style"
+                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell-{{ j + 1 }}"
+                                class="datatable-input-cell custom-input-style"
                                 value="{{ dtRow[dtHeader?.propertyName] }}" [disabled]="isDataTableCellDisabled"
                                 (keyup)="onEditDataTableCell($event, dtHeader?.propertyName, dtHeader?.type)">
                             <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
@@ -82,18 +88,22 @@
             <div class="datatable-header-wrapper">
                 <div class="datatable-header-container"
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }">
-                    <div title="{{ dtHeader?.title }}" id="datatable-header-{{ dtHeader?.index }}" class="datatable-header datatable-column-{{ dtHeader?.index }} custom-header-style"
-                        [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
+                    <div title="{{ dtHeader?.title }}" id="datatable-header-{{ dtHeader?.index }}"
+                        class="datatable-header datatable-column-{{ dtHeader?.index }} custom-header-style"
+                        [ngStyle]="{ 'width': dtHeader?.columnWidth }"
                         *ngFor="let dtHeader of scrollableHeader; let i = index">
-                        <div class="sort-icon-container" (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
+                        <div class="sort-icon-container"
+                            (click)="onApplySort($event, dtHeader?.propertyName, dtHeader?.type)">
                             <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === -1"
-                                class="ascending-arrow" [ngStyle]="{ 'border-bottom-color': headerStyle?.color ? headerStyle?.color : 'black' }"></i>
+                                class="ascending-arrow"
+                                [ngStyle]="{ 'border-bottom-color': headerStyle?.color ? headerStyle?.color : 'black' }"></i>
                             <i *ngIf="sortFields[dtHeader?.propertyName] === 0 || sortFields[dtHeader?.propertyName] === 1"
-                                class="descending-arrow" [ngStyle]="{ 'border-top-color': headerStyle?.color ? headerStyle?.color : 'black' }"></i>
+                                class="descending-arrow"
+                                [ngStyle]="{ 'border-top-color': headerStyle?.color ? headerStyle?.color : 'black' }"></i>
                         </div>
                         <div class="header-name">{{ dtHeader?.title }}</div>
                         <ng-container *ngIf="columnResponsive && scrollableHeader && i !== scrollableHeader.length - 1">
-                            <i id="column-resizer-{{ dtHeader?.index }}" class="column-resizer" 
+                            <i id="column-resizer-{{ dtHeader?.index }}" class="column-resizer"
                                 (mousedown)="onStartDataTableColumnResizing($event)">&#8942;</i>
                         </ng-container>
                     </div>
@@ -103,33 +113,37 @@
                 <div class="datatable-filter-container"
                     [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex', 'width': globalFilter ? '100%' : 'auto' }">
                     <div *ngIf="globalFilter; else columnFilter" class="global-filter-container">
-                        <input type="text" id="datatable-global-filter" [attr.maxlength]="filterTextLimit" placeholder="Search"
-                            (keyup)="onApplyFilter($event)">
+                        <input type="text" id="datatable-global-filter" [attr.maxlength]="filterTextLimit"
+                            placeholder="Search" (keyup)="onApplyFilter($event)">
                         <i class="fa fa-search" aria-hidden="true"></i>
                     </div>
                     <ng-template #columnFilter>
                         <div class="column-filter-container datatable-column-{{ dtHeader?.index }}"
-                            [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
+                            [ngStyle]="{ 'width': dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of scrollableHeader; let i = index">
-                            <input type="text" id="datatable-column-filter-{{ dtHeader?.index }}" [attr.maxlength]="filterTextLimit"
-                                placeholder="Search" (keyup)="onApplyFilter($event, dtHeader?.propertyName)">
+                            <input type="text" id="datatable-column-filter-{{ dtHeader?.index }}"
+                                [attr.maxlength]="filterTextLimit" placeholder="Search"
+                                (keyup)="onApplyFilter($event, dtHeader?.propertyName)">
                             <i class="fa fa-search" aria-hidden="true"></i>
                         </div>
                     </ng-template>
                 </div>
             </div>
-            <div class="datatable-body scrollable-area-datatable-body  hide-filter-horizontal-scrollbar" [ngStyle]="{ 'height': verticalScrollableRegion }"
-                (scroll)="onApplyVirtualScrolling($event)">
+            <div class="datatable-body scrollable-area-datatable-body  hide-filter-horizontal-scrollbar"
+                [ngStyle]="{ 'height': verticalScrollableRegion }" (scroll)="onApplyVirtualScrolling($event)">
                 <div class="datatable-row-container">
-                    <div id="scrollable-area-datatable-row-{{ dtRow?.Index }}" class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style"
-                        appDataTableRowHover [hoverColor]="rowStyle.hoverColor"
+                    <div id="scrollable-area-datatable-row-{{ dtRow?.Index }}"
+                        class="datatable-row datatable-row-{{ dtRow?.Index }} custom-row-style" appDataTableRowHover
+                        [hoverColor]="rowStyle.hoverColor"
                         [ngStyle]="{ 'display': columnResponsive ? 'flex' : 'inline-flex' }"
                         [ngClass]="{ 'selected-row': dtRow?.RowSelected, 'custom-odd-row-style': dtRow?.Index % 2 !== 0, 'custom-even-row-style': dtRow?.Index % 2 === 0 }"
                         *ngFor="let dtRow of dataToDisplay; let i = index" (click)="onSelectDataTableRow($event)">
-                        <div title="{{ dtRow[dtHeader?.propertyName] }}" class="datatable-row-data datatable-column-{{ dtHeader?.index }} custom-cell-style"
-                            [ngStyle]="{ 'width': columnResponsive ? responsiveColumnWidth : dtHeader?.columnWidth }"
+                        <div title="{{ dtRow[dtHeader?.propertyName] }}"
+                            class="datatable-row-data datatable-column-{{ dtHeader?.index }} custom-cell-style"
+                            [ngStyle]="{ 'width': dtHeader?.columnWidth }"
                             *ngFor="let dtHeader of scrollableHeader; let j = index">
-                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell-{{ j + 1 }}" class="datatable-input-cell custom-input-style"
+                            <input type="text" id="datatable-row-{{ dtRow?.Index }}-cell-{{ j + 1 }}"
+                                class="datatable-input-cell custom-input-style"
                                 value="{{ dtRow[dtHeader?.propertyName] }}" [disabled]="isDataTableCellDisabled"
                                 (keyup)="onEditDataTableCell($event, dtHeader?.propertyName, dtHeader?.type)">
                             <div *ngIf="dtHeader?.tooltip" class="datatable-tooltip-icon-container">
@@ -150,7 +164,10 @@
             </div>
         </div>
     </div>
-    <div *ngIf="dataToDisplay && dataToDisplay.length === 0" class="background-screen">No data available.</div>
+    <div class="hide-vertical-scrollbars"></div>
+    <div *ngIf="dataToDisplay && dataToDisplay.length === 0" class="background-screen">
+        <span>No data available.</span>
+    </div>
     <div class="datatable-footer">
         <div class="action-container">
             <span (click)="onSelectDataTableExportType(dataTableExportType.Excel)">
@@ -166,7 +183,8 @@
                 <label for="datatable-pdf-export">PDF</label>
             </span>
             <input type="text" id="datatable-export-file-name" placeholder="File name" maxlength="50">
-            <button type="button" id="datatable-export-button" [disabled]="!dataTableExportFileType" (click)="onExportDataTableData()">
+            <button type="button" id="datatable-export-button" [disabled]="!dataTableExportFileType"
+                (click)="onExportDataTableData()">
                 <i class="fa fa-download" aria-hidden="true"></i> Download
             </button>
         </div>
@@ -192,13 +210,15 @@
                 <label for="datatable-edit-option">Edit </label>
                 <input type="checkbox" id="datatable-edit-option" [checked]="!isDataTableCellDisabled">
             </span> |
-            <span *ngIf="toolbar?.save" [ngClass]="{ 'disabled': listOfEditedDataTableRows && listOfEditedDataTableRows.length <= 0 }">
+            <span *ngIf="toolbar?.save"
+                [ngClass]="{ 'disabled': listOfEditedDataTableRows && listOfEditedDataTableRows.length <= 0 }">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i>
                 <input type="button" id="datatable-save-option" value="Save"
                     [disabled]="listOfEditedDataTableRows && listOfEditedDataTableRows.length <= 0"
                     (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Save)">
             </span> |
-            <span *ngIf="toolbar?.delete" [ngClass]="{ 'disabled': listOfSelectedDataTableRows && listOfSelectedDataTableRows.length <= 0 }">
+            <span *ngIf="toolbar?.delete"
+                [ngClass]="{ 'disabled': listOfSelectedDataTableRows && listOfSelectedDataTableRows.length <= 0 }">
                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                 <input type="button" id="datatable-delete-option" value="Delete"
                     [disabled]="listOfSelectedDataTableRows && listOfSelectedDataTableRows.length <= 0"
@@ -214,8 +234,7 @@
     <div *ngIf="isLoading" class="spinner">
         <img src="assets/images/spinner.gif" alt="loading-spinner">
     </div>
-    <app-datatable-popup [data]="popup"
-        (getDataTablePopupConfirmationAction)="onConfirmDataTablePopupAction($event)">
+    <app-datatable-popup [data]="popup" (getDataTablePopupConfirmationAction)="onConfirmDataTablePopupAction($event)">
     </app-datatable-popup>
     <app-datatable-tooltip *ngIf="tooltipInfo?.content" [tooltipInfo]="tooltipInfo"></app-datatable-tooltip>
 </div>

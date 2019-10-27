@@ -48,7 +48,6 @@ export class DataTableUIService {
     public onCalculateDataTableHeaderWidth = (dataTable: HTMLElement, dataTableHeader: DataTableHeader[], isColumnResponsive: boolean): object => {
         const DataTableHeaderInfo: object = {
             columnResponsive: isColumnResponsive,
-            responsiveColumnWidth: '0px',
             scrollableAreaWidth: '0px'
         };
         const scrollbarWidth: number = 17;
@@ -72,7 +71,9 @@ export class DataTableUIService {
                 });
             }
             if (isColumnResponsive) {
-                DataTableHeaderInfo['responsiveColumnWidth'] = Math.floor((dataTable['offsetWidth'] - (actionContainer['offsetWidth'] + scrollbarWidth)) / dataTableHeader.length) + 'px';
+                dataTableHeader.forEach((header: DataTableHeader) => {
+                    header.columnWidth = Math.floor((dataTable['offsetWidth'] - (actionContainer['offsetWidth'] + scrollbarWidth)) / dataTableHeader.length) + 'px';
+                });
             } else {
                 const frozenHeader: DataTableHeader[] = dataTableHeader.filter((header: DataTableHeader) => header.frozen === true);
                 let frozenHeaderAreaWidth: number = actionContainer['offsetWidth'];
@@ -102,7 +103,7 @@ export class DataTableUIService {
             for (let property in headerStyle) {
                 if (headerStyle.hasOwnProperty(property)) {
                     let cssProperty = property.replace(/[A-Z]/g, (propertyName: string) => '-' + propertyName.toLowerCase());
-                    cssProperties += `${ cssProperty }: ${ headerStyle[property] }; `;
+                    cssProperties += `${cssProperty}: ${headerStyle[property]}; `;
                 }
             }
             for (let i: number = 0; i <= headerCount; i++) {
@@ -119,21 +120,21 @@ export class DataTableUIService {
                         const cssProperty = property.replace(/[A-Z]/g, (propertyName: string) => '-' + propertyName.toLowerCase());
                         if (property === 'backgroundColorEvenRow' || property === 'backgroundColorOddRow' || property === 'height') {
                             if (property === 'backgroundColorEvenRow') {
-                                const cssPropertiesForEvenRow: string = `background-color: ${ rowStyle[property] };`;
-                                style.innerHTML += `#datatable${ index } #datatable-main-section .datatable-body .custom-even-row-style { ${ cssPropertiesForEvenRow }}`;
+                                const cssPropertiesForEvenRow: string = `background-color: ${rowStyle[property]};`;
+                                style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-even-row-style { ${cssPropertiesForEvenRow}}`;
                             } else if (property === 'backgroundColorOddRow') {
-                                const cssPropertiesForOddRow: string = `background-color: ${ rowStyle[property] };`;
-                                style.innerHTML += `#datatable${ index } #datatable-main-section .datatable-body .custom-odd-row-style { ${ cssPropertiesForOddRow }}`;
+                                const cssPropertiesForOddRow: string = `background-color: ${rowStyle[property]};`;
+                                style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-odd-row-style { ${cssPropertiesForOddRow}}`;
                             } else {
-                                cssPropertiesForRow += `${ cssProperty }: ${ rowStyle[property] }; `;
-                                style.innerHTML += `#datatable${ index } #datatable-main-section .datatable-body .custom-row-style { ${ cssPropertiesForRow }}`;
+                                cssPropertiesForRow += `${cssProperty}: ${rowStyle[property]}; `;
+                                style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-row-style { ${cssPropertiesForRow}}`;
                             }
                         } else if (property === 'color' || property === 'font' || property === 'letterSpacing' || property === 'padding' || property === 'textAlign') {
-                            cssPropertiesForInput += `${ cssProperty }: ${ rowStyle[property] }; `;
-                            style.innerHTML += `#datatable${ index } #datatable-main-section .datatable-body .custom-input-style { ${ cssPropertiesForInput }}`;
+                            cssPropertiesForInput += `${cssProperty}: ${rowStyle[property]}; `;
+                            style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-input-style { ${cssPropertiesForInput}}`;
                         } else {
-                            cssPropertiesForCell += `${ cssProperty }: ${ rowStyle[property] }; `;
-                            style.innerHTML += `#datatable${ index } #datatable-main-section .datatable-body .custom-cell-style { ${ cssPropertiesForCell }}`;
+                            cssPropertiesForCell += `${cssProperty}: ${rowStyle[property]}; `;
+                            style.innerHTML += `#datatable${index} #datatable-main-section .datatable-body .custom-cell-style { ${cssPropertiesForCell}}`;
                         }
                     }
                 }

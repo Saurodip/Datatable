@@ -19,8 +19,6 @@ import { DataTablePagination, DataTablePopup, DataTableTooltip } from '../models
     styleUrls: ['./datatable.component.scss']
 })
 export class DataTableComponent implements OnInit, AfterViewInit, AfterViewChecked {
-    @ViewChild('dataTable') private dataTable: ElementRef;
-
     @Input() public checkboxSelection: boolean;
     @Input() public columnResponsive: boolean;
     @Input() set data(collection: object[]) {
@@ -69,7 +67,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public frozenHeader: DataTableHeader[];
     public scrollableHeader: DataTableHeader[];
     public scrollableAreaWidth: string;
-    public responsiveColumnWidth: string;
     public verticalScrollableRegion: string;
     public isDataTableCellDisabled: boolean;
     public columnFilter: boolean;
@@ -100,6 +97,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     private dataTableNextColumn: NodeList;
     private nextColumnWidth: number;
 
+    @ViewChild('dataTable') private dataTable: ElementRef;
+
     constructor(
         private dataTableActionsToolbarService: DataTableActionsToolbarService,
         private dataTableElementReferenceService: DataTableElementReferenceService,
@@ -118,7 +117,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.frozenHeader = [];
         this.scrollableHeader = [];
         this.scrollableAreaWidth = '';
-        this.responsiveColumnWidth = '';
         this.verticalScrollableRegion = '';
         this.isDataTableCellDisabled = true;
         this.columnFilter = false;
@@ -586,10 +584,12 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 if ((this.dataTableSelectedColumn && this.dataTableSelectedColumn.length > 0) && (this.dataTableNextColumn && this.dataTableNextColumn.length > 0)) {
                     this.selectedColumnWidth = this.dataTableSelectedColumn[0]['offsetWidth'];
                     this.nextColumnWidth = this.dataTableNextColumn[0]['offsetWidth'];
+                    this.header[selectedResizerIndex - 1].columnWidth = this.selectedColumnWidth + 'px';
+                    this.header[selectedResizerIndex].columnWidth = this.nextColumnWidth + 'px';
                 }
             }
             document.addEventListener('mousemove', this.mouseMove);
-            document.addEventListener('mouseup', function (e) {
+            document.addEventListener('mouseup', () => {
                 self.dataTableSelectedColumn = undefined;
                 self.selectedColumnWidth = 0;
                 self.dataTableNextColumn = undefined;
