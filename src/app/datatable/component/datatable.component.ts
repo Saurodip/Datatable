@@ -328,7 +328,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             let dataCollection: object[];
             if (type !== DataTableColumnType.Custom) {
                 this.dataCollection = this.dataTableSortService.onApplySort(this.dataCollection, propertyName, type, this.sortFields);
-                dataCollection = this.isFilterTextPresent ? this.dataTableSortService.onApplySort(this.dataToDisplay, propertyName, type, this.sortFields) : [...this.dataCollection];
+                dataCollection = this.isFilterTextPresent ? this.dataTableSortService.onApplySort(this.filteredData, propertyName, type, this.sortFields) : [...this.dataCollection];
             } else {
                 const response: DataTableUserActionResponse = {
                     sortColumn: propertyName,
