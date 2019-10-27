@@ -167,7 +167,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     }
 
     ngAfterViewChecked() {
-        let dataTableBody: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('scrollable-area-datatable-body');
+        const dataTableBody: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('scrollable-area-datatable-body');
         if ((dataTableBody && dataTableBody['children'].length > 0) && (this.dataCollection && this.dataCollection.length > 0) && !this.isCompletelyRendered) {
             this.isCompletelyRendered = true;
             this.dataTableUIService.onSetDataTableStyle(this.headerStyle, this.rowStyle, this.randomIndex, (this.header && this.header.length));
@@ -353,15 +353,9 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, dataCollection, this.checkboxSelection, this.rowStyle.selectionColor), 0);
             } else if (this.dataLoadingPattern === DataTableLoadingPattern.VirtualScrolling) {
                 const numberOfBufferedDataRow: number = 2;
+                this.dataToDisplay = dataCollection.slice(0, this.virtualScrolling.numberOfRowsPerScroll + numberOfBufferedDataRow);
                 setTimeout(() => {
-                    this.dataToDisplay = dataCollection.slice(0, this.virtualScrolling.numberOfRowsPerScroll + numberOfBufferedDataRow);
                     this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor);
-                    // const selectedResizerIndex: number = event && event.target['id'] && parseInt(event.target['id'].replace(/^\D+/g, ''), 10) || 0;
-                    // if (selectedResizerIndex > 0) {
-                    //     setTimeout(() => {
-                    //         document.getElementById('column-resizer-' + selectedResizerIndex).onmousedown = this.onStartDataTableColumnResizing;
-                    //     }, 5000);
-                    // }
                 }, 0);
             } else {
                 this.dataToDisplay = [...this.filteredData];
