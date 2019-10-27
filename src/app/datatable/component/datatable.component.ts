@@ -67,6 +67,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public frozenHeader: DataTableHeader[];
     public scrollableHeader: DataTableHeader[];
     public scrollableAreaWidth: string;
+    public responsiveColumnWidth: string;
     public verticalScrollableRegion: string;
     public isDataTableCellDisabled: boolean;
     public columnFilter: boolean;
@@ -92,10 +93,13 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     private listOfEditedDataTableRows: object[];
     private toolbarAction: DataTableToolbarActionType;
     private startPageXPosition: number;
+    private selectedResizerIndex: number;
     private dataTableSelectedColumn: NodeList;
     private selectedColumnWidth: number;
     private dataTableNextColumn: NodeList;
     private nextColumnWidth: number;
+    private currentSelectedColumnWidth: number;
+    private currentNextColumnWidth: number;
 
     @ViewChild('dataTable') private dataTable: ElementRef;
 
@@ -117,6 +121,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.frozenHeader = [];
         this.scrollableHeader = [];
         this.scrollableAreaWidth = '';
+        this.responsiveColumnWidth = '';
         this.verticalScrollableRegion = '';
         this.isDataTableCellDisabled = true;
         this.columnFilter = false;
@@ -138,8 +143,11 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.listOfEditedDataTableRows = [];
         this.toolbarAction = DataTableToolbarActionType.None;
         this.startPageXPosition = 0;
+        this.selectedResizerIndex = 0;
         this.selectedColumnWidth = 0;
         this.nextColumnWidth = 0;
+        this.currentSelectedColumnWidth = 0;
+        this.currentNextColumnWidth = 0;
     }
 
     ngOnInit() {
@@ -577,15 +585,13 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         if (event && event.currentTarget) {
             const self = this;
             this.startPageXPosition = event.pageX;
-            const selectedResizerIndex: number = event.currentTarget['id'] && parseInt(event.currentTarget['id'].replace(/^\D+/g, ''), 10) || 0;
-            if (selectedResizerIndex > 0) {
-                this.dataTableSelectedColumn = this.dataTableElementReferenceService.getNodeListReference('datatable-column-index', selectedResizerIndex);
-                this.dataTableNextColumn = this.dataTableElementReferenceService.getNodeListReference('datatable-column-index', selectedResizerIndex + 1);
+            this.selectedResizerIndex = event.currentTarget['id'] && parseInt(event.currentTarget['id'].replace(/^\D+/g, ''), 10) || 0;
+            if (this.selectedResizerIndex > 0) {
+                this.dataTableSelectedColumn = this.dataTableElementReferenceService.getNodeListReference('datatable-column-index', this.selectedResizerIndex);
+                this.dataTableNextColumn = this.dataTableElementReferenceService.getNodeListReference('datatable-column-index', this.selectedResizerIndex + 1);
                 if ((this.dataTableSelectedColumn && this.dataTableSelectedColumn.length > 0) && (this.dataTableNextColumn && this.dataTableNextColumn.length > 0)) {
                     this.selectedColumnWidth = this.dataTableSelectedColumn[0]['offsetWidth'];
                     this.nextColumnWidth = this.dataTableNextColumn[0]['offsetWidth'];
-                    this.header[selectedResizerIndex - 1].columnWidth = this.selectedColumnWidth + 'px';
-                    this.header[selectedResizerIndex].columnWidth = this.nextColumnWidth + 'px';
                 }
             }
             document.addEventListener('mousemove', this.mouseMove);
@@ -603,14 +609,16 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     private mouseMove = (event: MouseEvent) => {
         const pageXDifference = event.pageX - this.startPageXPosition;
         const totalWidth: number = this.selectedColumnWidth + this.nextColumnWidth;
-        const selectedColumnWidth: number = this.selectedColumnWidth + pageXDifference;
-        const nextColumnWidth: number = this.nextColumnWidth - pageXDifference;
+        this.currentSelectedColumnWidth = this.selectedColumnWidth + pageXDifference;
+        this.currentNextColumnWidth = this.nextColumnWidth - pageXDifference;
         const minimumGap: number = 70;
-        if ((pageXDifference >= 0 && selectedColumnWidth + minimumGap <= totalWidth) || (pageXDifference <= 0 && nextColumnWidth + minimumGap <= totalWidth)) {
+        if ((pageXDifference >= 0 && this.currentSelectedColumnWidth + minimumGap <= totalWidth) || (pageXDifference <= 0 && this.currentNextColumnWidth + minimumGap <= totalWidth)) {
             if (this.dataTableSelectedColumn && this.dataTableSelectedColumn.length > 0) {
+                this.header[this.selectedResizerIndex - 1].columnWidth = this.currentSelectedColumnWidth + 'px';
+                this.header[this.selectedResizerIndex].columnWidth = this.currentNextColumnWidth + 'px';
                 for (let i = 0; i < this.dataTableSelectedColumn.length; i++) {
-                    this.dataTableSelectedColumn[i]['style'].width = selectedColumnWidth + 'px';
-                    this.dataTableNextColumn[i]['style'].width = nextColumnWidth + 'px';
+                    this.dataTableSelectedColumn[i]['style'].width = this.currentSelectedColumnWidth + 'px';
+                    this.dataTableNextColumn[i]['style'].width = this.currentNextColumnWidth + 'px';
                 }
             }
         }
