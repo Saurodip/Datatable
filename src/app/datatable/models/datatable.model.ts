@@ -1,4 +1,4 @@
-import { DataTablePipeType, DataTablePopupType } from '../enumerations/datatable.enum';
+import { DataTablePipeType, DataTablePopupType, DataTableToolbarActionType } from '../enumerations/datatable.enum';
 
 export class DataTablePipe {
     public type: DataTablePipeType;
@@ -25,12 +25,14 @@ export class DataTablePagination {
 }
 
 export class DataTablePopup {
+    public action: DataTableToolbarActionType;
     public heading: string;
     public message: string;
     public type: DataTablePopupType;
     public visible: boolean;
 
     constructor() {
+        this.action = DataTableToolbarActionType.None;
         this.heading = '';
         this.message = '';
         this.type = DataTablePopupType.None;

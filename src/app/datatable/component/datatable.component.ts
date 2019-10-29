@@ -1,7 +1,6 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { DataTableActionsToolbarService } from '../services/datatable.actions-toolbar.service';
 import { DataTableElementReferenceService } from '../services/datatable.element-reference.service';
-import { DataTableExportService } from '../services/datatable.export.service';
 import { DataTableFilterService } from '../services/datatable.filter.service';
 import { DataTablePaginationService } from '../services/datatable.pagination.service';
 import { DataTablePipeService } from '../services/datatable.pipe';
@@ -54,6 +53,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public treeGrid: boolean;
     @Input() public virtualScrolling: DataTableVirtualScrolling;
 
+    @Output() public getDataTableDownloadedData = new EventEmitter<DataTableUserActionResponse>();
     @Output() public getDataTableSelectAllCheckboxState = new EventEmitter<DataTableUserActionResponse>();
     @Output() public getDataTableSelectedRows = new EventEmitter<DataTableUserActionResponse>();
     @Output() public getDataTableCustomFilterInfo = new EventEmitter<DataTableUserActionResponse>();
@@ -76,11 +76,10 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public sortFields: object;
     public currentPaginationSlot: object;
     public tooltipInfo: DataTableTooltip;
-    public dataTableExportFileType: DataTableExportType;
+    public toolbarAction: DataTableToolbarActionType;
     public dataTableFilterType = DataTableFilterType;
     public dataTableLoadingPattern = DataTableLoadingPattern;
     public dataTableToolbarActionType = DataTableToolbarActionType;
-    public dataTableExportType = DataTableExportType;
     private rawData: object[];
     private dataCollection: object[];
     private listOfInternalObjectProperties: string[];
@@ -93,7 +92,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     private filteredData: object[];
     private paginationData: object[];
     private listOfEditedDataTableRows: object[];
-    private toolbarAction: DataTableToolbarActionType;
     private startPageXPosition: number;
     private selectedResizerIndex: number;
     private dataTableSelectedColumn: NodeList;
@@ -108,7 +106,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     constructor(
         private dataTableActionsToolbarService: DataTableActionsToolbarService,
         private dataTableElementReferenceService: DataTableElementReferenceService,
-        private dataTableExportService: DataTableExportService,
         private dataTableFilterService: DataTableFilterService,
         private dataTablePaginationService: DataTablePaginationService,
         private dataTablePipeService: DataTablePipeService,
@@ -131,7 +128,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.sortFields = {};
         this.currentPaginationSlot = {};
         this.tooltipInfo = new DataTableTooltip();
-        this.dataTableExportFileType = DataTableExportType.Excel;
         this.dataCollection = [];
         this.listOfInternalObjectProperties = ['Index', 'RowSelected'];
         this.listOfSelectedDataTableRows = [];
@@ -440,20 +436,6 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
     }
 
-    public onSelectDataTableExportType = (dataTableExportType: DataTableExportType): void => {
-        this.dataTableExportFileType = dataTableExportType || DataTableExportType.None;
-    }
-
-    public onExportDataTableData = (): void => {
-        const dataTableExportFileName: HTMLElement = this.dataTableElementReferenceService.getHTMLElementRefernce('datatable-export-file-name');
-        const fileName: string = dataTableExportFileName && dataTableExportFileName['value'] || '';
-        if (this.dataTableExportFileType === DataTableExportType.Excel) {
-            this.dataTableExportService.onExcelExportDataTableData(this.dataCollection, fileName);
-        } else if (this.dataTableExportFileType === DataTableExportType.PDF) {
-            this.dataTableExportService.onExcelExportDataTableData(this.dataCollection, fileName);
-        }
-    }
-
     public onSelectDataTableToolbarOption = (actionType: DataTableToolbarActionType): void => {
         let dataTablePopupHeading: string = '';
         let dataTablePopupMessage: string = '';
@@ -462,6 +444,10 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             case DataTableToolbarActionType.Delete:
                 dataTablePopupHeading = 'Delete';
                 dataTablePopupMessage = 'Do you want to delete the selected rows?';
+                break;
+            case DataTableToolbarActionType.Download:
+                dataTablePopupHeading = 'Download';
+                dataTablePopupMessage = 'Do you want to download records?';
                 break;
             case DataTableToolbarActionType.Reset:
                 dataTablePopupHeading = 'Reset';
@@ -475,6 +461,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 break;
         }
         this.popup = {
+            action: this.toolbarAction,
             heading: dataTablePopupHeading,
             message: dataTablePopupMessage,
             type: DataTablePopupType.Confirmation,
@@ -482,10 +469,13 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         };
     }
 
-    public onConfirmDataTablePopupAction = (event: DataTableUserActionResponse): void => {
+    public onConfirmDataTablePopupAction = (response: DataTableUserActionResponse): void => {
         switch (this.toolbarAction) {
             case DataTableToolbarActionType.Delete:
                 this.onApplyDataTableDeleteOption();
+                break;
+            case this.dataTableToolbarActionType.Download:
+                this.onApplyDataTableDownloadOption(response);
                 break;
             case DataTableToolbarActionType.Reset:
                 this.onApplyDataTableResetOption();
@@ -510,9 +500,18 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.onSelectDataTableSelectAll();
     }
 
+    /**
+     * This method is responsible for downloading datatable records
+     */
+    private onApplyDataTableDownloadOption = (response: DataTableUserActionResponse): void => {
+        if (response && response.data) {
+            response.data[0]['collection'] = this.dataCollection;
+        }
+        this.getDataTableDownloadedData.emit(response);
+    }
+
     public onApplyDataTableEditOption = (): void => {
         this.isDataTableCellDisabled = !this.isDataTableCellDisabled;
-
     }
 
     /**

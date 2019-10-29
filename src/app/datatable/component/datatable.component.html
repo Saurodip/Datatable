@@ -170,22 +170,10 @@
     </div>
     <div class="datatable-footer">
         <div class="action-container">
-            <span (click)="onSelectDataTableExportType(dataTableExportType.Excel)">
-                <input type="radio" class="datatable-export-option" name="export" value="excel"
-                    [checked]="dataTableExportFileType === dataTableExportType.Excel">
-                <i class="fa fa-file-excel-o" aria-hidden="true"></i>
-                <label for="datatable-excel-export">Excel</label>
-            </span>
-            <span (click)="onSelectDataTableExportType(dataTableExportType.PDF)">
-                <input type="radio" class="datatable-export-option" name="export" value="pdf"
-                    [checked]="dataTableExportFileType === dataTableExportType.PDF">
-                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                <label for="datatable-pdf-export">PDF</label>
-            </span>
-            <input type="text" id="datatable-export-file-name" placeholder="File name" maxlength="50">
-            <button type="button" id="datatable-export-button" [disabled]="!dataTableExportFileType"
-                (click)="onExportDataTableData()">
-                <i class="fa fa-download" aria-hidden="true"></i> Download
+            <button type="button" id="datatable-export-button"
+                (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Download)">
+                <i class="fa fa-download" aria-hidden="true"></i>
+                <label for="datatable-export-button">Download</label>
             </button>
         </div>
         <div class="pagination-tab-container">
@@ -205,30 +193,31 @@
             </ng-container>
         </div>
         <div class="action-container">
-            <span *ngIf="toolbar?.edit" (click)="onApplyDataTableEditOption()">
+            <button *ngIf="toolbar?.edit" type="button" id="datatable-edit-option"
+                (click)="onApplyDataTableEditOption()">
                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                <label for="datatable-edit-option">Edit </label>
-                <input type="checkbox" id="datatable-edit-option" [checked]="!isDataTableCellDisabled">
-            </span> |
-            <span *ngIf="toolbar?.save"
-                [ngClass]="{ 'disabled': listOfEditedDataTableRows && listOfEditedDataTableRows.length <= 0 }">
+                <label for="datatable-edit-option">Edit</label>
+                <input type="checkbox" [checked]="!isDataTableCellDisabled">
+            </button>|
+            <button *ngIf="toolbar?.save" type="button" id="datatable-save-option"
+                [ngClass]="{ 'disabled': listOfEditedDataTableRows && listOfEditedDataTableRows.length <= 0 }"
+                [disabled]="listOfEditedDataTableRows && listOfEditedDataTableRows.length <= 0"
+                (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Save)">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i>
-                <input type="button" id="datatable-save-option" value="Save"
-                    [disabled]="listOfEditedDataTableRows && listOfEditedDataTableRows.length <= 0"
-                    (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Save)">
-            </span> |
-            <span *ngIf="toolbar?.delete"
-                [ngClass]="{ 'disabled': listOfSelectedDataTableRows && listOfSelectedDataTableRows.length <= 0 }">
+                <label for="datatable-save-option">Save</label>
+            </button>|
+            <button *ngIf="toolbar?.delete" type="button" id="datatable-delete-option"
+                [ngClass]="{ 'disabled': listOfSelectedDataTableRows && listOfSelectedDataTableRows.length <= 0 }"
+                [disabled]="listOfSelectedDataTableRows && listOfSelectedDataTableRows.length <= 0"
+                (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Delete)">
                 <i class="fa fa-trash-o" aria-hidden="true"></i>
-                <input type="button" id="datatable-delete-option" value="Delete"
-                    [disabled]="listOfSelectedDataTableRows && listOfSelectedDataTableRows.length <= 0"
-                    (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Delete)">
-            </span> |
-            <span *ngIf="toolbar?.reset">
+                <label for="datatable-delete-option">Delete</label>
+            </button>|
+            <button *ngIf="toolbar?.reset" type="button" id="datatable-reset-option"
+                (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Reset)">
                 <i class="fa fa-refresh" aria-hidden="true"></i>
-                <input type="button" id="datatable-reset-option" value="Reset"
-                    (click)="onSelectDataTableToolbarOption(dataTableToolbarActionType.Reset)">
-            </span>
+                <label for="datatable-reset-option">Reset</label>
+            </button>
         </div>
     </div>
     <div *ngIf="isLoading" class="spinner">

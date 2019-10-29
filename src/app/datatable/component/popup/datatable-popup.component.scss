@@ -64,24 +64,72 @@
             @include multiline-ellipsis(80%, 12)
         }
 
-        .popup-action-container {
-            align-items: center;
+        .export-file {
             display: flex;
-            height: 4rem;
-            justify-content: center;
+            flex-direction: row;
+            margin-bottom: 1rem;
 
-            input[type="button"] {
-                background-color: #efedea;
-                border: 1px solid lightgray;
-                box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
-                cursor: pointer;
-                margin: 0rem 0.5rem;
-                padding: 7px;
-                width: 100px;
+            &>div {
+                text-align: center;
 
-                &:hover {
-                    background-color: #dcdcdc;
+                &>div {
+                    margin-bottom: 1rem;
                 }
+
+                input[type="text"],
+                select {
+                    display: block;
+                    margin: 0rem auto;
+                    outline: none;
+                    width: 75%;
+                }
+            }
+
+            .export-file-type {
+                border-right: 1px dotted lightgray;
+                width: 30%;
+            }
+
+            .export-file-name {
+                border-right: 1px dotted lightgray;
+                width: 30%;
+            }
+
+            .export-date-range {
+                width: 40%;
+
+                .date-control-container {
+                    display: flex;
+                    flex-direction: row;
+                    font-size: 12px;
+
+                    input[type="text"] {
+                        font-size: 12px;
+                        margin-bottom: 0.2rem;
+                        text-align: center;
+                    }
+                }
+            }
+        }
+    }
+
+    .popup-action-container {
+        align-items: center;
+        display: flex;
+        height: 4rem;
+        justify-content: center;
+
+        input[type="button"] {
+            background-color: #efedea;
+            border: 1px solid lightgray;
+            box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            margin: 0rem 0.5rem;
+            padding: 7px;
+            width: 100px;
+
+            &:hover {
+                background-color: #dcdcdc;
             }
         }
     }

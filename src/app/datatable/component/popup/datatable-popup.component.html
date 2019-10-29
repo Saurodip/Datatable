@@ -13,6 +13,34 @@
         <div class="popup-message">
             <span>{{ data?.message }}</span>
         </div>
+        <div [ngSwitch]="data?.action">
+            <div *ngSwitchCase="dataTableToolbarActionType.Download" class="export-file">
+                <div class="export-file-type">
+                    <div>File type:</div>
+                    <select #exportFileType class="datatable-export-option">
+                        <option selected value="{{ dataTableExportType.Excel }}">Excel</option>
+                        <option value="{{ dataTableExportType.PDF }}">PDF</option>
+                    </select>
+                </div>
+                <div class="export-file-name">
+                    <div>File name:</div>
+                    <input #exportFileName type="text" id="datatable-export-file-name" maxlength="50">
+                </div>
+                <div class="export-date-range">
+                    <div>Date range:</div>
+                    <div class="date-control-container">
+                        <div>
+                            <input #exportStartDate type="text" id="start-export-date" placeholder="MM/dd/yyyy">
+                            <label for="start-export-date">Start date</label>
+                        </div>
+                        <div>
+                            <input #exportEndDate type="text" id="end-export-date" placeholder="MM/dd/yyyy">
+                            <label for="end-export-date">End date</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div *ngIf="data?.type === dataTablePopupType.Confirmation" class="popup-action-container">
             <input type="button" value="Proceed" (click)="onProceedWithDataTablePopupAction()">
             <input type="button" value="Cancel" (click)="onCloseDataTablePopup()">

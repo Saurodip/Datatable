@@ -48,9 +48,10 @@ export enum DataTableSortOrder {
 }
 
 export enum DataTableToolbarActionType {
-    Delete = 1,
+    Delete = 4,
+    Download = 1,
     Edit = 2,
     None = 0,
     Save = 3,
-    Reset = 4
+    Reset = 5
 }

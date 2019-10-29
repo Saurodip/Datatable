@@ -329,16 +329,23 @@ $text-color: #e3e3e3;
         .action-container {
             width: 40%;
 
-            i {
-                color: #797171;
-                margin: 0px 5px;
-            }
 
-            input[type="button"],
             button {
                 background-color: transparent;
                 border: none;
-                cursor: pointer;
+                outline: none;
+
+                i {
+                    color: #797171;
+                    cursor: pointer;
+                    margin: 0px 5px;
+                }
+
+                label {
+                    cursor: pointer;
+                    margin-right: 5px;
+                    text-transform: capitalize;
+                }
 
                 &:disabled {
                     color: lightgray;
@@ -346,46 +353,15 @@ $text-color: #e3e3e3;
                 }
             }
 
-            &:first-of-type {
-                padding-left: 1rem;
-
-                input[type="radio"] {
-                    cursor: pointer;
-                    margin-right: 5px;
-                    position: relative;
-                    top: 2px;
-                }
-
-                label {
-                    cursor: pointer;
-                    margin-right: 10px;
-                    text-transform: capitalize;
-                }
-
-                input[type="text"] {
-                    border: 1px solid lightgray;
-                    margin-right: 5px;
-                    padding-left: 5px;
-                    width: 6rem;
-                }
-            }
-
             &:last-of-type {
                 padding-right: 1rem;
                 text-align: right;
 
-                span {
-                    label {
-                        cursor: pointer;
-                        text-transform: capitalize;
-                    }
-
-                    input[type="checkbox"] {
-                        cursor: pointer;
-                        margin-right: 5px;
-                        position: relative;
-                        top: 2px;
-                    }
+                input[type="checkbox"] {
+                    cursor: pointer;
+                    margin-right: 5px;
+                    position: relative;
+                    top: 2px;
                 }
             }
         }
