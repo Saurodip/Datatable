@@ -80,6 +80,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     public dataTableFilterType = DataTableFilterType;
     public dataTableLoadingPattern = DataTableLoadingPattern;
     public dataTableToolbarActionType = DataTableToolbarActionType;
+    public isDataTablePopupVisible: boolean;
     private rawData: object[];
     private dataCollection: object[];
     private listOfInternalObjectProperties: string[];
@@ -128,6 +129,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.sortFields = {};
         this.currentPaginationSlot = {};
         this.tooltipInfo = new DataTableTooltip();
+        this.isDataTablePopupVisible = false;
+        this.rawData = [];
         this.dataCollection = [];
         this.listOfInternalObjectProperties = ['Index', 'RowSelected'];
         this.listOfSelectedDataTableRows = [];
@@ -436,9 +439,14 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
     }
 
+    /**
+     * This method is responsible to display datatable popup based on the selected toolbar action
+     * @param actionType { DataTableToolbarActionType } Type of the selected toolbar action
+     */
     public onSelectDataTableToolbarOption = (actionType: DataTableToolbarActionType): void => {
         let dataTablePopupHeading: string = '';
         let dataTablePopupMessage: string = '';
+        this.isDataTablePopupVisible = true;
         this.toolbarAction = actionType || DataTableToolbarActionType.None;
         switch (actionType) {
             case DataTableToolbarActionType.Delete:
@@ -464,8 +472,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             action: this.toolbarAction,
             heading: dataTablePopupHeading,
             message: dataTablePopupMessage,
-            type: DataTablePopupType.Confirmation,
-            visible: true
+            type: DataTablePopupType.Confirmation
         };
     }
 
@@ -486,6 +493,14 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             default:
                 break;
         }
+    }
+
+    /**
+     * This method gets triggered on close of datatable popup to destroy the datatable popup component
+     * @param state { boolean } Current state of the datatable popup; True - Visible, False - Hidden
+     */
+    public onClosingDataTablePopup = (state: boolean): void => {
+        this.isDataTablePopupVisible = state;
     }
 
     /**

@@ -1,4 +1,4 @@
-<div *ngIf="data?.visible" id="datatable-popup-wrapper">
+<div id="datatable-popup-wrapper">
     <div id="datatable-popup-container">
         <h2>
             <span [ngSwitch]="data?.type">
@@ -28,19 +28,21 @@
                     <small class="error-message"></small>
                 </div>
                 <div class="export-date-range">
-                    <div>Date range: <span class="asterisk">*</span></div>
+                    <div>Date range (MM/dd/yyyy): <span class="asterisk">*</span></div>
                     <div class="date-control-container">
                         <div>
-                            <input #exportStartDate type="text" id="start-export-date" placeholder="MM/dd/yyyy">
-                            <label for="start-export-date">Start date</label>
+                            <input #exportStartDate type="text" id="start-export-date" placeholder="Start date">
                         </div>
                         <div>—</div>
                         <div>
-                            <input #exportEndDate type="text" id="end-export-date" placeholder="MM/dd/yyyy">
-                            <label for="end-export-date">End date</label>
+                            <input #exportEndDate type="text" id="end-export-date" placeholder="End date">
                         </div>
                     </div>
-                    <small class="error-message">{{ dateRangeValidationError }}</small>
+                    <small *ngIf="dateRangeValidationError['startDate']" class="error-message">Start date:
+                        {{ dateRangeValidationError['startDate'] }}</small>
+                    <br>
+                    <small *ngIf="dateRangeValidationError['endDate']" class="error-message">End date:
+                        {{ dateRangeValidationError['endDate'] }}</small>
                 </div>
             </div>
         </div>

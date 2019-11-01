@@ -29,14 +29,12 @@ export class DataTablePopup {
     public heading: string;
     public message: string;
     public type: DataTablePopupType;
-    public visible: boolean;
 
     constructor() {
         this.action = DataTableToolbarActionType.None;
         this.heading = '';
         this.message = '';
         this.type = DataTablePopupType.None;
-        this.visible = false;
     }
 }
 
