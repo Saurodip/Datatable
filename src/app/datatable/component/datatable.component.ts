@@ -519,12 +519,16 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
      * This method is responsible for downloading datatable records
      */
     private onApplyDataTableDownloadOption = (response: DataTableUserActionResponse): void => {
-        if (response && response.data) {
-            response.data[0]['collection'] = this.dataCollection;
+        if (response && response.data && response.data.length > 0) {
+            this.getDataTableDownloadedData.emit(response.data[0]);
+        } else {
+            this.getDataTableEditedData.emit(response);
         }
-        this.getDataTableDownloadedData.emit(response);
     }
 
+    /**
+     * This method gets triggered on selection of edit toolbar option
+     */
     public onApplyDataTableEditOption = (): void => {
         this.isDataTableCellDisabled = !this.isDataTableCellDisabled;
     }
