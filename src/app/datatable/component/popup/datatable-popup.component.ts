@@ -51,10 +51,10 @@ export class DataTablePopupComponent implements AfterViewInit {
             if (!this.fileNameValidationError && !this.dateRangeValidationError['startDate'] && !this.dateRangeValidationError['endDate']) {
                 const response: DataTableUserActionResponse = {
                     data: [{
-                        endDate: endDate,
+                        endDate: new Date(endDate),
                         fileName: fileName,
                         fileType: fileType,
-                        startDate: startDate
+                        startDate: new Date(startDate)
                     }]
                 };
                 this.onCloseDataTablePopup();
@@ -85,9 +85,9 @@ export class DataTablePopupComponent implements AfterViewInit {
                 if (dateValue) {
                     const splittedDate: string[] = dateValue.split('/');
                     if (splittedDate.length === 3) {
-                        const month: number = parseInt(splittedDate[0], 10);
-                        const date: number = parseInt(splittedDate[1], 10);
-                        const year: number = parseInt(splittedDate[2], 10);
+                        const month: number = Number(splittedDate[0]);
+                        const date: number = Number(splittedDate[1]);
+                        const year: number = Number(splittedDate[2]);
                         const calendar: object = {
                             '28': [2],
                             '30': [4, 6, 9, 11],
