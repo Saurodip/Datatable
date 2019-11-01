@@ -16,18 +16,19 @@
         <div [ngSwitch]="data?.action">
             <div *ngSwitchCase="dataTableToolbarActionType.Download" class="export-file">
                 <div class="export-file-type">
-                    <div>File type:</div>
+                    <div>File type: <span class="asterisk">*</span></div>
                     <select #exportFileType class="datatable-export-option">
                         <option selected value="{{ dataTableExportType.Excel }}">Excel</option>
                         <option value="{{ dataTableExportType.PDF }}">PDF</option>
                     </select>
                 </div>
                 <div class="export-file-name">
-                    <div>File name:</div>
+                    <div>File name: <span class="asterisk">*</span></div>
                     <input #exportFileName type="text" id="datatable-export-file-name" maxlength="50">
+                    <small class="error-message"></small>
                 </div>
                 <div class="export-date-range">
-                    <div>Date range:</div>
+                    <div>Date range: <span class="asterisk">*</span></div>
                     <div class="date-control-container">
                         <div>
                             <input #exportStartDate type="text" id="start-export-date" placeholder="MM/dd/yyyy">
@@ -39,6 +40,7 @@
                             <label for="end-export-date">End date</label>
                         </div>
                     </div>
+                    <small class="error-message">{{ dateRangeValidationError }}</small>
                 </div>
             </div>
         </div>

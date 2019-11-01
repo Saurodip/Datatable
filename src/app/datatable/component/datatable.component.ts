@@ -447,7 +447,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 break;
             case DataTableToolbarActionType.Download:
                 dataTablePopupHeading = 'Download';
-                dataTablePopupMessage = 'Do you want to download records?';
+                dataTablePopupMessage = 'Please provide the following details to download the records.';
                 break;
             case DataTableToolbarActionType.Reset:
                 dataTablePopupHeading = 'Reset';

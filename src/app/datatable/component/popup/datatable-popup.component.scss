@@ -59,7 +59,7 @@
 
         .popup-message {
             margin: 1rem 0rem;
-            min-height: 4rem;
+            min-height: 3rem;
             text-align: center;
             @include multiline-ellipsis(80%, 12)
         }
@@ -83,11 +83,21 @@
                     outline: none;
                     width: 75%;
                 }
+
+                .asterisk {
+                    bottom: 5px;
+                    font-size: 11px;
+                    position: relative;
+                }
+
+                .error-message {
+                    color: red;
+                }
             }
 
             .export-file-type {
                 border-right: 1px dotted lightgray;
-                width: 30%;
+                width: 20%;
             }
 
             .export-file-name {
@@ -96,7 +106,7 @@
             }
 
             .export-date-range {
-                width: 40%;
+                width: 50%;
 
                 .date-control-container {
                     display: flex;
