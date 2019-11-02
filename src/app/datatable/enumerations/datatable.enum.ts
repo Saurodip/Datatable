@@ -8,9 +8,9 @@ export enum DataTableColumnType {
 }
 
 export enum DataTableExportType {
-    Excel = 1,
-    None = 0,
-    PDF = 2
+    Excel = 'xlsx',
+    None = 'none',
+    PDF = 'pdf'
 }
 
 export enum DataTableFilterType {

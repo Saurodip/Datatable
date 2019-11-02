@@ -17,15 +17,21 @@
             <div *ngSwitchCase="dataTableToolbarActionType.Download" class="export-file">
                 <div class="export-file-type">
                     <div>File type: <span class="asterisk">*</span></div>
-                    <select #exportFileType class="datatable-export-option">
+                    <select #exportFileType class="datatable-export-option"
+                        (change)="onSelectExportType(exportFileType.value)">
                         <option selected value="{{ dataTableExportType.Excel }}">Excel</option>
                         <option value="{{ dataTableExportType.PDF }}">PDF</option>
                     </select>
                 </div>
                 <div class="export-file-name">
                     <div>File name: <span class="asterisk">*</span></div>
-                    <input #exportFileName type="text" id="datatable-export-file-name" maxlength="50">
-                    <small class="error-message"></small>
+                    <div>
+                        <input #exportFileName type="text" id="datatable-export-file-name" maxlength="50">
+                        <input #exportFileExtension type="text" id="datatable-export-file-extension" maxlength="5"
+                            disabled>
+                    </div>
+                    <small *ngIf="validationError['fileName']" class="error-message">
+                        {{ validationError['fileName'] }}</small>
                 </div>
                 <div class="export-date-range">
                     <div>Date range (MM/dd/yyyy): <span class="asterisk">*</span></div>
@@ -38,10 +44,10 @@
                             <input #exportEndDate type="text" id="end-export-date" placeholder="End date">
                         </div>
                     </div>
-                    <small *ngIf="dateRangeValidationError['startDate']" class="error-message">Start date:
-                        {{ dateRangeValidationError['startDate'] }}</small>
-                    <small *ngIf="dateRangeValidationError['endDate']" class="error-message">End date:
-                        {{ dateRangeValidationError['endDate'] }}</small>
+                    <small *ngIf="validationError['startDate']" class="error-message">Start date:
+                        {{ validationError['startDate'] }}</small>
+                    <small *ngIf="validationError['endDate']" class="error-message">End date:
+                        {{ validationError['endDate'] }}</small>
                 </div>
             </div>
         </div>

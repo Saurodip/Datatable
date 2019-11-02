@@ -78,7 +78,6 @@
 
                 input[type="text"],
                 select {
-                    display: block;
                     margin: 0rem auto;
                     outline: none;
                     width: 75%;
@@ -102,11 +101,21 @@
 
             .export-file-name {
                 border-right: 1px dotted lightgray;
-                width: 30%;
+                width: 40%;
+
+                #datatable-export-file-name {
+                    width: 60%
+                }
+
+                #datatable-export-file-extension {
+                    position: relative;
+                    right: 1px;
+                    width: 10%;
+                }
             }
 
             .export-date-range {
-                width: 50%;
+                width: 40%;
 
                 .date-control-container {
                     display: flex;
