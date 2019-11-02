@@ -65,7 +65,7 @@ export class DataTablePopupComponent implements AfterViewInit {
                 this.getDataTablePopupConfirmationAction.emit(response);
             }
         } else {
-            this.data = new DataTablePopup();
+            this.onCloseDataTablePopup();
             this.getDataTablePopupConfirmationAction.emit();
         }
     }
@@ -74,7 +74,6 @@ export class DataTablePopupComponent implements AfterViewInit {
      * This method is responsible for closing datatable popup
      */
     public onCloseDataTablePopup = (): void => {
-        this.data = new DataTablePopup();
         this.getDataTablePopupCloseEvent.emit(false);
     }
 
