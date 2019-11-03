@@ -30,6 +30,7 @@ export class DataTablePopupComponent implements AfterViewInit {
     }
 
     ngAfterViewInit() {
+        /* Initializing fields with defaults */
         const currentDate: Date = new Date();
         if (this.exportFileName && this.exportFileName.nativeElement && this.exportFileExtension && this.exportFileExtension.nativeElement) {
             this.exportFileName.nativeElement.value = `DataTable_${currentDate.valueOf()}`;

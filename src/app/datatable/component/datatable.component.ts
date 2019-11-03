@@ -8,7 +8,7 @@ import { DataTableSelectionService } from '../services/datatable.selection.servi
 import { DataTableSortService } from '../services/datatable.sort.service';
 import { DataTableUIService } from '../services/datatable.ui.service';
 import { DataTableVirtualScrollingService } from '../services/datatable.virtual-scrolling.service';
-import { DataTableColumnType, DataTableExportType, DataTableFilterType, DataTableLoadingPattern, DataTableSortOrder, DataTableToolbarActionType, DataTablePopupType } from '../enumerations/datatable.enum';
+import { DataTableColumnType, DataTableFilterType, DataTableLoadingPattern, DataTablePopupType, DataTableSortOrder, DataTableToolbarActionType } from '../enumerations/datatable.enum';
 import { DataTableHeader, DataTableHeaderStyle, DataTableRowStyle, DataTableToolbar, DataTableUserActionResponse, DataTableVirtualScrolling } from '../interfaces/datatable.interface';
 import { DataTablePagination, DataTablePopup, DataTableTooltip } from '../models/datatable.model';
 
@@ -22,6 +22,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
     @Input() public columnResponsive: boolean;
     @Input() set data(collection: object[]) {
         if (collection && collection.length > 0) {
+            /* This variable is responsible to hold the original data received from invoked component and restricted for further modification */
             this.rawData = [...collection];
             this.onReceiveOfDataTableData(collection);
         }
@@ -355,9 +356,8 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
             } else if (this.dataLoadingPattern === DataTableLoadingPattern.VirtualScrolling) {
                 const numberOfBufferedDataRow: number = 2;
                 this.dataToDisplay = dataCollection.slice(0, this.virtualScrolling.numberOfRowsPerScroll + numberOfBufferedDataRow);
-                setTimeout(() => {
-                    this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor);
-                }, 0);
+                /* Allowing browser to render the new dataset before performing selection related action */
+                setTimeout(() => this.dataTableSelectionService.onSelectDataTableSelectAll(this.selectAllCheckboxState, this.dataToDisplay, this.checkboxSelection, this.rowStyle.selectionColor), 0);
             } else {
                 this.dataToDisplay = [...this.filteredData];
             }
@@ -366,6 +366,10 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
     }
 
+    /**
+     * This method is responsible for structuring the data collection on slot basis for pagination
+     * @param dataCollection { object[] } Data collection
+     */
     private onPreparationOfDataForPagination = (dataCollection: object[]): void => {
         let totalNoOfPaginationSlot: number = 1;
         this.paginationData = this.dataTablePaginationService.preparePaginationTabs(dataCollection, this.pagination);
@@ -380,6 +384,11 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
     }
 
+    /**
+     * This method gets triggered on selection of pagination tab
+     * @param event { MouseEvent } Tab selection mouse event
+     * @param index { number } Selected tab index
+     */
     public onSelectPaginationTab = (event: MouseEvent, index: number): void => {
         this.dataToDisplay = this.dataTablePaginationService.onSelectPaginationTab(this.currentPaginationSlot, index);
         /* Allowing browser to render the new dataset before performing selection related action */
@@ -387,6 +396,10 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         this.dataTableUIService.onHighlightSelectedElement(event, 'pagination-tab', 'highlight-pagination-tab');
     }
 
+    /**
+     * This method gets triggered on change of pagination slot
+     * @param slotIndex { number } Selected slot index
+     */
     public onChangePaginationSlot = (slotIndex: number): void => {
         if (slotIndex < 0 || slotIndex > this.paginationData.length - 1) {
             return;
@@ -400,6 +413,10 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
     }
 
+    /**
+     * This method gets triggered on vertical scrolling, in case data loading pattern has set for virtual scrolling
+     * @param event { ScrollEvent } Mouse scrolling event
+     */
     @HostListener('scroll', ['$event'])
     onApplyVirtualScrolling(event: Event) {
         if (this.dataLoadingPattern === DataTableLoadingPattern.VirtualScrolling) {
@@ -407,6 +424,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
                 const currentTarget: EventTarget = event.currentTarget;
                 let dataCollection: object[] = [];
                 let firstRowIndex: number = 0;
+                /* In case filter is applied, virtual scrolling will run on filtered data; otherwise considering entire data collection */
                 if (this.isFilterTextPresent) {
                     dataCollection = this.filteredData;
                     firstRowIndex = (this.filteredData && this.filteredData.length > 0) ? this.filteredData[0]['Index'] : firstRowIndex;
@@ -429,6 +447,11 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
     }
 
+    /**
+     * This method gets triggered on hover of tooltip icon
+     * @param event { MouseEvent } Mouse hover event
+     * @param tooltipMessage { string } Message to show in tooltip
+     */
     public onHoverTooltipIcon = (event: MouseEvent, tooltipMessage: string): void => {
         if (event) {
             if (event.type === 'mouseenter') {
@@ -476,6 +499,10 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         };
     }
 
+    /**
+     * This method gets triggered on click of 'Proceed' button for confirming popup action
+     * @param response { DataTableUserActionResponse } Response received from the popup component
+     */
     public onConfirmDataTablePopupAction = (response: DataTableUserActionResponse): void => {
         switch (this.toolbarAction) {
             case DataTableToolbarActionType.Delete:
@@ -622,6 +649,10 @@ export class DataTableComponent implements OnInit, AfterViewInit, AfterViewCheck
         }
     }
 
+    /**
+     * This method gets triggered on movemovent of mouse while resizing datatable column
+     * @param event { MouseEvent } Mouse move event
+     */
     private mouseMove = (event: MouseEvent) => {
         const pageXDifference = event.pageX - this.startPageXPosition;
         const totalWidth: number = this.selectedColumnWidth + this.nextColumnWidth;
