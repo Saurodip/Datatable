@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { DataTableElementReferenceService } from './datatable.element-reference.service';
 
 @Injectable()
 export class DataTableVirtualScrollingService {
-    constructor(
-        private dataTableElementReferenceService: DataTableElementReferenceService) {
+    constructor() {
     }
 
     /**
