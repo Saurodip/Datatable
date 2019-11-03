@@ -73,6 +73,7 @@ export class DataTableUIService {
             if (isColumnResponsive) {
                 dataTableHeader.forEach((header: DataTableHeader) => {
                     header.columnWidth = Math.floor((dataTable['offsetWidth'] - (actionContainer['offsetWidth'] + scrollbarWidth)) / dataTableHeader.length) + 'px';
+                    header.frozen = false;
                 });
             } else {
                 const frozenHeader: DataTableHeader[] = dataTableHeader.filter((header: DataTableHeader) => header.frozen === true);
